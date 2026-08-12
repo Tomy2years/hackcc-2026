@@ -1,5 +1,7 @@
 "use client";
 
+// Comment
+
 import Image from "next/image";
 import { Award, Building2, Coffee, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/Card";

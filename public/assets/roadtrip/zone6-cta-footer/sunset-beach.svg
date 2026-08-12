@@ -1,0 +1,36 @@
+<svg width="1920" height="600" viewBox="0 0 1920 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sunsetGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="35%" stop-color="#F43F5E"/>
+      <stop offset="70%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="sandGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Golden Sunset Sky Background -->
+  <rect width="1920" height="600" fill="url(#sunsetGrad)"/>
+
+  <!-- Sun Disk -->
+  <circle cx="960" cy="320" r="160" fill="#FEF08A" opacity="0.95"/>
+
+  <!-- Ocean Water Horizon -->
+  <rect x="0" y="320" width="1920" height="130" fill="#3B0764" opacity="0.6"/>
+
+  <!-- Warm Sand Shore -->
+  <path d="M 0 420 Q 480 370 960 410 T 1920 400 L 1920 600 L 0 600 Z" fill="url(#sandGrad)"/>
+
+  <!-- Foreground Palm Silhouettes -->
+  <g transform="translate(100, 120)" fill="#111827">
+    <path d="M 60 480 Q 90 280 180 100 L 200 110 Q 110 290 80 480 Z"/>
+    <!-- Leaves -->
+    <path d="M 190 105 Q 120 40 40 50 Q 110 80 190 105 Z"/>
+    <path d="M 190 105 Q 260 30 340 40 Q 270 80 190 105 Z"/>
+    <path d="M 190 105 Q 280 100 360 160 Q 270 150 190 105 Z"/>
+    <path d="M 190 105 Q 120 130 50 190 Q 110 160 190 105 Z"/>
+  </g>
+</svg>

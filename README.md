@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HackCC 2026 Website 🌴🚘
 
-## Getting Started
+Welcome to the official **HackCC 2026** web repository! This site features a **SoCal North-to-South Road Trip** theme (from LA Hills down to SoCal Sunset Beach) built with Next.js, React, Tailwind CSS, and TypeScript.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 Quick Start for Beginners
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Clone or open this repository.
+2. Run `npm install` to install dependencies.
+3. Run `npm run dev` to launch the server.
+4. Visit `http://localhost:3000` in your browser!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+👉 **New to web dev? Check out our step-by-step [CONTRIBUTING.md](CONTRIBUTING.md) guide** for setup details, directory maps, and beginner tips!
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🎨 Design System & Vibe Showcase
 
-To learn more about Next.js, take a look at the following resources:
+We have an interactive internal style guide for all colors, fonts, buttons, cards, and UI components:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Local Preview**: [http://localhost:3000/design-system](http://localhost:3000/design-system)
+- **File Location**: `src/app/design-system/page.tsx`
+- **CSS Utility Classes**: `src/app/globals.css`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📁 Repository Overview
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **`public/`**: Static image assets, illustrations, and logos.
+- **`src/app/`**: Next.js page routes (`/`, `/2026`, `/design-system`).
+- **`src/components/ui/`**: Reusable starter UI components (`<Button />`, `<Card />`, `<Badge />`).
+- **`src/components/roadtrip/`**: Road trip zone sections (`Zone1Hero`, `Zone2EventInfo`, `Zone3About`...).
+- **`src/archive/2026/`**: Preserved code and components from the Spring 2026 website.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 💻 Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org) (App Router)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com)
+- **Typography**: Bagel Fat One (`var(--font-bagel)`) & Montserrat Alternates (`var(--font-mont)`)
+- **Language**: TypeScript / React

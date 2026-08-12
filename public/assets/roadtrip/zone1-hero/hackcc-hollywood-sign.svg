@@ -1,0 +1,15 @@
+<svg width="1200" height="400" viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hollywood Hills Silhouette -->
+  <path d="M0 320 Q 200 220 450 270 T 850 200 T 1200 280 L 1200 400 L 0 400 Z" fill="#1C2038"/>
+  <path d="M0 350 Q 300 260 650 310 T 1200 290 L 1200 400 L 0 400 Z" fill="#0D1126"/>
+
+  <!-- HackCC Hollywood Sign Wooden/Scaffold Posts & Letters -->
+  <g transform="translate(250, 160)">
+    <!-- Wooden support grid behind letters -->
+    <line x1="0" y1="110" x2="700" y2="110" stroke="#7A5636" stroke-width="6"/>
+    <line x1="0" y1="50" x2="700" y2="50" stroke="#7A5636" stroke-width="6"/>
+
+    <!-- Letters: H A C K C C -->
+    <text x="30" y="100" font-family="'Impact', 'Arial Black', sans-serif" font-size="110" font-weight="900" fill="#FFFFFF" letter-spacing="12">HACKCC</text>
+  </g>
+</svg>

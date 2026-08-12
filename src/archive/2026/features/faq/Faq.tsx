@@ -1,0 +1,53 @@
+import Image from "next/image"
+import Card from "./ui/Card"
+import { Title } from "@2026/components/title";
+
+import { faFile } from "@fortawesome/free-regular-svg-icons"
+import { faLaptopCode, faPeopleGroup, faWallet, faTrophy } from "@fortawesome/free-solid-svg-icons"
+import texture from "@2026-public/About Texture.webp"
+import cloud from "@2026-public/Pink Cloud Cluster 6.webp"
+
+//left clouds
+import indvidualCloud1 from "@2026-public/Violet Cloud Cluster 2.webp"
+import indvidualCloud2 from "@2026-public/Pink Moving Cloud 2.webp" 
+//right clouds
+import cloud2 from "@2026-public/Pink Cloud Cluster 3.webp"
+
+import stars from "@2026-public/Cross Stars.webp"
+
+const text1 = "Applications are now open for all California community college students! If you're looking to take advantage of an exciting opportunity, be sure to submit your application between October 13th and October 31st. This is the official application period, Don’t wait until the last minute—start and complete your application as soon as possible to avoid missing out!"
+const text2 = "A Hackathon is an event where developers, designers, and tons of other tech interested people can come together to build projects within a short timeframe (14 hours at HackCC), to discover new opportunities and win awesome prizes."
+const text3 = "Participants can form teams of up to 4 members. There will be a team formation event at the beginning of HackCC to help everyone find teammates. Please note: HackCC is an 18+ event, meaning all participants must be 18 years or older to attend."
+const text4 = "Attending HackCC is completely free — no cost to apply, no cost to attend. Last year, 103 students from 18 community colleges competed for over $2,020 in prizes, all without spending a dime. Focus on what matters: building, learning, and collaborating."
+const text5 = "HackCC 2025 at MiraCosta College was our biggest year yet. 179 applications. 103 attendees from 18 community colleges across California. 29 teams competed across AI/ML, Social Good, Game Development, and Overall Innovation — with $2,020 in prizes awarded and every participant receiving a Boot.dev coding pass."
+
+
+
+export default function Faq() {
+    return (
+        <div id="workshopTab" className="bg-hoverpurple pt-20 md:pt-40 w-full h-auto overflow-x-clip text-center"> 
+            <div className="relative bg-gradient-to-b from-hoverpurple to-bgpurple pb-20 w-full h-auto">
+                <Image sizes="(min-width: 1540px) 600px, (min-width: 780px) 450px, 300px"  src={indvidualCloud1} alt="cloud" className="-top-32 md:-top-48 2xl:-top-60 -left-40 absolute w-[300px] md:w-[450px] 2xl:w-[600px] h-auto"></Image>
+                <Image sizes="(min-width: 1540px) 400px, (min-width: 780px) 300px, 200px" src={indvidualCloud2} alt="cloud" className="-top-24 md:-top-36 2xl:-top-44 -left-36 md:-left-28 absolute w-[200px] md:w-[300px] 2xl:w-[400px] h-auto"></Image>
+                
+                <Image sizes="(min-width: 1540px) 350px, (min-width: 780px) 300px, 110px" src={cloud2} alt="cloud" className="-top-32 md:-top-72 2xl:-top-80 -right-10 md:-right-32 absolute w-[110px] md:w-[300px] 2xl:w-[350px] h-auto -scale-x-100 transform"></Image>
+
+                <Image src={texture} className='-top-96 sm:-top-80 left-0 z-0 absolute min-w-[800px] sm:min-w-[1500px] max-w-[800px] sm:max-w-[2000px] h-auto' alt="bg" sizes="(min-width: 640px) 1500px, 800px"></Image>
+                <Image sizes="(min-width: 1540px) 600px, (min-width: 640px) 450px, 300px" src={cloud} alt="cloud" className="right-0 -bottom-8 md:-bottom-16 2xl:-bottom-24 z-10 absolute w-[300px] md:w-[450px] 2xl:w-[600px] min-w-[300px] h-auto"></Image>
+                <div className="w-full h-auto">  
+                    <div className="top-1 relative bg-blue-400 mx-auto w-[90%] max-w-[400px] md:max-w-[640px] lg:max-w-[1350px] h-auto">
+                        <Image sizes="(min-width: 1040px) 80px, 40px" src={stars} alt="stars" className="top-6 -right-5 lg:-right-10 absolute w-10 lg:w-20 h-auto"></Image>
+                    </div>
+                    <Title text="FAQ"></Title>
+                    <div className="flex md:flex-row flex-col md:flex-wrap md:justify-center items-center gap-5 md:gap-8 mx-auto my-6 w-full max-w-[1350px] h-auto">
+                        <Card hasSpeaker={false} title="When can I apply?" subtext={text1} iconDef={faFile}></Card>
+                        <Card hasSpeaker={false} title="What is a hackathon?" subtext={text2} iconDef={faLaptopCode}></Card>
+                        <Card hasSpeaker={false} title="Can I compete in a team?" subtext={text3} iconDef={faPeopleGroup}></Card>
+                        <Card hasSpeaker={false} title="How much does it cost to attend?" subtext={text4} iconDef={faWallet}></Card>
+                        <Card hasSpeaker={false} title="How was last year's HackCC?" subtext={text5} iconDef={faTrophy}></Card>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}   

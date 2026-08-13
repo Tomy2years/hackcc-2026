@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
+// this is a button
 export interface ButtonProps {
   children: React.ReactNode;
   /** Direct URL route (e.g. "/organizers", "https://discord.gg/...", "#zone-about"). Avoid empty `#` or `#example`. */

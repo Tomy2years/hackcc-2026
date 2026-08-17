@@ -66,7 +66,7 @@ export default function Zone1Hero() {
 
         {/* Hero Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button variant="primary" size="lg" href="#zone-apply" className="w-full sm:w-auto">
+          <Button variant="primary" size="lg" href="/apply" className="w-full sm:w-auto">
             Apply to Hack
           </Button>
           <Button variant="secondary" size="lg" href="#zone-details" className="w-full sm:w-auto flex items-center justify-center gap-2">

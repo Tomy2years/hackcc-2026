@@ -41,7 +41,7 @@ export default function Zone6FooterCTA() {
 
         {/* Primary CTA Button */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-          <Button variant="primary" size="lg" href="mailto:team@hackcc.net?subject=Application%20Interest" className="w-full sm:w-auto text-xl py-4 px-10">
+          <Button variant="primary" size="lg" href="/apply" className="w-full sm:w-auto text-xl py-4 px-10">
             <span>Submit Application</span>
             <ArrowRight className="w-6 h-6" />
           </Button>

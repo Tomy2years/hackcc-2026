@@ -25,10 +25,14 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { CALIFORNIA_COMMUNITY_COLLEGES } from "./colleges";
 
-// Top-Level Cloud Imports from Archive 2026
+// Top-Level Cloud & Illustration Imports from Archive 2026
 import cloudL from "@2026-public/Purple Cloud Cluster 2.webp";
 import cloudR from "@2026-public/Pink Cloud Cluster 4.webp";
 import cloudCat from "@2026-public/Cat Cloud.webp";
+import moon from "@2026-public/Moon.webp";
+import hotAirBalloon from "@2026-public/Hot Air Balloon.webp";
+import balloonCat from "@2026-public/Balloon Cat.webp";
+import shootingStar from "@2026-public/Shooting Star.webp";
 
 // ---------------------------------------------------------
 // Validation Schema with Zod
@@ -201,6 +205,20 @@ export default function ApplyPage() {
       </div>
       <div className="absolute bottom-10 -left-10 w-40 sm:w-60 h-auto opacity-40 animate-bobbing pointer-events-none z-0">
         <Image src={cloudCat} alt="Cat Cloud" className="w-full h-auto" />
+      </div>
+
+      {/* Retro Sky & Whimsical Illustration Assets for the Road Trip theme */}
+      <div className="absolute top-10 right-10 w-24 sm:w-36 h-auto opacity-80 pointer-events-none z-0">
+        <Image src={moon} alt="Cozy Cartoon Moon" className="w-full h-auto" />
+      </div>
+      <div className="absolute top-[18%] left-[2%] sm:left-[5%] w-20 sm:w-32 h-auto opacity-70 animate-bobbing pointer-events-none z-0">
+        <Image src={hotAirBalloon} alt="Whimsical Hot Air Balloon" className="w-full h-auto" />
+      </div>
+      <div className="absolute bottom-[20%] right-[2%] sm:right-[5%] w-24 sm:w-36 h-auto opacity-75 animate-swaying pointer-events-none z-0">
+        <Image src={balloonCat} alt="Playful Balloon Cat" className="w-full h-auto" />
+      </div>
+      <div className="absolute top-12 left-1/3 w-16 sm:w-28 h-auto opacity-40 pointer-events-none z-0">
+        <Image src={shootingStar} alt="Shooting Star" className="w-full h-auto" />
       </div>
 
       <div className="max-w-3xl w-full relative z-10 space-y-8 my-8">

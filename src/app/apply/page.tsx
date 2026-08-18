@@ -93,6 +93,16 @@ const STEPS = [
   { id: 4, name: "Consent", icon: "🛣️" }
 ];
 
+
+// This generate an Acronym from the College Names listed in the lists
+const getCollegeAcronym =(college: string) => {
+  return college.split(/\s+/)
+  .map((word) => word [0] )
+  .join("")
+  .toLowerCase();
+};
+
+
 export default function ApplyPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -183,10 +193,38 @@ export default function ApplyPage() {
   };
 
   // Autocomplete filtering logic
+  // const filteredCollege = [
+  //   ...CALIFORNIA_COMMUNITY_COLLEGES.filter(college =>
+  //     college.toLowerCase().includes(collegeQuery.toLowerCase())
+  //   ),
+  //   "Other / Not Listed"
+  // ];
+
+
+  // College filtering with both Name and Acronym search
   const filteredColleges = [
-    ...CALIFORNIA_COMMUNITY_COLLEGES.filter(college =>
-      college.toLowerCase().includes(collegeQuery.toLowerCase())
-    ),
+    ...CALIFORNIA_COMMUNITY_COLLEGES.filter((college) => {
+      const query = collegeQuery.toLowerCase().trim();
+
+      if (!query) return true; 
+
+      // Normal name search
+      const matchesName = college.toLowerCase().includes(query);
+
+      // Create Acronym form the college name 
+      const acronym = college
+        .split(/\s+/)
+        .map((word) => word.replace(/[^a-zA-Z]/g, ""))
+        .filter(Boolean)
+        .map((word) => word[0])
+        .join("")
+        .toLowerCase(); 
+
+        const matchesAcronym = acronym.startsWith(query);
+
+        return matchesName || matchesAcronym;
+
+    }),
     "Other / Not Listed"
   ];
 

@@ -1,3 +1,6 @@
+// Idea: Start with the Hollywood sign during the day. As the user scrolls down, the sun sets 
+// and becomes a night sky which leads into the transition for the Inglewood scene,
+
 import Link from "next/link";
 
 export default function RoadTripNav() {

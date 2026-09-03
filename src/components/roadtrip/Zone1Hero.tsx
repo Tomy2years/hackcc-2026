@@ -1,90 +1,114 @@
 "use client";
 
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowDown, Calendar, MapPin, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
 // Top-level Image Asset paths
-const SKY_BG = "/assets/roadtrip/zone1-hero/sky-background.svg";
-const CLOUDS_IMG = "/assets/roadtrip/zone1-hero/clouds.svg";
-const HOLLYWOOD_SIGN = "/assets/roadtrip/zone1-hero/hackcc-hollywood-sign.svg";
+const DAY_BG = "/assets/roadtrip/zone1-hero/hero-background.jpeg";
+const NIGHT_BG = "/assets/roadtrip/zone1-hero/hero-background-night.jpeg";
+const HACKCC_SIGN = "/assets/roadtrip/zone1-hero/HackCC-sign.png";
 
 export default function Zone1Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [hasTurnedNight, setHasTurnedNight] = useState(false);
+
+  // Track scroll position across the hero section for pinned sticky scroll
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Latch night state once user scrolls past sunset threshold (0.35)
+  // Reset back to day only if user scrolls all the way back to the very top (<= 0.02)
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest >= 0.35 && !hasTurnedNight) {
+      setHasTurnedNight(true);
+    } else if (latest <= 0.02 && hasTurnedNight) {
+      setHasTurnedNight(false);
+    }
+  });
+
+  // Dynamic transforms for daytime -> sunset into city skyline -> night
+  const dayOpacityTransform = useTransform(scrollYProgress, [0.10, 0.35], [1, 0]);
+  const nightOpacityTransform = useTransform(scrollYProgress, [0.15, 0.40], [0, 1]);
+
+  const sunX = useTransform(scrollYProgress, [0.0, 0.18, 0.35], [0, 90, 200]);
+  const sunY = useTransform(scrollYProgress, [0.0, 0.18, 0.35], [0, 25, 165]);
+  const sunScale = useTransform(scrollYProgress, [0.0, 0.18, 0.35], [1.0, 0.65, 0.25]);
+  const sunOpacityTransform = useTransform(scrollYProgress, [0.0, 0.20, 0.35], [1.0, 0.75, 0]);
+
+  // Derived style opacities respecting latched night state
+  const dayOpacity = hasTurnedNight ? 0 : dayOpacityTransform;
+  const nightOpacity = hasTurnedNight ? 1 : nightOpacityTransform;
+  const sunOpacity = hasTurnedNight ? 0 : sunOpacityTransform;
+
   return (
-    <section id="zone-hero" className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden pt-24 bg-slate-950">
-      {/* Background Vector Art Layer (Sky & Sunset Gradient) */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src={SKY_BG}
-          alt="Sky & Hills Background"
-          fill
-          className="object-cover opacity-90"
-          priority
-        />
-      </div>
+    <section ref={sectionRef} id="zone-hero" className="relative h-[200vh] w-full bg-slate-950">
+      {/* Sticky Pinned Viewport Container */}
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-between overflow-hidden pt-24">
+        {/* Background Image Layer 1: Daytime Hills */}
+        <motion.div className="absolute inset-0 z-0" style={{ opacity: dayOpacity }}>
+          <Image
+            src={DAY_BG}
+            alt="Daytime Hollywood Hills Background"
+            fill
+            className="object-cover object-center"
+            priority
+          />
+          {/* Soft day lighting gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-500/10 via-transparent to-slate-950/60" />
+        </motion.div>
 
-      {/* Floating Cloud Vectors Layer */}
-      <div className="absolute top-10 inset-x-0 z-10 pointer-events-none opacity-80 animate-pulse">
-        <Image
-          src={CLOUDS_IMG}
-          alt="Clouds Layer"
-          width={1400}
-          height={350}
-          className="w-full h-auto object-contain mx-auto"
-        />
-      </div>
+        {/* Background Image Layer 2: Nighttime Hills (contains moon) */}
+        <motion.div className="absolute inset-0 z-0" style={{ opacity: nightOpacity }}>
+          <Image
+            src={NIGHT_BG}
+            alt="Nighttime Hollywood Hills Background"
+            fill
+            className="object-cover object-center"
+            priority
+          />
+          {/* Night atmosphere gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/40 via-transparent to-slate-950/80" />
+        </motion.div>
 
-      {/* Main Hero Content */}
-      <div className="relative z-20 max-w-5xl mx-auto px-4 text-center mt-12 sm:mt-20">
-        <div className="mb-6">
-          <Badge variant="glass" className="inline-flex items-center gap-2 py-2 px-4 text-sm font-semibold bg-purple-900/60 border-purple-400/40 text-purple-200">
-            <Sparkles className="w-4 h-4 text-[#FBFA74] animate-spin" />
-            <span>SoCal's Premier Community College Hackathon</span>
-          </Badge>
-        </div>
+        {/* Setting Sun (Arcs to the right & sets into city skyline horizon) */}
+        <motion.div
+          className="absolute top-16 left-1/3 z-[5] pointer-events-none flex items-center justify-center"
+          style={{
+            x: sunX,
+            y: sunY,
+            opacity: sunOpacity,
+            scale: sunScale,
+          }}
+        >
+          {/* Radiant Sunset Outer Glow Layers */}
+          <div className="absolute w-44 h-44 rounded-full bg-amber-400/30 blur-2xl animate-pulse" />
+          <div className="absolute w-32 h-32 rounded-full bg-orange-500/40 blur-xl" />
+          {/* Core Vibrant SoCal Sun */}
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 via-[#FBFA74] to-yellow-100 shadow-[0_0_60px_rgba(251,250,116,0.9)] border-2 border-amber-200/80" />
+        </motion.div>
 
-        <h1 className="text-5xl sm:text-7xl md:text-8xl cartoony-title mb-6 tracking-tight">
-          HACK<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FBFA74] via-rose-300 to-[#A649E2]">CC</span> 2026
-        </h1>
+        {/* Spacer to position sign onto the middle slope of the hill */}
+        <div className="relative z-10 flex-1" />
 
-        <p className="max-w-2xl mx-auto text-lg sm:text-2xl text-slate-100 font-body font-medium leading-relaxed drop-shadow-md mb-8">
-          Join us on a coastal road trip down Southern California. Learn, hack, build, and connect at Orange Coast College.
-        </p>
-
-        {/* Quick Meta Details Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-body font-semibold text-white mb-10">
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 backdrop-blur-sm">
-            <Calendar className="w-4 h-4 text-[#FBFA74]" />
-            <span>Fall 2026 • Dates TBA</span>
+        {/* HackCC Sign Image Layer */}
+        <div className="relative z-10 w-full mb-27 sm:mb-52 pointer-events-none flex justify-center px-4 sm:px-8">
+          <div className="w-full max-w-2xl sm:max-w-4xl md:max-w-4xl [transform:rotate(-1.4deg)_skewY(-0.8deg)] drop-shadow-[0_16px_32px_rgba(0,0,0,0.7)]">
+            <Image
+              src={HACKCC_SIGN}
+              alt="HackCC Hollywood Sign"
+              width={1400}
+              height={450}
+              className="w-full h-auto object-contain mx-auto"
+              priority
+            />
           </div>
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 backdrop-blur-sm">
-            <MapPin className="w-4 h-4 text-rose-400" />
-            <span>Orange Coast College • Costa Mesa, CA</span>
-          </div>
         </div>
 
-        {/* Hero Actions */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button variant="primary" size="lg" href="#zone-apply" className="w-full sm:w-auto">
-            Apply to Hack
-          </Button>
-          <Button variant="secondary" size="lg" href="#zone-details" className="w-full sm:w-auto flex items-center justify-center gap-2">
-            <span>Start Road Trip</span>
-            <ArrowDown className="w-5 h-5 text-[#FBFA74] animate-bounce" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Layer 2 Vector Art: HackCC Hollywood Hills Sign at Bottom */}
-      <div className="relative z-10 w-full mt-12 pointer-events-none">
-        <Image
-          src={HOLLYWOOD_SIGN}
-          alt="HackCC Hollywood Sign Vector"
-          width={1200}
-          height={400}
-          className="w-full h-auto object-cover max-h-[340px]"
-        />
+        {/* Bottom Gradient Edge Transition: Blends smoothly into dark slate */}
+        <div className="absolute inset-x-0 bottom-0 h-48 sm:h-72 bg-gradient-to-t from-slate-950 via-slate-950/80 via-30% to-transparent z-10 pointer-events-none" />
       </div>
     </section>
   );

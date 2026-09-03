@@ -33,7 +33,7 @@ We have an interactive internal style guide for all colors, fonts, buttons, card
 - **`src/components/roadtrip/`**: Road trip zone sections (`Zone1Hero`, `Zone2EventInfo`, `Zone3About`...).
 - **`src/archive/2026/`**: Preserved code and components from the Spring 2026 website.
 
----
+--- 
 
 ## 💻 Tech Stack
 

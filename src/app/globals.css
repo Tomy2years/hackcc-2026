@@ -79,6 +79,14 @@ body {
   font-family: var(--font-montserrat-alternates), Arial, Helvetica, sans-serif;
 }
 
+/* Prevent native browser drag-ghosting on scene backgrounds & illustrations */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .map-fade-mask {
   mask-image: linear-gradient(
     to bottom,

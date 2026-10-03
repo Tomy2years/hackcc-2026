@@ -68,7 +68,6 @@ export default function Zone1Hero() {
             alt="Nighttime Hollywood Hills Background"
             fill
             className="object-cover object-center"
-            priority
           />
           {/* Natural night atmosphere gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/70" />

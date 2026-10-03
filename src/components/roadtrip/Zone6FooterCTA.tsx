@@ -14,7 +14,6 @@ export default function Zone6FooterCTA() {
           alt="San Diego Beach Background"
           fill
           className="object-cover object-center"
-          priority
         />
         {/* Contrast Scrim Layer (Darkens bright beach sky & sunset for text legibility) */}
         <div className="absolute inset-0 bg-slate-950/45" />

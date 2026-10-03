@@ -14,7 +14,6 @@ export default function Zone2EventInfo() {
           alt="Inglewood Night Skyline Background"
           fill
           className="object-cover object-center"
-          priority
         />
         {/* Contrast Scrim Layer */}
         <div className="absolute inset-0 bg-slate-950/40" />

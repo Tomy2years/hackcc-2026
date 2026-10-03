@@ -1,0 +1,101 @@
+[
+  {
+    "id": "tom-perel",
+    "name": "Tom Perel",
+    "role": "Website Lead",
+    "categories": ["leadership", "website"],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/tom-perel-headshot.png",
+    "linkedin": "https://www.linkedin.com/in/tomperel/",
+    "objectPosition": "center center",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "hillary-nguyen",
+    "name": "Hillary Nguyen",
+    "role": "Logistics Team",
+    "categories": ["logistics"],
+    "college": "Orange Coast College",
+    "image": "/assets/headshots/hillary-nguyen-headshot.jpg",
+    "linkedin": "https://www.linkedin.com/in/hillary-nguyen-180552366/",
+    "objectPosition": "center 22%",
+    "imageScale": "scale-115"
+  },
+  {
+    "id": "kareem-tadros",
+    "name": "Kareem Tadros",
+    "role": "Sponsorships Lead",
+    "categories": ["leadership", "sponsorships"],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/kareem-tadros-headshot.png",
+    "linkedin": "https://www.linkedin.com/in/kftadros/",
+    "objectPosition": "center 18%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "jacob-aquino",
+    "name": "Jacob Aquino",
+    "role": "Website Team",
+    "categories": ["website"],
+    "college": "Santiago Canyon College",
+    "image": "/assets/headshots/jacob-aquino-headshot.jpeg",
+    "linkedin": "https://www.linkedin.com/in/jacobaquino/",
+    "objectPosition": "center center",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "anjani-shaw",
+    "name": "Anjani Shaw",
+    "role": "Sponsorships Team",
+    "categories": ["sponsorships"],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/anjani-shaw-headshot.png",
+    "linkedin": "https://www.linkedin.com/in/anjani-shaw-523033309/",
+    "objectPosition": "center center",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "yuval-perel",
+    "name": "Yuval Perel",
+    "role": "Website Team",
+    "categories": ["website"],
+    "college": "Orange Coast College",
+    "image": "/assets/headshots/yuval-perel-headshot.png",
+    "linkedin": "https://www.linkedin.com/in/yuval-perel-a26b083a9/",
+    "objectPosition": "center 25%",
+    "imageScale": "scale-110"
+  },
+  {
+    "id": "dasha-binskaia",
+    "name": "Dasha Binskaia",
+    "role": "Website Team",
+    "categories": ["website"],
+    "college": "El Camino College",
+    "image": "/assets/headshots/dasha-binskaia-headshot.png",
+    "linkedin": "https://www.linkedin.com/in/dasha-binskaia-8313b5388/",
+    "objectPosition": "center center",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "jessie-joyce",
+    "name": "Jessy Joyce",
+    "role": "Website Team",
+    "categories": ["website"],
+    "college": "El Camino College",
+    "image": "/assets/headshots/jessie-joyce-headshot.jpeg",
+    "linkedin": "https://www.linkedin.com/in/jessy-omoroghomwan-6b552b257/",
+    "objectPosition": "center 48%",
+    "imageScale": "scale-135"
+  },
+  {
+    "id": "paul-pham",
+    "name": "Paul Pham",
+    "role": "Head Organizer",
+    "categories": ["leadership"],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/paul-pham-headshot.png",
+    "linkedin": "https://www.linkedin.com/in/paul-pham-4219b8375/",
+    "objectPosition": "center 20%",
+    "imageScale": "scale-100"
+  }
+]

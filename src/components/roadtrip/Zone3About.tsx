@@ -16,6 +16,8 @@ export default function Zone3About() {
           className="object-cover object-center"
           priority
         />
+        {/* Contrast Scrim Layer */}
+        <div className="absolute inset-0 bg-slate-950/40" />
       </div>
 
       {/* Top & Bottom Gradient Edge Transitions */}

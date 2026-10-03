@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # HackCC 2026 Developer & Agent Guidelines
 
-- **Vibe & Aesthetic**: Maintain the SoCal Road Trip theme with cartoony fonts (`Bagel Fat One` for titles, `Montserrat Alternates` for body) and color palette tokens from `src/app/globals.css`.
+- **Vibe & Aesthetic**: Maintain an authentic, human-crafted California Road Trip aesthetic inspired by Cal Hacks & HackMIT. Use expressive typographic pairings (serif italic hooks + bold geometric sans titles, unboxed layouts, and monumental stats) with natural California golden hour & twilight palette tokens from `src/app/globals.css`. Ditch generic floating glass boxes and comic-book cartoon drop shadows. See `.agents/skills/frontend-guidelines/SKILL.md`.
 - **UI Components**: Prefer using starter components in `@/components/ui/` (`<Button>`, `<Card>`, `<Badge>`).
 - **Explicit Routes Only**: Whenever generating or editing buttons/links, always specify real destination routes (`/2026`, `/organizers`, `https://...`). DO NOT output placeholder hrefs like `#` or `www.website.com/#example`. If the route is unknown, ask the user!
 - **Top-Level Image Imports**: Import all image assets and graphics at the top of the file before component definitions (e.g. `import logo from '@/public/images/logo.png'`). Never inline `require()` inside render blocks.

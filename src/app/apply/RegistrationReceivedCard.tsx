@@ -51,7 +51,7 @@ export function RegistrationReceivedCard({ email }: RegistrationReceivedCardProp
         </Link>
       </div>
       <p className="text-xs sm:text-sm text-slate-300 mt-6">
-        Need to change something? Submit again with the same email and we&apos;ll use your latest answers.
+        Need to change something? Submit again with the same email. Organizers go by your most recent submission.
       </p>
     </div>
   );

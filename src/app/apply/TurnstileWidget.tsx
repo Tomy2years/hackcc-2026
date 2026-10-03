@@ -26,6 +26,7 @@ export function TurnstileWidget({ onToken }: TurnstileWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const onTokenRef = useRef(onToken);
   const [scriptReady, setScriptReady] = useState(false);
+  const [scriptFailed, setScriptFailed] = useState(false);
 
   useEffect(() => {
     onTokenRef.current = onToken;
@@ -51,8 +52,16 @@ export function TurnstileWidget({ onToken }: TurnstileWidgetProps) {
 
   if (!SITE_KEY) {
     return (
-      <p className="text-xs text-rose-400 font-semibold">
-        Security check isn&apos;t configured (NEXT_PUBLIC_TURNSTILE_SITE_KEY is missing).
+      <p role="alert" className="text-sm text-rose-300 font-semibold">
+        The security check isn&apos;t available right now. Please try again later or email team@hackcc.net.
+      </p>
+    );
+  }
+
+  if (scriptFailed) {
+    return (
+      <p role="alert" className="text-sm text-rose-300 font-semibold">
+        The security check couldn&apos;t load. Please disable ad or script blockers for this page, then reload.
       </p>
     );
   }
@@ -63,6 +72,7 @@ export function TurnstileWidget({ onToken }: TurnstileWidgetProps) {
         src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
         strategy="afterInteractive"
         onReady={() => setScriptReady(true)}
+        onError={() => setScriptFailed(true)}
       />
       <div ref={containerRef} className="min-h-[65px]" />
     </>

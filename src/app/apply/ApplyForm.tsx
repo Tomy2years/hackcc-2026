@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Car, Check, CheckCircle, ChevronDown, Info, Search } from "lucide-react";
@@ -96,7 +96,9 @@ export function ApplyForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
+    getValues,
+    setError,
     setValue,
     trigger,
     formState: { errors }
@@ -112,9 +114,9 @@ export function ApplyForm() {
     mode: "onBlur"
   });
 
-  const selectedCollege = watch("college");
-  const selectedInterests = watch("interests");
-  const selectedSize = watch("tshirtSize");
+  const selectedCollege = useWatch({ control, name: "college" });
+  const selectedInterests = useWatch({ control, name: "interests" });
+  const selectedSize = useWatch({ control, name: "tshirtSize" });
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -134,17 +136,38 @@ export function ApplyForm() {
     if (top < 0) formTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  /**
+   * Validates the current step. The schema's cross-field "Other college needs a name"
+   * rule only runs once every field parses, so it is checked explicitly here; otherwise
+   * step 1 would pass and the final submit would fail on a field that is no longer on screen.
+   */
+  const validateStep = async (step: number) => {
+    const isValid = await trigger(STEP_FIELDS[step] ?? []);
+    if (step === 1 && getValues("college") === OTHER_COLLEGE && !getValues("otherCollege")?.trim()) {
+      setError("otherCollege", { type: "required", message: "Please write in your college name" });
+      return false;
+    }
+    return isValid;
+  };
+
   const handleNext = async () => {
-    const isValid = await trigger(STEP_FIELDS[currentStep] ?? []);
-    if (isValid) goToStep(currentStep + 1);
+    if (await validateStep(currentStep)) goToStep(currentStep + 1);
   };
 
   const handleStepClick = async (stepId: number) => {
     if (stepId < currentStep) {
       goToStep(stepId);
     } else if (stepId === currentStep + 1) {
-      const isValid = await trigger(STEP_FIELDS[currentStep] ?? []);
-      if (isValid) goToStep(stepId);
+      if (await validateStep(currentStep)) goToStep(stepId);
+    }
+  };
+
+  // If the final submit finds an error on an earlier step, take the applicant there.
+  const onInvalid = (formErrors: FieldErrors<RegistrationFormData>) => {
+    const stepWithError = STEPS.find(s => (STEP_FIELDS[s.id] ?? []).some(field => formErrors[field]));
+    if (stepWithError && stepWithError.id !== currentStep) {
+      goToStep(stepWithError.id);
+      setSubmitError(`Something on the "${stepWithError.name}" stop needs another look.`);
     }
   };
 
@@ -158,16 +181,15 @@ export function ApplyForm() {
     setSubmitStage(0);
     setSubmitError(null);
 
-    // Road trip loading phases play while the registration is saved
-    const playStages = (async () => {
-      for (let i = 0; i < SUBMIT_STAGES.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 800));
-        setSubmitStage(i + 1);
-      }
-    })();
+    // Road-trip loading phases tick while the request is in flight, but never delay it.
+    const stageTimer = setInterval(() => {
+      setSubmitStage(stage => Math.min(stage + 1, SUBMIT_STAGES.length - 1));
+    }, 700);
+    const minimumVisible = new Promise(resolve => setTimeout(resolve, 600));
 
     try {
-      const [result] = await Promise.all([submitRegistration(data, turnstileToken), playStages]);
+      const [result] = await Promise.all([submitRegistration(data, turnstileToken), minimumVisible]);
+      setSubmitStage(SUBMIT_STAGES.length);
       if (result.ok) {
         setSubmittedEmail(data.email);
         setView("submitted");
@@ -177,6 +199,7 @@ export function ApplyForm() {
     } catch {
       setSubmitError("We couldn't reach the server. Please check your connection and try again. Your answers are still here.");
     } finally {
+      clearInterval(stageTimer);
       setIsSubmitting(false);
       // Turnstile tokens work once, so every attempt gets a fresh check.
       setTurnstileToken(null);
@@ -386,7 +409,7 @@ export function ApplyForm() {
                   ) : (
                     <motion.form
                       key="form-body"
-                      onSubmit={handleSubmit(onSubmit)}
+                      onSubmit={(e) => void handleSubmit(onSubmit, onInvalid)(e)}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
@@ -462,6 +485,7 @@ export function ApplyForm() {
                                     {...register("phone")}
                                     type="tel"
                                     autoComplete="tel"
+                                    maxLength={30}
                                     placeholder="714-555-0199"
                                     aria-invalid={!!errors.phone}
                                     className={inputClass}
@@ -492,6 +516,20 @@ export function ApplyForm() {
                                       setCollegeQuery("");
                                       setCollegeDropdownOpen(true);
                                     }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Escape") setCollegeDropdownOpen(false);
+                                      // Enter picks the only remaining match (e.g. after typing an acronym)
+                                      if (e.key === "Enter" && collegeDropdownOpen) {
+                                        e.preventDefault();
+                                        const matches = filteredColleges.filter(c => c !== OTHER_COLLEGE);
+                                        if (matches.length === 1) {
+                                          setValue("college", matches[0], { shouldValidate: true });
+                                          setCollegeDropdownOpen(false);
+                                          setCollegeQuery("");
+                                        }
+                                      }
+                                    }}
+                                    aria-invalid={!!errors.college}
                                     className={`${inputClass} pl-11 pr-11`}
                                   />
                                   {selectedCollege && !collegeDropdownOpen ? (
@@ -516,9 +554,11 @@ export function ApplyForm() {
                                       className="absolute left-0 right-0 top-full mt-2 max-h-64 overflow-y-auto bg-sky-900/95 backdrop-blur-xl border border-sky-100/30 rounded-2xl z-50 shadow-2xl shadow-sky-950/70 p-1.5"
                                     >
                                       {filteredColleges.map((college) => (
-                                        <li key={college} role="option" aria-selected={selectedCollege === college}>
+                                        <li key={college} role="presentation">
                                           <button
                                             type="button"
+                                            role="option"
+                                            aria-selected={selectedCollege === college}
                                             onClick={() => {
                                               setValue("college", college);
                                               setCollegeDropdownOpen(false);
@@ -561,6 +601,7 @@ export function ApplyForm() {
                                       type="text"
                                       maxLength={150}
                                       placeholder="Santa Monica College"
+                                      aria-invalid={!!errors.otherCollege}
                                       className={inputClass}
                                     />
                                     <FieldError message={errors.otherCollege?.message} />

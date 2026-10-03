@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { isRegistrationOpen } from "@/lib/registrationGate";
-import { canAccessRegistration } from "./access";
+import { getRegistrationAccess } from "./access";
 import { ApplyForm } from "./ApplyForm";
+import { RegistrationClosed } from "./RegistrationClosed";
 
-export function generateMetadata(): Metadata {
-  return {
-    title: "Register | HackCC 2026",
-    // Keep search engines out while registration is still hidden.
-    robots: isRegistrationOpen() ? undefined : { index: false, follow: false },
-  };
-}
+export const metadata: Metadata = {
+  title: "Register | HackCC 2026",
+  // Not indexed until the team links to it from the main site at launch.
+  robots: { index: false, follow: false },
+};
 
 export default async function ApplyPage() {
-  if (!(await canAccessRegistration())) notFound();
+  const access = await getRegistrationAccess();
+  if (access === "hidden") notFound();
+  if (access === "closed") return <RegistrationClosed />;
 
   return <ApplyForm />;
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Mail, Users, Terminal, Sparkles, Megaphone, Handshake, HeartHandshake } from "lucide-react";
+import { ArrowLeft, Mail, Users, Terminal, Megaphone, Handshake, HeartHandshake } from "lucide-react";
 import hackccIcon from "../../../../public/images/hackcc-icon.png";
 
 const SCENIC_BG = "/assets/roadtrip/organizers/coastal-overlook.jpeg";

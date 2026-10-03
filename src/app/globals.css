@@ -18,6 +18,8 @@
 
   --font-bagel: var(--font-bagel), "Bagel Fat One", cursive;
   --font-mont: var(--font-montserrat-alternates), "Montserrat Alternates", sans-serif;
+  --font-geist: var(--font-geist-sans), sans-serif;
+  --font-fraunces: var(--font-fraunces), serif;
 
   --animate-bobbing: bob 8s linear infinite;
   --animate-swaying: sway 8s linear infinite;
@@ -134,43 +136,97 @@ body {
 .cartoony-title {
   font-family: var(--font-bagel), "Bagel Fat One", cursive, sans-serif;
   color: #ffffff;
-  text-shadow: 0 4px 0 #2D18A8, 0 8px 16px rgba(2, 20, 66, 0.4);
+  text-shadow: 0 4px 0 #2D18A8, 0 8px 24px rgba(2, 20, 66, 0.7);
   letter-spacing: 0.02em;
+}
+
+.cartoony-subtitle {
+  font-family: var(--font-bagel), "Bagel Fat One", cursive, sans-serif;
+  color: #FBFA74;
+  text-shadow: 0 3px 0 #021442, 0 6px 16px rgba(2, 20, 66, 0.6);
+  letter-spacing: 0.01em;
+}
+
+/* Minimalist & Clean Hybrid Typography Options */
+.minimal-title {
+  font-family: var(--font-geist), var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65);
+}
+
+.clean-bagel {
+  font-family: var(--font-bagel), "Bagel Fat One", cursive, sans-serif;
+  color: #ffffff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+  letter-spacing: 0.01em;
+}
+
+.glass-obsidian {
+  background-color: rgba(15, 23, 42, 0.70);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+/* Background Dimming Scrim Utilities for High Contrast */
+.scrim-daytime {
+  background: linear-gradient(
+    180deg,
+    rgba(2, 20, 66, 0.50) 0%,
+    rgba(2, 20, 66, 0.35) 45%,
+    rgba(2, 20, 66, 0.75) 100%
+  );
+}
+
+.scrim-dark {
+  background-color: rgba(2, 20, 66, 0.45);
+}
+
+.scrim-vignette {
+  background: radial-gradient(
+    circle at center,
+    rgba(2, 20, 66, 0.25) 0%,
+    rgba(2, 20, 66, 0.65) 100%
+  );
 }
 
 /* Card & Container Utilities */
 .card-roadtrip {
-  background-color: rgba(46, 24, 138, 0.45);
+  background-color: rgba(46, 24, 138, 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 2px solid rgba(251, 250, 116, 0.25);
+  border: 2px solid rgba(251, 250, 116, 0.35);
   border-radius: 1.5rem;
   padding: 1.5rem;
-  box-shadow: 0 10px 30px rgba(2, 20, 66, 0.3);
+  box-shadow: 0 10px 30px rgba(2, 20, 66, 0.4);
   transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .card-roadtrip:hover {
   transform: translateY(-4px);
-  border-color: rgba(251, 250, 116, 0.6);
-  box-shadow: 0 16px 40px rgba(2, 20, 66, 0.45);
+  border-color: rgba(251, 250, 116, 0.75);
+  box-shadow: 0 16px 40px rgba(2, 20, 66, 0.55);
 }
 
 .glass-panel {
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(2, 20, 66, 0.60);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 1rem;
 }
 
 .sunset-card {
-  background: linear-gradient(135deg, rgba(166, 73, 226, 0.3) 0%, rgba(45, 24, 168, 0.5) 100%);
+  background: linear-gradient(135deg, rgba(166, 73, 226, 0.45) 0%, rgba(45, 24, 168, 0.65) 100%);
   backdrop-filter: blur(12px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.25);
   border-radius: 1.5rem;
   padding: 1.5rem;
-  box-shadow: 0 12px 32px rgba(2, 20, 66, 0.35);
+  box-shadow: 0 12px 32px rgba(2, 20, 66, 0.45);
 }
 
 /* Button Classes */

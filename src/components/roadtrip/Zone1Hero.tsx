@@ -8,6 +8,7 @@ import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-mot
 const DAY_BG = "/assets/roadtrip/zone1-hero/hero-background.jpeg";
 const NIGHT_BG = "/assets/roadtrip/zone1-hero/hero-background-night.jpeg";
 const HACKCC_SIGN = "/assets/roadtrip/zone1-hero/HackCC-sign.png";
+const DATE_SIGN = "/assets/roadtrip/zone1-hero/date-sign.png";
 
 export default function Zone1Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -46,7 +47,7 @@ export default function Zone1Hero() {
   return (
     <section ref={sectionRef} id="zone-hero" className="relative h-[200vh] w-full bg-slate-950">
       {/* Sticky Pinned Viewport Container */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-between overflow-hidden pt-24">
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
         {/* Background Image Layer 1: Daytime Hills */}
         <motion.div className="absolute inset-0 z-0" style={{ opacity: dayOpacity }}>
           <Image
@@ -56,8 +57,8 @@ export default function Zone1Hero() {
             className="object-cover object-center"
             priority
           />
-          {/* Soft day lighting gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-amber-500/10 via-transparent to-slate-950/60" />
+          {/* Subtle bottom edge transition only (preserves bright natural sky) */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/50" />
         </motion.div>
 
         {/* Background Image Layer 2: Nighttime Hills (contains moon) */}
@@ -69,8 +70,8 @@ export default function Zone1Hero() {
             className="object-cover object-center"
             priority
           />
-          {/* Night atmosphere gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/40 via-transparent to-slate-950/80" />
+          {/* Natural night atmosphere gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/70" />
         </motion.div>
 
         {/* Setting Sun (Arcs to the right & sets into city skyline horizon) */}
@@ -90,20 +91,32 @@ export default function Zone1Hero() {
           <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 via-[#FBFA74] to-yellow-100 shadow-[0_0_60px_rgba(251,250,116,0.9)] border-2 border-amber-200/80" />
         </motion.div>
 
-        {/* Spacer to position sign onto the middle slope of the hill */}
-        <div className="relative z-10 flex-1" />
+        {/* HackCC Sign & Date Sign Image Layer - Centered consistently on hill across all screen sizes */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4 sm:px-8">
+          <div className="w-full max-w-2xl sm:max-w-4xl md:max-w-4xl [transform:rotate(-1.4deg)_skewY(-0.8deg)] drop-shadow-[0_16px_32px_rgba(0,0,0,0.7)] flex flex-col items-center">
+            {/* Main HackCC 2026 Sign */}
+            <div className="w-full">
+              <Image
+                src={HACKCC_SIGN}
+                alt="HackCC Hollywood Sign"
+                width={2560}
+                height={1440}
+                className="w-full h-auto object-contain mx-auto"
+                priority
+              />
+            </div>
 
-        {/* HackCC Sign Image Layer */}
-        <div className="relative z-10 w-full mb-27 sm:mb-52 pointer-events-none flex justify-center px-4 sm:px-8">
-          <div className="w-full max-w-2xl sm:max-w-4xl md:max-w-4xl [transform:rotate(-1.4deg)_skewY(-0.8deg)] drop-shadow-[0_16px_32px_rgba(0,0,0,0.7)]">
-            <Image
-              src={HACKCC_SIGN}
-              alt="HackCC Hollywood Sign"
-              width={1400}
-              height={450}
-              className="w-full h-auto object-contain mx-auto"
-              priority
-            />
+            {/* Date Sign (November 14-15) directly underneath */}
+            <div className="w-3/4 sm:w-[70%] -mt-[31%] sm:-mt-[31%]">
+              <Image
+                src={DATE_SIGN}
+                alt="HackCC Event Dates: November 14-15"
+                width={2560}
+                height={1440}
+                className="w-full h-auto object-contain mx-auto"
+                priority
+              />
+            </div>
           </div>
         </div>
 

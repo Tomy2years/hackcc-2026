@@ -1,36 +1,20 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowLeft, 
-  ArrowRight, 
-  Car,
-  Check,
-  CheckCircle,
-  Info,
-  Search,
-  Sparkles
-} from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import { ArrowLeft, Car, Check, CheckCircle, ChevronDown, Info, Search } from "lucide-react";
 import { CALIFORNIA_COMMUNITY_COLLEGES } from "./colleges";
-import { INTEREST_OPTIONS, OTHER_COLLEGE, registrationSchema, type RegistrationFormData } from "./schema";
+import { INTEREST_OPTIONS, OTHER_COLLEGE, TSHIRT_SIZES, registrationSchema, type RegistrationFormData } from "./schema";
 import { submitRegistration } from "./actions";
 import { RegistrationReceivedCard } from "./RegistrationReceivedCard";
 import { TurnstileWidget } from "./TurnstileWidget";
+import hackccIcon from "../../../public/images/hackcc-icon.png";
 
-// Top-Level Cloud & Illustration Imports from Archive 2026
-import cloudL from "@2026-public/Purple Cloud Cluster 2.webp";
-import cloudR from "@2026-public/Pink Cloud Cluster 4.webp";
-import cloudCat from "@2026-public/Cat Cloud.webp";
-import moon from "@2026-public/Moon.webp";
-import hotAirBalloon from "@2026-public/Hot Air Balloon.webp";
-import balloonCat from "@2026-public/Balloon Cat.webp";
-import shootingStar from "@2026-public/Shooting Star.webp";
+const SCENIC_BG = "/assets/roadtrip/zone6-cta-footer/San-Diego-Beach.jpg";
 
 // Fields checked before moving past each step
 const STEP_FIELDS: Record<number, (keyof RegistrationFormData)[]> = {
@@ -39,25 +23,60 @@ const STEP_FIELDS: Record<number, (keyof RegistrationFormData)[]> = {
   3: ["tshirtSize"],
 };
 
-type ApplyView = "form" | "submitted";
-
-// Steps enumeration
 const STEPS = [
-  { id: 1, name: "Basic Info", icon: "🚦" },
-  { id: 2, name: "Experience", icon: "🗺️" },
-  { id: 3, name: "Logistics", icon: "🎒" },
-  { id: 4, name: "Consent", icon: "🛣️" }
+  { id: 1, name: "Basic Info", title: "Driver Details", hook: "First, a little about who's behind the wheel" },
+  { id: 2, name: "Experience", title: "Plot Your Route", hook: "Pick the roads you want to explore this trip" },
+  { id: 3, name: "Logistics", title: "Pack the Car", hook: "Swag sizes and snacks for the journey" },
+  { id: 4, name: "Consent", title: "Buckle Up", hook: "A few ground rules before we hit the highway" },
 ];
 
+const SUBMIT_STAGES = [
+  "Fueling up the engine...",
+  "Checking tire pressure...",
+  "Plotting route to Orange Coast College...",
+  "Ready for departure!",
+];
 
-// This generate an Acronym from the College Names listed in the lists
-const getCollegeAcronym =(college: string) => {
-  return college.split(/\s+/)
-  .map((word) => word [0] )
-  .join("")
-  .toLowerCase();
-};
+// Smooth deceleration shared by every transition on the page
+const EASE = [0.22, 1, 0.36, 1] as const;
 
+type ApplyView = "form" | "submitted";
+
+const inputClass =
+  "w-full bg-sky-950/45 border border-sky-100/30 rounded-xl px-4 py-3 text-sm sm:text-base font-medium text-white placeholder:text-sky-100/55 outline-none transition-all duration-200 hover:border-sky-100/60 focus:border-amber-400 focus:ring-4 focus:ring-amber-400/15";
+const labelClass = "block text-xs font-bold uppercase tracking-wider text-sky-50 mb-2";
+const errorClass = "text-xs sm:text-sm text-rose-300 font-semibold mt-1.5";
+
+function FieldError({ message }: { message?: string }) {
+  return (
+    <AnimatePresence initial={false}>
+      {message && (
+        <motion.p
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.2, ease: EASE }}
+          role="alert"
+          className={errorClass}
+        >
+          {message}
+        </motion.p>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// Themed checkbox: the real input stays (visually hidden) right before this as its `peer`
+function CheckMark() {
+  return (
+    <span
+      aria-hidden
+      className="mt-0.5 w-6 h-6 shrink-0 rounded-lg border-2 border-sky-50/80 bg-sky-950/40 shadow-md shadow-black/40 flex items-center justify-center transition-all duration-200 group-hover:border-amber-300 peer-checked:bg-amber-400 peer-checked:border-amber-400 peer-checked:[&>svg]:opacity-100 peer-checked:[&>svg]:scale-100 peer-focus-visible:ring-4 peer-focus-visible:ring-amber-400/30"
+    >
+      <Check className="w-4 h-4 stroke-[3.5] text-slate-950 opacity-0 scale-50 transition-all duration-200" />
+    </span>
+  );
+}
 
 export function ApplyForm() {
   const [view, setView] = useState<ApplyView>("form");
@@ -72,8 +91,8 @@ export function ApplyForm() {
   const [collegeDropdownOpen, setCollegeDropdownOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const formTopRef = useRef<HTMLDivElement>(null);
 
-  // Initialize form
   const {
     register,
     handleSubmit,
@@ -95,6 +114,7 @@ export function ApplyForm() {
 
   const selectedCollege = watch("college");
   const selectedInterests = watch("interests");
+  const selectedSize = watch("tshirtSize");
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -107,25 +127,26 @@ export function ApplyForm() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle Next step validation
+  // Bring the stepper back into view when the step changes on a scrolled page
+  const goToStep = (step: number) => {
+    setCurrentStep(step);
+    const top = formTopRef.current?.getBoundingClientRect().top ?? 0;
+    if (top < 0) formTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const handleNext = async () => {
     const isValid = await trigger(STEP_FIELDS[currentStep] ?? []);
-    if (isValid) {
-      setCurrentStep(prev => prev + 1);
+    if (isValid) goToStep(currentStep + 1);
+  };
+
+  const handleStepClick = async (stepId: number) => {
+    if (stepId < currentStep) {
+      goToStep(stepId);
+    } else if (stepId === currentStep + 1) {
+      const isValid = await trigger(STEP_FIELDS[currentStep] ?? []);
+      if (isValid) goToStep(stepId);
     }
   };
-
-  const handlePrev = () => {
-    setCurrentStep(prev => prev - 1);
-  };
-
-  // Form submission loading stages sequence
-  const submitStagesTexts = [
-    "Fueling up the engine... ⛽",
-    "Checking tire pressure... 🛞",
-    "Plotting route to Orange Coast College... 🗺️",
-    "Ready for departure! 🏎️"
-  ];
 
   const onSubmit = async (data: RegistrationFormData) => {
     if (!turnstileToken) {
@@ -137,9 +158,9 @@ export function ApplyForm() {
     setSubmitStage(0);
     setSubmitError(null);
 
-    // Road trip loading phases play while the application is saved
+    // Road trip loading phases play while the registration is saved
     const playStages = (async () => {
-      for (let i = 0; i < submitStagesTexts.length; i++) {
+      for (let i = 0; i < SUBMIT_STAGES.length; i++) {
         await new Promise(resolve => setTimeout(resolve, 800));
         setSubmitStage(i + 1);
       }
@@ -163,647 +184,622 @@ export function ApplyForm() {
     }
   };
 
-  // Autocomplete filtering logic
-  // const filteredCollege = [
-  //   ...CALIFORNIA_COMMUNITY_COLLEGES.filter(college =>
-  //     college.toLowerCase().includes(collegeQuery.toLowerCase())
-  //   ),
-  //   "Other / Not Listed"
-  // ];
-
-
-  // College filtering with both Name and Acronym search
+  // College filtering with both name and acronym search
   const filteredColleges = [
     ...CALIFORNIA_COMMUNITY_COLLEGES.filter((college) => {
       const query = collegeQuery.toLowerCase().trim();
+      if (!query) return true;
 
-      if (!query) return true; 
-
-      // Normal name search
       const matchesName = college.toLowerCase().includes(query);
-
-      // Create Acronym form the college name 
       const acronym = college
         .split(/\s+/)
         .map((word) => word.replace(/[^a-zA-Z]/g, ""))
         .filter(Boolean)
         .map((word) => word[0])
         .join("")
-        .toLowerCase(); 
+        .toLowerCase();
 
-        const matchesAcronym = acronym.startsWith(query);
-
-        return matchesName || matchesAcronym;
-
+      return matchesName || acronym.startsWith(query);
     }),
     OTHER_COLLEGE
   ];
 
+  const step = STEPS[currentStep - 1];
+
   return (
-    <main className="min-h-screen bg-[#2D18A8] text-white font-body p-4 sm:p-6 md:p-12 relative overflow-hidden flex items-center justify-center">
-      {/* Background Glow Elements */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#A649E2]/30 rounded-full blur-3xl pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#FBFA74]/20 rounded-full blur-3xl pointer-events-none z-0" />
-
-      {/* Floating Cloud Assets for richer visual aesthetic */}
-      <div className="absolute top-4 -left-10 sm:-left-20 w-48 sm:w-72 md:w-96 h-auto opacity-70 animate-swaying pointer-events-none z-0">
-        <Image src={cloudL} alt="Purple Cloud Cluster" className="w-full h-auto" />
-      </div>
-      <div className="absolute top-24 -right-10 sm:-right-20 w-48 sm:w-72 md:w-96 h-auto opacity-70 animate-inverseswaying pointer-events-none z-0">
-        <Image src={cloudR} alt="Pink Cloud Cluster" className="w-full h-auto" />
-      </div>
-      <div className="absolute bottom-10 -left-10 w-40 sm:w-60 h-auto opacity-40 animate-bobbing pointer-events-none z-0">
-        <Image src={cloudCat} alt="Cat Cloud" className="w-full h-auto" />
+    <main className="relative min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950 overflow-x-hidden">
+      {/* Scenic Background with subtle luminous blend */}
+      <div className="fixed inset-0 z-0 w-full h-full overflow-hidden">
+        <Image
+          src={SCENIC_BG}
+          alt="San Diego beach at sunset"
+          fill
+          priority
+          className="object-cover object-center scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/40 to-slate-950/85 pointer-events-none" />
       </div>
 
-      {/* Retro Sky & Whimsical Illustration Assets for the Road Trip theme */}
-      <div className="absolute top-10 right-10 w-24 sm:w-36 h-auto opacity-80 pointer-events-none z-0">
-        <Image src={moon} alt="Cozy Cartoon Moon" className="w-full h-auto" />
-      </div>
-      <div className="absolute top-[18%] left-[2%] sm:left-[5%] w-20 sm:w-32 h-auto opacity-70 animate-bobbing pointer-events-none z-0">
-        <Image src={hotAirBalloon} alt="Whimsical Hot Air Balloon" className="w-full h-auto" />
-      </div>
-      <div className="absolute bottom-[20%] right-[2%] sm:right-[5%] w-24 sm:w-36 h-auto opacity-75 animate-swaying pointer-events-none z-0">
-        <Image src={balloonCat} alt="Playful Balloon Cat" className="w-full h-auto" />
-      </div>
-      <div className="absolute top-12 left-1/3 w-16 sm:w-28 h-auto opacity-40 pointer-events-none z-0">
-        <Image src={shootingStar} alt="Shooting Star" className="w-full h-auto" />
-      </div>
+      {/* Top Navigation Bar */}
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-950/40 border-b border-sky-100/25 px-4 sm:px-6 lg:px-8 py-3.5">
+        <div className="w-full flex items-center justify-between gap-4">
+          <Link
+            href="/"
+            className="group inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-sm"
+          >
+            <ArrowLeft className="w-4 h-4 text-amber-400 transition-transform group-hover:-translate-x-1" />
+            <span>Back to main site</span>
+          </Link>
 
-      <div className="max-w-3xl w-full relative z-10 space-y-8 my-8">
-        
-        {/* Navigation & Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <Button variant="secondary" href="/" size="sm" className="inline-flex items-center gap-2 border-white/20">
-            <ArrowLeft className="w-4 h-4 text-[#FBFA74]" />
-            <span>Back to Home</span>
-          </Button>
-          <div className="flex items-center gap-2">
-            <Badge variant="vibrant">Registration Portal</Badge>
+          <div className="flex items-center gap-2.5">
+            <Image src={hackccIcon} alt="HackCC Logo" width={36} height={36} className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
+            <span className="font-heading text-base sm:text-lg tracking-wider text-amber-400 hidden sm:inline-block">
+              HACKCC 2026
+            </span>
           </div>
         </div>
+      </header>
 
+      <div className="relative z-10 w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-24">
         <AnimatePresence mode="wait">
           {view === "submitted" ? (
-            // Success Postcard
             <motion.div
-              key="success-card"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              key="success"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: EASE }}
             >
               <RegistrationReceivedCard email={submittedEmail} />
             </motion.div>
-          ) : isSubmitting ? (
-            // Full Form Loader State
-            <motion.div
-              key="loading-card"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="min-h-[400px] flex flex-col items-center justify-center text-center space-y-6 bg-slate-900/60 border border-white/10 backdrop-blur-xl rounded-3xl p-8"
-            >
-              <div className="relative w-28 h-28 flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-4 border-white/10 border-t-[#FBFA74] animate-spin" />
-                <Car className="w-12 h-12 text-[#FBFA74] animate-pulse" />
-              </div>
-              <h2 className="text-2xl font-heading text-[#FBFA74]">Securing Your Application</h2>
-              
-              <div className="h-8 flex items-center justify-center">
-                <AnimatePresence mode="wait">
-                  <motion.p
-                    key={submitStage}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-slate-300 font-semibold"
-                  >
-                    {submitStagesTexts[submitStage] || submitStagesTexts[0]}
-                  </motion.p>
-                </AnimatePresence>
-              </div>
-
-              {/* Highway progress */}
-              <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-[#FBFA74] to-[#A649E2] transition-all duration-300"
-                  style={{ width: `${(submitStage / submitStagesTexts.length) * 100}%` }}
-                />
-              </div>
-            </motion.div>
           ) : (
-            // Standard Form Container
             <motion.div
-              key="form-card"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
+              key="form"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.5, ease: EASE }}
             >
-              <div className="space-y-6">
-                
-                {/* Form Title Heading */}
-                <div className="text-center md:text-left space-y-2">
-                  <h1 className="text-4xl sm:text-5xl cartoony-title">
-                    HackCC 2026 Registration
-                  </h1>
-                  <p className="text-slate-200 text-sm font-medium">
-                    Fast, low-barrier, and highly secure. Secure your spot on the coastal road trip!
-                  </p>
-                </div>
+              {/* Hero: Unboxed Typography */}
+              <div className="text-center mb-12 sm:mb-14">
+                <p className="font-serif italic text-amber-200/95 text-lg sm:text-2xl font-light tracking-wide mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
+                  Your road trip starts here
+                </p>
+                <h1 className="font-heading text-4xl sm:text-6xl md:text-7xl text-white leading-[1.08] tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
+                  REGISTER FOR HACKCC
+                </h1>
 
-                {/* Road Trip Dotted Highway Progress Bar */}
-                <div className="bg-[#2a179c]/80 border border-white/10 backdrop-blur-md rounded-2xl p-5 relative overflow-hidden">
-                  
-                  {/* Road Asphalt Path Background */}
-                  <div className="h-1 bg-slate-700 w-full absolute top-[34px] left-0 right-0 z-0 border-t border-dashed border-slate-600/30" />
-                  
-                  {/* Road Trip Car Indicator Progress Line */}
-                  <div 
-                    className="h-1 bg-gradient-to-r from-[#FBFA74] via-rose-400 to-[#A649E2] absolute top-[34px] left-0 z-0 transition-all duration-500 ease-out" 
-                    style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
-                  />
-
-                  {/* Little car driver moving along the highway */}
-                  <div 
-                    className="absolute top-[18px] z-10 transition-all duration-500 ease-out hidden sm:block"
-                    style={{ left: `calc(${((currentStep - 1) / 3) * 90}% + 20px)` }}
-                  >
-                    <div className="text-xl animate-bounce">🚗</div>
+                {/* Borderless key facts */}
+                <div className="grid grid-cols-3 max-w-md mx-auto mt-9 pt-7 border-t border-white/30">
+                  <div>
+                    <div className="font-heading text-2xl sm:text-4xl text-amber-400 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">FREE</div>
+                    <div className="text-[11px] sm:text-sm font-black uppercase tracking-wider text-white mt-1 [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_2px_10px_rgba(0,0,0,0.8)]">To Attend</div>
                   </div>
+                  <div className="border-x border-white/30">
+                    <div className="font-heading text-2xl sm:text-4xl text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">5 MIN</div>
+                    <div className="text-[11px] sm:text-sm font-black uppercase tracking-wider text-white mt-1 [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_2px_10px_rgba(0,0,0,0.8)]">To Apply</div>
+                  </div>
+                  <div>
+                    <div className="font-heading text-2xl sm:text-4xl text-amber-400 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">4</div>
+                    <div className="text-[11px] sm:text-sm font-black uppercase tracking-wider text-white mt-1 [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_2px_10px_rgba(0,0,0,0.8)]">Quick Stops</div>
+                  </div>
+                </div>
+              </div>
 
-                  {/* Steps Icons & Text Layout */}
-                  <div className="grid grid-cols-4 relative z-20">
-                    {STEPS.map((step) => {
-                      const isActive = step.id === currentStep;
-                      const isCompleted = step.id < currentStep;
-                      
-                      return (
+              {/* Route Progress */}
+              <div ref={formTopRef} className="scroll-mt-24 mb-8">
+                <ol className="flex items-start">
+                  {STEPS.map((s) => {
+                    const isActive = s.id === currentStep;
+                    const isCompleted = s.id < currentStep;
+                    const isReachable = s.id <= currentStep + 1;
+
+                    return (
+                      <li key={s.id} className="relative flex-1 flex flex-col items-center">
+                        {/* Road segment leading into this stop */}
+                        {s.id > 1 && (
+                          <div className="absolute top-[18px] right-1/2 w-full h-1 rounded-full bg-white/35 shadow-[0_1px_6px_rgba(0,0,0,0.6)] overflow-hidden" aria-hidden>
+                            <motion.div
+                              className="h-full bg-amber-400 origin-left"
+                              initial={false}
+                              animate={{ scaleX: s.id <= currentStep ? 1 : 0 }}
+                              transition={{ duration: 0.5, ease: EASE }}
+                            />
+                          </div>
+                        )}
+
                         <button
                           type="button"
-                          key={step.id}
-                          onClick={async () => {
-                            // Only allow navigating back or to steps already completed
-                            if (step.id < currentStep) {
-                              setCurrentStep(step.id);
-                            } else if (step.id > currentStep) {
-                              // If trying to skip forward, trigger validation on current step
-                              const isValid = await trigger(STEP_FIELDS[currentStep] ?? []);
-                              if (isValid && step.id === currentStep + 1) {
-                                setCurrentStep(step.id);
-                              }
-                            }
-                          }}
-                          className="flex flex-col items-center text-center focus:outline-none group cursor-pointer"
+                          onClick={() => handleStepClick(s.id)}
+                          disabled={!isReachable || isSubmitting}
+                          aria-current={isActive ? "step" : undefined}
+                          aria-label={`Step ${s.id}: ${s.name}`}
+                          className="relative z-10 flex flex-col items-center gap-2 group cursor-pointer disabled:cursor-default"
                         >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 border-2 ${
-                            isActive 
-                              ? "bg-[#FBFA74] text-[#021442] border-[#FBFA74] scale-110 shadow-lg"
-                              : isCompleted
-                                ? "bg-[#A649E2] text-white border-[#A649E2] shadow-sm"
-                                : "bg-slate-900/60 text-slate-400 border-slate-700"
-                          }`}>
-                            {isCompleted ? <Check className="w-4 h-4 stroke-[3]" /> : step.id}
-                          </div>
-                          
-                          <span className={`text-[10px] sm:text-xs font-bold mt-2 tracking-wide transition-all ${
-                            isActive ? "text-[#FBFA74]" : isCompleted ? "text-purple-300" : "text-slate-400"
-                          }`}>
-                            {step.name}
+                          <motion.span
+                            initial={false}
+                            animate={{ scale: isActive ? 1.1 : 1 }}
+                            transition={{ duration: 0.3, ease: EASE }}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-black border-2 shadow-lg shadow-black/50 transition-colors duration-300 ${
+                              isActive
+                                ? "bg-amber-400 border-white text-slate-950"
+                                : isCompleted
+                                  ? "bg-sky-950 border-amber-400 text-amber-400"
+                                  : "bg-sky-950 border-sky-50/80 text-white"
+                            }`}
+                          >
+                            {isActive ? <Car className="w-5 h-5" /> : isCompleted ? <Check className="w-4 h-4 stroke-[3]" /> : s.id}
+                          </motion.span>
+                          <span
+                            className={`text-xs sm:text-base font-black tracking-wide transition-colors duration-300 [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_2px_10px_rgba(0,0,0,0.8)] ${
+                              isActive ? "text-amber-300" : isCompleted ? "text-white group-hover:text-amber-300" : "text-white/90"
+                            }`}
+                          >
+                            {s.name}
                           </span>
                         </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
 
-                {/* Form Body Frame */}
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  
-                  {/* Step Panels Container */}
-                  <div className="bg-slate-900/40 border border-white/10 backdrop-blur-md rounded-3xl p-6 sm:p-8 min-h-[350px] flex flex-col justify-between">
-                    
-                    <AnimatePresence mode="wait">
-                      {/* STEP 1: Pit Stop - Basic Info */}
-                      {currentStep === 1 && (
+              {/* Form Panel */}
+              <div className="relative bg-gradient-to-b from-sky-400/35 via-sky-700/45 to-sky-900/60 backdrop-blur-xl backdrop-saturate-150 border border-sky-100/40 rounded-3xl p-6 sm:p-9 shadow-2xl shadow-sky-950/50">
+                <AnimatePresence mode="wait" initial={false}>
+                  {isSubmitting ? (
+                    <motion.div
+                      key="submitting"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3, ease: EASE }}
+                      className="min-h-[380px] flex flex-col items-center justify-center text-center gap-6"
+                    >
+                      <div className="relative w-24 h-24 flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-full border-4 border-sky-100/25 border-t-amber-400 animate-spin" />
+                        <Car className="w-10 h-10 text-amber-400" />
+                      </div>
+                      <h2 className="font-heading text-2xl sm:text-3xl text-white">Saving Your Seat</h2>
+                      <div className="h-7">
+                        <AnimatePresence mode="wait">
+                          <motion.p
+                            key={submitStage}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -8 }}
+                            transition={{ duration: 0.25, ease: EASE }}
+                            className="font-serif italic text-amber-200/95 text-lg"
+                          >
+                            {SUBMIT_STAGES[Math.min(submitStage, SUBMIT_STAGES.length - 1)]}
+                          </motion.p>
+                        </AnimatePresence>
+                      </div>
+                      <div className="w-56 h-1 bg-white/10 rounded-full overflow-hidden">
                         <motion.div
-                          key="step1"
-                          initial={{ x: 30, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          exit={{ x: -30, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="space-y-5"
+                          className="h-full bg-amber-400"
+                          initial={false}
+                          animate={{ width: `${(submitStage / SUBMIT_STAGES.length) * 100}%` }}
+                          transition={{ duration: 0.6, ease: EASE }}
+                        />
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.form
+                      key="form-body"
+                      onSubmit={handleSubmit(onSubmit)}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3, ease: EASE }}
+                      noValidate
+                    >
+                      {/* Step Heading */}
+                      <AnimatePresence mode="wait" initial={false}>
+                        <motion.div
+                          key={`heading-${currentStep}`}
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          transition={{ duration: 0.25, ease: EASE }}
+                          className="mb-7 pb-6 border-b border-sky-100/25"
                         >
-                          <div className="border-b border-white/10 pb-3 flex items-center gap-2 mb-4">
-                            <span className="text-2xl">🚦</span>
-                            <div>
-                              <h2 className="text-xl font-heading text-white">Basic Info: Driver Details</h2>
-                              <p className="text-xs text-slate-300">Let's gather some basic parameters to identify your application.</p>
-                            </div>
+                          <div className="text-xs font-bold uppercase tracking-[0.2em] text-amber-400 mb-2">
+                            Stop {currentStep} of {STEPS.length}
                           </div>
+                          <h2 className="font-heading text-2xl sm:text-4xl text-white tracking-wide">{step.title}</h2>
+                          <p className="font-serif italic text-amber-200/90 text-base sm:text-lg font-light mt-1.5">{step.hook}</p>
+                        </motion.div>
+                      </AnimatePresence>
 
-                          {/* Name, Email & Phone Grid */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Full Name */}
-                            <div className="space-y-1">
-                              <label htmlFor="apply-name" className="text-xs font-bold uppercase tracking-wider text-slate-200">Full Name</label>
-                              <input
-                                id="apply-name"
-                                {...register("name")}
-                                type="text"
-                                autoComplete="name"
-                                maxLength={100}
-                                placeholder="Sandy Cheeks"
-                                className="w-full bg-slate-950/80 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-semibold text-white focus:outline-none focus:border-[#FBFA74] transition"
-                              />
-                              {errors.name && (
-                                <p className="text-xs text-rose-400 font-semibold">{errors.name.message}</p>
-                              )}
-                            </div>
-
-                            {/* Email */}
-                            <div className="space-y-1">
-                              <label htmlFor="apply-email" className="text-xs font-bold uppercase tracking-wider text-slate-200">Email Address</label>
-                              <input
-                                id="apply-email"
-                                {...register("email")}
-                                type="email"
-                                inputMode="email"
-                                autoComplete="email"
-                                maxLength={254}
-                                placeholder="sandy@beach.edu"
-                                className="w-full bg-slate-950/80 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-semibold text-white focus:outline-none focus:border-[#FBFA74] transition"
-                              />
-                              {errors.email && (
-                                <p className="text-xs text-rose-400 font-semibold">{errors.email.message}</p>
-                              )}
-                            </div>
-
-                            {/* Phone */}
-                            <div className="space-y-1">
-                              <label htmlFor="apply-phone" className="text-xs font-bold uppercase tracking-wider text-slate-200">Phone Number</label>
-                              <input
-                                id="apply-phone"
-                                {...register("phone")}
-                                autoComplete="tel"
-                                type="tel"
-                                placeholder="714-555-0199"
-                                className="w-full bg-slate-950/80 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-semibold text-white focus:outline-none focus:border-[#FBFA74] transition"
-                              />
-                              {errors.phone && (
-                                <p className="text-xs text-rose-400 font-semibold">{errors.phone.message}</p>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Community College Autocomplete Selector */}
-                          <div className="space-y-1 relative" ref={dropdownRef}>
-                            <label className="text-xs font-bold uppercase tracking-wider text-slate-200">California Community College</label>
-                            
-                            <div className="relative">
-                              <input
-                                type="text"
-                                placeholder="Search & Select College..."
-                                value={collegeDropdownOpen ? collegeQuery : (selectedCollege || "")}
-                                onChange={(e) => {
-                                  setCollegeQuery(e.target.value);
-                                  setCollegeDropdownOpen(true);
-                                }}
-                                onFocus={() => {
-                                  setCollegeQuery("");
-                                  setCollegeDropdownOpen(true);
-                                }}
-                                className="w-full bg-slate-950/80 border border-white/20 rounded-xl pl-10 pr-4 py-2.5 text-sm font-semibold text-white focus:outline-none focus:border-[#FBFA74] transition"
-                              />
-                              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-                              
-                              {selectedCollege && !collegeDropdownOpen && (
-                                <CheckCircle className="w-4 h-4 text-green-400 absolute right-3.5 top-3.5" />
-                              )}
-                            </div>
-
-                            {errors.college && (
-                              <p className="text-xs text-rose-400 font-semibold">{errors.college.message}</p>
-                            )}
-
-                            {/* Dropdown panel */}
-                            {collegeDropdownOpen && (
-                              <div className="absolute left-0 right-0 mt-1 max-h-56 overflow-y-auto bg-slate-950 border border-white/20 rounded-xl z-50 shadow-2xl p-1 divide-y divide-white/5 scrollbar-thin scrollbar-thumb-white/10">
-                                {filteredColleges.length > 0 ? (
-                                  filteredColleges.map((college, idx) => (
-                                    <button
-                                      type="button"
-                                      key={idx}
-                                      onClick={() => {
-                                        setValue("college", college);
-                                        setCollegeDropdownOpen(false);
-                                        setCollegeQuery("");
-                                        trigger("college");
-                                      }}
-                                      className={`w-full text-left px-3 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-colors cursor-pointer flex items-center justify-between ${
-                                        selectedCollege === college 
-                                          ? "bg-[#FBFA74] text-[#021442]" 
-                                          : "hover:bg-white/10 text-white"
-                                      }`}
-                                    >
-                                      <span>{college}</span>
-                                      {selectedCollege === college && <Check className="w-4 h-4 stroke-[3]" />}
-                                    </button>
-                                  ))
-                                ) : (
-                                  <div className="p-3 text-xs text-slate-400 text-center font-medium">
-                                    No colleges match. Select "Other / Not Listed" to enter manually.
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Fallback Manual write-in for Other College */}
-                          {selectedCollege === OTHER_COLLEGE && (
+                      <div className="min-h-[300px]">
+                        <AnimatePresence mode="wait" initial={false}>
+                          {/* STEP 1: Basic Info */}
+                          {currentStep === 1 && (
                             <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              className="space-y-1 overflow-hidden"
+                              key="step1"
+                              initial={{ opacity: 0, x: 24 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -24 }}
+                              transition={{ duration: 0.3, ease: EASE }}
+                              className="space-y-5"
                             >
-                              <label className="text-xs font-bold uppercase tracking-wider text-slate-200">Please Specify School Name</label>
-                              <input
-                                {...register("otherCollege")}
-                                type="text"
-                                maxLength={150}
-                                placeholder="Santa Monica College"
-                                className="w-full bg-slate-950/80 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-semibold text-white focus:outline-none focus:border-[#FBFA74] transition"
-                              />
-                              {errors.otherCollege && (
-                                <p className="text-xs text-rose-400 font-semibold">{errors.otherCollege.message}</p>
-                              )}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                  <label htmlFor="apply-name" className={labelClass}>Full Name</label>
+                                  <input
+                                    id="apply-name"
+                                    {...register("name")}
+                                    type="text"
+                                    autoComplete="name"
+                                    maxLength={100}
+                                    placeholder="Sandy Cheeks"
+                                    aria-invalid={!!errors.name}
+                                    className={inputClass}
+                                  />
+                                  <FieldError message={errors.name?.message} />
+                                </div>
+
+                                <div>
+                                  <label htmlFor="apply-email" className={labelClass}>Email Address</label>
+                                  <input
+                                    id="apply-email"
+                                    {...register("email")}
+                                    type="email"
+                                    inputMode="email"
+                                    autoComplete="email"
+                                    maxLength={254}
+                                    placeholder="sandy@beach.edu"
+                                    aria-invalid={!!errors.email}
+                                    className={inputClass}
+                                  />
+                                  <FieldError message={errors.email?.message} />
+                                </div>
+
+                                <div>
+                                  <label htmlFor="apply-phone" className={labelClass}>Phone Number</label>
+                                  <input
+                                    id="apply-phone"
+                                    {...register("phone")}
+                                    type="tel"
+                                    autoComplete="tel"
+                                    placeholder="714-555-0199"
+                                    aria-invalid={!!errors.phone}
+                                    className={inputClass}
+                                  />
+                                  <FieldError message={errors.phone?.message} />
+                                </div>
+                              </div>
+
+                              {/* Community College Autocomplete */}
+                              <div className="relative" ref={dropdownRef}>
+                                <label htmlFor="apply-college" className={labelClass}>California Community College</label>
+                                <div className="relative">
+                                  <Search className="w-4 h-4 text-sky-100/75 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                  <input
+                                    id="apply-college"
+                                    type="text"
+                                    role="combobox"
+                                    aria-expanded={collegeDropdownOpen}
+                                    aria-controls="college-options"
+                                    autoComplete="off"
+                                    placeholder="Search by name or acronym (e.g. OCC)"
+                                    value={collegeDropdownOpen ? collegeQuery : (selectedCollege || "")}
+                                    onChange={(e) => {
+                                      setCollegeQuery(e.target.value);
+                                      setCollegeDropdownOpen(true);
+                                    }}
+                                    onFocus={() => {
+                                      setCollegeQuery("");
+                                      setCollegeDropdownOpen(true);
+                                    }}
+                                    className={`${inputClass} pl-11 pr-11`}
+                                  />
+                                  {selectedCollege && !collegeDropdownOpen ? (
+                                    <CheckCircle className="w-4 h-4 text-amber-400 absolute right-4 top-1/2 -translate-y-1/2" />
+                                  ) : (
+                                    <ChevronDown
+                                      className={`w-4 h-4 text-sky-100/75 absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-200 ${collegeDropdownOpen ? "rotate-180 text-amber-400" : ""}`}
+                                    />
+                                  )}
+                                </div>
+
+                                <AnimatePresence>
+                                  {collegeDropdownOpen && (
+                                    <motion.ul
+                                      id="college-options"
+                                      role="listbox"
+                                      initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                                      exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                                      style={{ transformOrigin: "top center" }}
+                                      transition={{ duration: 0.18, ease: EASE }}
+                                      className="absolute left-0 right-0 top-full mt-2 max-h-64 overflow-y-auto bg-sky-900/95 backdrop-blur-xl border border-sky-100/30 rounded-2xl z-50 shadow-2xl shadow-sky-950/70 p-1.5"
+                                    >
+                                      {filteredColleges.map((college) => (
+                                        <li key={college} role="option" aria-selected={selectedCollege === college}>
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              setValue("college", college);
+                                              setCollegeDropdownOpen(false);
+                                              setCollegeQuery("");
+                                              trigger("college");
+                                            }}
+                                            className={`w-full text-left px-3.5 py-2.5 text-sm font-semibold rounded-xl transition-colors cursor-pointer flex items-center justify-between gap-3 ${
+                                              selectedCollege === college
+                                                ? "bg-amber-400 text-slate-950"
+                                                : college === OTHER_COLLEGE
+                                                  ? "text-amber-200 hover:bg-white/10 italic"
+                                                  : "text-slate-100 hover:bg-white/10 hover:text-white"
+                                            }`}
+                                          >
+                                            <span>{college}</span>
+                                            {selectedCollege === college && <Check className="w-4 h-4 stroke-[3] shrink-0" />}
+                                          </button>
+                                        </li>
+                                      ))}
+                                    </motion.ul>
+                                  )}
+                                </AnimatePresence>
+                                <FieldError message={errors.college?.message} />
+                              </div>
+
+                              {/* Write-in for Other College */}
+                              <AnimatePresence initial={false}>
+                                {selectedCollege === OTHER_COLLEGE && (
+                                  <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3, ease: EASE }}
+                                    className="overflow-hidden"
+                                  >
+                                    <label htmlFor="apply-other-college" className={labelClass}>School Name</label>
+                                    <input
+                                      id="apply-other-college"
+                                      {...register("otherCollege")}
+                                      type="text"
+                                      maxLength={150}
+                                      placeholder="Santa Monica College"
+                                      className={inputClass}
+                                    />
+                                    <FieldError message={errors.otherCollege?.message} />
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+
+                              {/* Age Confirmation */}
+                              <div className="pt-1">
+                                <label className="relative flex items-start gap-3 cursor-pointer group">
+                                  <input
+                                    {...register("ageCheck")}
+                                    type="checkbox"
+                                    className="peer sr-only"
+                                  />
+                                  <CheckMark />
+                                  <span>
+                                    <span className="block text-sm sm:text-base font-semibold text-slate-100 group-hover:text-white transition-colors">
+                                      I&apos;ll be 18 or older by Fall 2026.
+                                    </span>
+                                    <span className="block text-xs text-sky-100/75 mt-0.5">
+                                      HackCC is an 18+ event for insurance reasons.
+                                    </span>
+                                  </span>
+                                </label>
+                                <FieldError message={errors.ageCheck?.message} />
+                              </div>
                             </motion.div>
                           )}
 
-                          {/* Age Verification (18+ Confirm checkbox) */}
-                          <div className="pt-2">
-                            <label className="flex items-start gap-3 cursor-pointer group">
-                              <input
-                                {...register("ageCheck")}
-                                type="checkbox"
-                                className="w-5 h-5 rounded border-white/20 bg-slate-950/80 accent-[#FBFA74] text-navyblue cursor-pointer mt-0.5"
-                              />
-                              <div className="space-y-0.5">
-                                <span className="text-xs sm:text-sm font-semibold text-slate-200 group-hover:text-white transition">
-                                  I confirm that I will be 18 years of age or older by Fall 2026.
-                                </span>
-                                <p className="text-[10px] text-slate-400">
-                                  HackCC is an 18+ event for compliance and insurance guidelines.
-                                </p>
-                              </div>
-                            </label>
-                            {errors.ageCheck && (
-                              <p className="text-xs text-rose-400 font-semibold mt-1">{errors.ageCheck.message}</p>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {/* STEP 2: Route - Experience */}
-                      {currentStep === 2 && (
-                        <motion.div
-                          key="step2"
-                          initial={{ x: 30, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          exit={{ x: -30, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="space-y-5"
-                        >
-                          <div className="border-b border-white/10 pb-3 flex items-center gap-2 mb-4">
-                            <span className="text-2xl">🗺️</span>
-                            <div>
-                              <h2 className="text-xl font-heading text-white">Hacking Experience</h2>
-                              <p className="text-xs text-slate-300">Choose the topics you're interested in exploring on this hacking trip.</p>
-                            </div>
-                          </div>
-
-                          {/* Checklist of Interests */}
-                          <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase tracking-wider text-slate-200 block mb-1">
-                              Select Your Interests (Choose at least one)
-                            </label>
-                            
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                              {INTEREST_OPTIONS.map((interest) => {
-                                const isChecked = selectedInterests?.includes(interest);
-                                return (
-                                  <label
-                                    key={interest}
-                                    className={`p-3 rounded-2xl border text-xs sm:text-sm font-semibold cursor-pointer flex items-center gap-3 transition-all select-none ${
-                                      isChecked 
-                                        ? "bg-[#6950D5]/50 border-[#FBFA74] text-white" 
-                                        : "bg-slate-950/40 border-white/10 hover:border-white/30 text-slate-300 hover:text-white"
-                                    }`}
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      value={interest}
-                                      checked={isChecked}
-                                      onChange={() => {
-                                        if (isChecked) {
-                                          setValue("interests", selectedInterests.filter(i => i !== interest));
-                                        } else {
-                                          setValue("interests", [...(selectedInterests || []), interest]);
-                                        }
-                                        trigger("interests");
-                                      }}
-                                      className="hidden"
-                                    />
-                                    <div className={`w-4 h-4 rounded flex items-center justify-center transition border ${
-                                      isChecked ? "bg-[#FBFA74] border-[#FBFA74]" : "border-slate-500"
-                                    }`}>
-                                      {isChecked && <Check className="w-3.5 h-3.5 text-[#021442] stroke-[3]" />}
-                                    </div>
-                                    <span>{interest}</span>
-                                  </label>
-                                );
-                              })}
-                            </div>
-                            {errors.interests && (
-                              <p className="text-xs text-rose-400 font-semibold mt-1">{errors.interests.message}</p>
-                            )}
-                          </div>
-
-                          {/* First-Timer Checkbox */}
-                          <div className="pt-4 border-t border-white/10 mt-6">
-                            <label className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 cursor-pointer group hover:bg-white/10 transition">
-                              <input
-                                {...register("isFirstTimer")}
-                                type="checkbox"
-                                className="w-5 h-5 rounded border-white/20 bg-slate-950/80 accent-[#FBFA74] text-navyblue cursor-pointer mt-0.5"
-                              />
-                              <div className="space-y-1">
-                                <span className="text-sm font-bold text-[#FBFA74] flex items-center gap-1.5">
-                                  <span>Yes, this is my first hackathon! 🎒</span>
-                                </span>
-                                <p className="text-xs text-slate-300 leading-relaxed font-medium">
-                                  We welcome beginners with open arms! Over 50% of HackCC participants are first-timers. We provide mentorship, design workshops, and beginner prizes to help you build your first project!
-                                </p>
-                              </div>
-                            </label>
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {/* STEP 3: Cargo - Logistics */}
-                      {currentStep === 3 && (
-                        <motion.div
-                          key="step3"
-                          initial={{ x: 30, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          exit={{ x: -30, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="space-y-5"
-                        >
-                          <div className="border-b border-white/10 pb-3 flex items-center gap-2 mb-4">
-                            <span className="text-2xl">🎒</span>
-                            <div>
-                              <h2 className="text-xl font-heading text-white">Logistics & Preferences</h2>
-                              <p className="text-xs text-slate-300">Specify your food preferences and swag sizes for the journey.</p>
-                            </div>
-                          </div>
-
-                          {/* T-Shirt Size */}
-                          <div className="space-y-1">
-                            <label className="text-xs font-bold uppercase tracking-wider text-slate-200">T-Shirt Size</label>
-                            <select
-                              {...register("tshirtSize")}
-                              className="w-full bg-slate-950/80 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-semibold text-white focus:outline-none focus:border-[#FBFA74] transition"
+                          {/* STEP 2: Experience */}
+                          {currentStep === 2 && (
+                            <motion.div
+                              key="step2"
+                              initial={{ opacity: 0, x: 24 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -24 }}
+                              transition={{ duration: 0.3, ease: EASE }}
+                              className="space-y-8"
                             >
-                              <option value="" className="text-slate-500 bg-slate-950">Select Size</option>
-                              <option value="S" className="bg-slate-950">Small (S)</option>
-                              <option value="M" className="bg-slate-950">Medium (M)</option>
-                              <option value="L" className="bg-slate-950">Large (L)</option>
-                              <option value="XL" className="bg-slate-950">X-Large (XL)</option>
-                              <option value="XXL" className="bg-slate-950">XX-Large (XXL)</option>
-                            </select>
-                            {errors.tshirtSize && (
-                              <p className="text-xs text-rose-400 font-semibold">{errors.tshirtSize.message}</p>
-                            )}
-                          </div>
+                              <fieldset>
+                                <legend className={labelClass}>Your Interests (pick at least one)</legend>
+                                <div className="flex flex-wrap gap-2.5">
+                                  {INTEREST_OPTIONS.map((interest) => {
+                                    const isChecked = selectedInterests?.includes(interest);
+                                    return (
+                                      <button
+                                        key={interest}
+                                        type="button"
+                                        aria-pressed={isChecked}
+                                        onClick={() => {
+                                          setValue(
+                                            "interests",
+                                            isChecked
+                                              ? selectedInterests.filter(i => i !== interest)
+                                              : [...(selectedInterests || []), interest]
+                                          );
+                                          trigger("interests");
+                                        }}
+                                        className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer active:scale-95 ${
+                                          isChecked
+                                            ? "bg-amber-400 text-slate-950 shadow-lg shadow-black/30"
+                                            : "bg-sky-950/40 text-sky-50 hover:text-white hover:bg-sky-800/60 border border-sky-100/30"
+                                        }`}
+                                      >
+                                        {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                                        <span>{interest}</span>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                                <FieldError message={errors.interests?.message} />
+                              </fieldset>
 
-                          {/* Dietary Restrictions */}
-                          <div className="space-y-1 pt-2">
-                            <div className="flex items-center justify-between">
-                              <label className="text-xs font-bold uppercase tracking-wider text-slate-200">Dietary Restrictions & Allergies</label>
-                              <span className="text-[10px] text-slate-400 font-semibold uppercase">Optional</span>
-                            </div>
-                            <textarea
-                              {...register("dietaryRestrictions")}
-                              rows={3}
-                              maxLength={300}
-                              placeholder="e.g. Vegetarian, Gluten-Free, Peanut Allergy (Leave blank if none)"
-                              className="w-full bg-slate-950/80 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-semibold text-white focus:outline-none focus:border-[#FBFA74] transition resize-none"
-                            />
-                            {errors.dietaryRestrictions && (
-                              <p className="text-xs text-rose-400 font-semibold">{errors.dietaryRestrictions.message}</p>
-                            )}
-                            <div className="flex items-start gap-1.5 text-[10px] text-slate-400 mt-1">
-                              <Info className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-                              <span>We cater free breakfast, lunch, dinner, boba, and midnight snacks, and do our best to provide allergen-safe alternatives.</span>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
+                              <label className="relative flex items-start gap-3 cursor-pointer group pt-6 border-t border-sky-100/25">
+                                <input
+                                  {...register("isFirstTimer")}
+                                  type="checkbox"
+                                  className="peer sr-only"
+                                />
+                                <CheckMark />
+                                <span>
+                                  <span className="block text-sm sm:text-base font-bold text-amber-300">
+                                    This is my first hackathon!
+                                  </span>
+                                  <span className="block text-sm text-sky-50/90 leading-relaxed mt-1">
+                                    Beginners are welcome. Over half of HackCC hackers are first-timers, and we have mentors, workshops, and beginner prizes to help you ship your first project.
+                                  </span>
+                                </span>
+                              </label>
+                            </motion.div>
+                          )}
 
-                      {/* STEP 4: Fasten Seatbelts - Consent */}
-                      {currentStep === 4 && (
-                        <motion.div
-                          key="step4"
-                          initial={{ x: 30, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          exit={{ x: -30, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="space-y-5"
-                        >
-                          <div className="border-b border-white/10 pb-3 flex items-center gap-2 mb-4">
-                            <span className="text-2xl">🛣️</span>
-                            <div>
-                              <h2 className="text-xl font-heading text-white">Consent & Guidelines</h2>
-                              <p className="text-xs text-slate-300">Review Code of Conduct guidelines to ensure a safe, welcoming experience for all.</p>
-                            </div>
-                          </div>
+                          {/* STEP 3: Logistics */}
+                          {currentStep === 3 && (
+                            <motion.div
+                              key="step3"
+                              initial={{ opacity: 0, x: 24 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -24 }}
+                              transition={{ duration: 0.3, ease: EASE }}
+                              className="space-y-8"
+                            >
+                              <fieldset>
+                                <legend className={labelClass}>T-Shirt Size</legend>
+                                <div className="flex flex-wrap gap-2.5">
+                                  {TSHIRT_SIZES.map((size) => {
+                                    const isSelected = selectedSize === size;
+                                    return (
+                                      <button
+                                        key={size}
+                                        type="button"
+                                        aria-pressed={isSelected}
+                                        onClick={() => setValue("tshirtSize", size, { shouldValidate: true })}
+                                        className={`min-w-14 px-4 py-2.5 rounded-full text-sm font-black transition-all duration-200 cursor-pointer active:scale-95 ${
+                                          isSelected
+                                            ? "bg-amber-400 text-slate-950 shadow-lg shadow-black/30"
+                                            : "bg-sky-950/40 text-sky-50 hover:text-white hover:bg-sky-800/60 border border-sky-100/30"
+                                        }`}
+                                      >
+                                        {size}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                                <FieldError message={errors.tshirtSize?.message} />
+                              </fieldset>
 
-                          <div className="bg-slate-950/60 rounded-2xl p-5 border border-white/10 text-xs sm:text-sm text-slate-300 space-y-3 leading-relaxed">
-                            <p className="font-semibold text-white text-sm">🎒 HackCC Community Norms:</p>
-                            <ul className="list-disc pl-5 space-y-2">
-                              <li>Be respectful, welcoming, and collaborative. Any harassment, discrimination, or abusive behavior will result in immediate ejection.</li>
-                              <li>Respect intellectual property; make sure all project code is written fresh during the hackathon. Existing project code imports are prohibited.</li>
-                              <li>Prioritize hacker safety and maintain the positive, inclusive, and fun road trip vibe!</li>
-                            </ul>
-                            <p className="text-[11px] text-slate-400 border-t border-white/5 pt-3">
-                              We store only what&apos;s on this form. Only HackCC organizers can see it, and we delete it after the event.
-                            </p>
-                          </div>
+                              <div>
+                                <div className="flex items-baseline justify-between gap-3">
+                                  <label htmlFor="apply-dietary" className={labelClass}>Dietary Restrictions & Allergies</label>
+                                  <span className="text-[11px] font-bold uppercase tracking-wider text-sky-100/60 mb-2">Optional</span>
+                                </div>
+                                <textarea
+                                  id="apply-dietary"
+                                  {...register("dietaryRestrictions")}
+                                  rows={3}
+                                  maxLength={300}
+                                  placeholder="e.g. Vegetarian, gluten-free, peanut allergy. Leave blank if none."
+                                  className={`${inputClass} resize-none`}
+                                />
+                                <FieldError message={errors.dietaryRestrictions?.message} />
+                                <p className="flex items-start gap-2 text-xs text-sky-100/75 mt-2">
+                                  <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-amber-400/80" />
+                                  <span>We cater free breakfast, lunch, dinner, boba, and midnight snacks, with allergen-safe options.</span>
+                                </p>
+                              </div>
+                            </motion.div>
+                          )}
 
-                          {/* Code of Conduct Checkbox */}
-                          <div className="pt-2">
-                            <label className="flex items-start gap-3 cursor-pointer group">
-                              <input
-                                {...register("codeOfConduct")}
-                                type="checkbox"
-                                className="w-5 h-5 rounded border-white/20 bg-slate-950/80 accent-[#FBFA74] text-navyblue cursor-pointer mt-0.5"
-                              />
-                              <span className="text-xs sm:text-sm font-semibold text-slate-200 group-hover:text-white transition">
-                                I agree to follow the <span className="text-[#FBFA74] hover:underline font-bold">HackCC Code of Conduct</span>.
-                              </span>
-                            </label>
-                            {errors.codeOfConduct && (
-                              <p className="text-xs text-rose-400 font-semibold mt-1">{errors.codeOfConduct.message}</p>
-                            )}
-                          </div>
+                          {/* STEP 4: Consent */}
+                          {currentStep === 4 && (
+                            <motion.div
+                              key="step4"
+                              initial={{ opacity: 0, x: 24 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -24 }}
+                              transition={{ duration: 0.3, ease: EASE }}
+                              className="space-y-6"
+                            >
+                              <div>
+                                <h3 className="font-heading text-lg sm:text-xl text-white tracking-wide mb-3">Community Norms</h3>
+                                <ul className="space-y-3 text-sm sm:text-base text-sky-50 leading-relaxed">
+                                  {[
+                                    "Be respectful, welcoming, and collaborative. Harassment, discrimination, or abusive behavior means immediate removal.",
+                                    "Write your project during the hackathon. Bringing in existing project code isn't allowed.",
+                                    "Look out for each other and keep the road trip safe, inclusive, and fun.",
+                                  ].map((rule) => (
+                                    <li key={rule} className="flex items-start gap-3">
+                                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                                      <span>{rule}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <p className="text-xs text-sky-100/75 mt-4 pt-4 border-t border-sky-100/25">
+                                  We store only what&apos;s on this form. Only HackCC organizers can see it, and we delete it after the event.
+                                </p>
+                              </div>
 
-                          {/* Bot check (Cloudflare Turnstile) */}
-                          <div className="pt-2">
-                            <TurnstileWidget key={turnstileKey} onToken={setTurnstileToken} />
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                              <div>
+                                <label className="relative flex items-start gap-3 cursor-pointer group">
+                                  <input
+                                    {...register("codeOfConduct")}
+                                    type="checkbox"
+                                    className="peer sr-only"
+                                  />
+                                  <CheckMark />
+                                  <span className="text-sm sm:text-base font-semibold text-slate-100 group-hover:text-white transition-colors">
+                                    I agree to follow the <span className="text-amber-300 font-bold">HackCC Code of Conduct</span>.
+                                  </span>
+                                </label>
+                                <FieldError message={errors.codeOfConduct?.message} />
+                              </div>
 
-                    {submitError && (
-                      <p role="alert" className="text-xs sm:text-sm text-rose-400 font-semibold mt-6">{submitError}</p>
-                    )}
+                              {/* Bot check (Cloudflare Turnstile) */}
+                              <TurnstileWidget key={turnstileKey} onToken={setTurnstileToken} />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
 
-                    {/* Step Action Buttons Footer inside Panel */}
-                    <div className="flex items-center justify-between border-t border-white/10 pt-6 mt-8">
-                      {currentStep > 1 ? (
-                        <button
-                          type="button"
-                          onClick={handlePrev}
-                          className="btn-secondary text-xs sm:text-sm py-2 px-5 cursor-pointer inline-flex items-center gap-1 border-white/20"
-                        >
-                          <span>Back</span>
-                        </button>
-                      ) : (
-                        <div />
-                      )}
+                      <FieldError message={submitError ?? undefined} />
 
-                      {currentStep < 4 ? (
-                        <button
-                          type="button"
-                          onClick={handleNext}
-                          className="btn-primary text-xs sm:text-sm py-2 px-5 cursor-pointer inline-flex items-center gap-1.5"
-                        >
-                          <span>Next Step</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
-                      ) : (
-                        <button
-                          type="submit"
-                          className="btn-accent text-xs sm:text-sm py-2.5 px-6 cursor-pointer inline-flex items-center gap-1.5"
-                        >
-                          <span>Submit Application</span>
-                          <Sparkles className="w-4 h-4 text-[#FBFA74] animate-spin" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </form>
+                      {/* Step Navigation */}
+                      <div className="flex items-center justify-between gap-4 border-t border-sky-100/25 pt-6 mt-8">
+                        {currentStep > 1 ? (
+                          <button
+                            type="button"
+                            onClick={() => goToStep(currentStep - 1)}
+                            className="text-sm sm:text-base text-white hover:text-amber-300 font-bold underline underline-offset-8 decoration-white/30 hover:decoration-amber-400 transition-colors cursor-pointer"
+                          >
+                            ← Back
+                          </button>
+                        ) : (
+                          <span />
+                        )}
+
+                        {currentStep < STEPS.length ? (
+                          <button
+                            type="button"
+                            onClick={handleNext}
+                            className="inline-flex items-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-7 py-3 rounded-full text-sm sm:text-base shadow-xl shadow-black/40 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                          >
+                            <span>Next Stop</span>
+                            <span className="text-lg leading-none">→</span>
+                          </button>
+                        ) : (
+                          <button
+                            type="submit"
+                            className="inline-flex items-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-7 py-3 rounded-full text-sm sm:text-base shadow-xl shadow-black/40 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                          >
+                            <span>Hit the Road</span>
+                            <span className="text-lg leading-none">→</span>
+                          </button>
+                        )}
+                      </div>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           )}

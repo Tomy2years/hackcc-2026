@@ -163,7 +163,7 @@ git push origin dev-<yourname>
 > 2. You will see a yellow banner at the top — click the green **"Compare & pull request"** button (or go to **Pull requests** > **New pull request** with base `main` ← compare `dev-<yourname>`).
 > 3. Add a quick title and short summary of what you finished/updated in your zone.
 > 4. Click **Create pull request**.
-> 5. **DM Tom (@Tomy2years) on Discord or Slack** with your PR link so he can check your work and merge it into `main`!
+> 5. **DM Tom (@Tomy2years) on Discord** with your PR link so he can check your work and merge it into `main`!
 
 ---
 
@@ -178,7 +178,7 @@ git push origin dev-<yourname>
 >    ```bash
 >    git merge --abort
 >    ```
-> 2. **DM Tom (@Tomy2years) on Discord/Slack** and let him know which files had conflicts. He will help sync and merge your work cleanly.
+> 2. **DM Tom (@Tomy2years) on Discord** and let him know which files had conflicts. He will help sync and merge your work cleanly.
 
 ---
 

@@ -69,14 +69,14 @@ npm run typecheck
 - **Never commit `.env.local` or secrets.**
 - Push to your branch: `git push origin dev-<yourname>`.
 - **Open a Pull Request into `main`** on GitHub (click the green "Compare & pull request" button).
-- **DM Tom (@Tomy2years)** on Discord/Slack with your PR link so he can review and merge your changes!
+- **DM Tom (@Tomy2years)** on Discord with your PR link so he can review and merge your changes!
 
 ### 5. What If You Hit a Merge Conflict?
 Resolving merge conflicts on `main` is Tom's job! If `git pull origin main` ever shows a conflict:
 ```bash
 git merge --abort
 ```
-Then DM Tom on Discord/Slack and let him know which files had conflicts. He'll help merge it cleanly.
+Then DM Tom on Discord and let him know which files had conflicts. He'll help merge it cleanly.
 
 ---
 

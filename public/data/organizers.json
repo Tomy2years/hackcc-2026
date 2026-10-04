@@ -119,5 +119,71 @@
     "linkedin": "https://www.linkedin.com/in/miles-li-399894285/",
     "objectPosition": "center 25%",
     "imageScale": "scale-105"
+  },
+  {
+    "id": "kaden-lo",
+    "name": "Kaden Lo",
+    "role": "Website Team",
+    "categories": ["website"],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/kaden-lo-headshot.JPG",
+    "linkedin": "https://www.linkedin.com/in/kaden-lo/",
+    "objectPosition": "center 20%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "rohan-gopalan",
+    "name": "Rohan Gopalan",
+    "role": "Website Team",
+    "categories": ["website"],
+    "college": "De Anza College",
+    "image": "/assets/headshots/rohan-gopalan-headshot.jpg",
+    "linkedin": "https://www.linkedin.com/in/rohan-gopalan-633307422/",
+    "objectPosition": "center 20%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "liam-najjar",
+    "name": "Liam Najjar",
+    "role": "Engineering Team",
+    "categories": ["engineering"],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/liam-najjar-headshot.jpeg",
+    "linkedin": "https://www.linkedin.com/in/liam-najjar-aa20102a1/",
+    "objectPosition": "center center",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "evelyn-cao",
+    "name": "Evelyn Cao",
+    "role": "Sponsorships Team",
+    "categories": ["sponsorships"],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/evelyn-cao-headshot.jpeg",
+    "linkedin": "https://www.linkedin.com/in/evelyn-cao-a9733143b/",
+    "objectPosition": "center 20%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "grace-xu",
+    "name": "Grace Xu",
+    "role": "Marketing Lead",
+    "categories": ["marketing", "leadership"],
+    "college": "Foothill College",
+    "image": "/assets/headshots/grace-xu-headshot.jpg",
+    "linkedin": "",
+    "objectPosition": "center 20%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "jay-de-guzman",
+    "name": "Jay De Guzman",
+    "role": "Marketing Team",
+    "categories": ["marketing"],
+    "college": "Orange Coast College",
+    "image": "/assets/headshots/jay-de-guzman-headshot.jpg",
+    "linkedin": "https://www.linkedin.com/in/jay-de-guzman-58a77926a/",
+    "objectPosition": "center 20%",
+    "imageScale": "scale-100"
   }
 ]

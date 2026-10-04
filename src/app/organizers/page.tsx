@@ -97,7 +97,7 @@ export default function OrganizersPage() {
   }, []);
 
   // Helper function to rank members hierarchically
-  const getSortScore = (member: OrganizerMember, category: string) => {
+  const getSortScore = (member: OrganizerMember) => {
     const nameLower = member.name.toLowerCase();
 
     // 1. First row priority order:
@@ -129,8 +129,8 @@ export default function OrganizersPage() {
           return list.includes(activeCategory);
         })
   ).sort((a, b) => {
-    const scoreA = getSortScore(a, activeCategory);
-    const scoreB = getSortScore(b, activeCategory);
+    const scoreA = getSortScore(a);
+    const scoreB = getSortScore(b);
     if (scoreA !== scoreB) {
       return scoreA - scoreB;
     }

@@ -34,10 +34,11 @@ export default function Zone1Hero() {
   const dayOpacityTransform = useTransform(scrollYProgress, [0.10, 0.35], [1, 0]);
   const nightOpacityTransform = useTransform(scrollYProgress, [0.15, 0.40], [0, 1]);
 
-  const sunX = useTransform(scrollYProgress, [0.0, 0.18, 0.35], [0, 90, 200]);
-  const sunY = useTransform(scrollYProgress, [0.0, 0.18, 0.35], [0, 25, 165]);
+  const sunX = useTransform(scrollYProgress, [0.0, 0.18, 0.35], ["0vw", "6vw", "15vw"]);
+  const sunY = useTransform(scrollYProgress, [0.0, 0.18, 0.35], ["0vh", "7vh", "28vh"]);
   const sunScale = useTransform(scrollYProgress, [0.0, 0.18, 0.35], [1.0, 0.65, 0.25]);
-  const sunOpacityTransform = useTransform(scrollYProgress, [0.0, 0.20, 0.35], [1.0, 0.75, 0]);
+  // Sun stays fully visible through its descent and disappears as soon as it dips behind the skyline (0.35)
+  const sunOpacityTransform = useTransform(scrollYProgress, (latest) => (latest >= 0.35 ? 0 : 1));
 
   // Derived style opacities respecting latched night state
   const dayOpacity = hasTurnedNight ? 0 : dayOpacityTransform;
@@ -73,22 +74,27 @@ export default function Zone1Hero() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/70" />
         </motion.div>
 
-        {/* Setting Sun (Arcs to the right & sets into city skyline horizon) */}
-        <motion.div
-          className="absolute top-16 left-1/3 z-[5] pointer-events-none flex items-center justify-center"
-          style={{
-            x: sunX,
-            y: sunY,
-            opacity: sunOpacity,
-            scale: sunScale,
-          }}
+        {/* Setting Sun (Arcs to the right & dips behind city skyline horizon) */}
+        <div
+          className="absolute inset-0 z-[5] pointer-events-none overflow-hidden"
+          style={{ clipPath: "inset(0 0 calc(100% - 35vh) 0)" }}
         >
-          {/* Radiant Sunset Outer Glow Layers */}
-          <div className="absolute w-44 h-44 rounded-full bg-amber-400/30 blur-2xl animate-pulse" />
-          <div className="absolute w-32 h-32 rounded-full bg-orange-500/40 blur-xl" />
-          {/* Core Vibrant SoCal Sun */}
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 via-[#FBFA74] to-yellow-100 shadow-[0_0_60px_rgba(251,250,116,0.9)] border-2 border-amber-200/80" />
-        </motion.div>
+          <motion.div
+            className="absolute top-16 left-1/3 flex items-center justify-center"
+            style={{
+              x: sunX,
+              y: sunY,
+              opacity: sunOpacity,
+              scale: sunScale,
+            }}
+          >
+            {/* Radiant Sunset Outer Glow Layers */}
+            <div className="absolute w-44 h-44 rounded-full bg-amber-400/30 blur-2xl animate-pulse" />
+            <div className="absolute w-32 h-32 rounded-full bg-orange-500/40 blur-xl" />
+            {/* Core Vibrant SoCal Sun */}
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 via-[#FBFA74] to-yellow-100 shadow-[0_0_60px_rgba(251,250,116,0.9)] border-2 border-amber-200/80" />
+          </motion.div>
+        </div>
 
         {/* HackCC Sign & Date Sign Image Layer - Centered consistently on hill across all screen sizes */}
         <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4 sm:px-8">

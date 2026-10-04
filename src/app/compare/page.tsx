@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDiscord, faInstagram } from "@fortawesome/free-brands-svg-icons";
 
 // Real scenic assets across the roadtrip
 const SCENES = [
@@ -59,13 +61,15 @@ const SCENES = [
 ];
 
 type FontOption = "bagel" | "sans" | "fraunces";
-type ComparisonMode = "layout-artifacts" | "typography";
+type ComparisonMode = "layout-artifacts" | "typography" | "footer-designs";
+type FooterOption = "seamless" | "stamp" | "freeway-board";
 type ScreenSimulation = "full" | "tablet" | "mobile";
 
 export default function CompareDesignPage() {
   const [selectedSceneIndex, setSelectedSceneIndex] = useState(1); // Default to Zone 2
-  const [activeTab, setActiveTab] = useState<ComparisonMode>("layout-artifacts");
+  const [activeTab, setActiveTab] = useState<ComparisonMode>("footer-designs");
   const [activeFont, setActiveFont] = useState<FontOption>("bagel");
+  const [footerStyle, setFooterStyle] = useState<FooterOption>("seamless");
   const [viewMode, setViewMode] = useState<"side-by-side" | "single">("side-by-side");
   const [screenSimulation, setScreenSimulation] = useState<ScreenSimulation>("full");
 
@@ -86,6 +90,16 @@ export default function CompareDesignPage() {
             <span className="text-white/20">|</span>
             {/* Primary Mode Tabs */}
             <div className="flex bg-slate-900 p-1 rounded-lg border border-white/10 text-xs font-semibold">
+              <button
+                onClick={() => setActiveTab("footer-designs")}
+                className={`px-3 py-1.5 rounded transition-all cursor-pointer ${
+                  activeTab === "footer-designs"
+                    ? "bg-amber-400 text-slate-950 shadow font-bold"
+                    : "text-slate-300 hover:text-white"
+                }`}
+              >
+                🏁 Footer Redesigns (3 Directions)
+              </button>
               <button
                 onClick={() => setActiveTab("layout-artifacts")}
                 className={`px-3 py-1.5 rounded transition-all cursor-pointer ${
@@ -126,7 +140,43 @@ export default function CompareDesignPage() {
           </div>
 
           {/* Secondary Controls (Dependent on Active Tab) */}
-          {activeTab === "layout-artifacts" ? (
+          {activeTab === "footer-designs" ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs text-slate-400 hidden md:inline">Footer Direction:</span>
+              <div className="flex bg-slate-900 p-1 rounded-lg border border-white/10 text-xs font-semibold">
+                <button
+                  onClick={() => setFooterStyle("seamless")}
+                  className={`px-3 py-1.5 rounded transition-all cursor-pointer ${
+                    footerStyle === "seamless"
+                      ? "bg-amber-400 text-slate-950 font-bold shadow"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  Direction A: Seamless Twilight
+                </button>
+                <button
+                  onClick={() => setFooterStyle("stamp")}
+                  className={`px-3 py-1.5 rounded transition-all cursor-pointer ${
+                    footerStyle === "stamp"
+                      ? "bg-amber-400 text-slate-950 font-bold shadow"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  Direction B: Editorial CA Stamp
+                </button>
+                <button
+                  onClick={() => setFooterStyle("freeway-board")}
+                  className={`px-3 py-1.5 rounded transition-all cursor-pointer ${
+                    footerStyle === "freeway-board"
+                      ? "bg-amber-400 text-slate-950 font-bold shadow"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  Direction C: Freeway Sign Board
+                </button>
+              </div>
+            </div>
+          ) : activeTab === "layout-artifacts" ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-400 hidden md:inline">Test Screen Width:</span>
               <div className="flex bg-slate-900 p-1 rounded-lg border border-white/10 text-xs font-semibold">
@@ -493,9 +543,392 @@ export default function CompareDesignPage() {
                 </div>
               </div>
             </div>
+          ) : activeTab === "footer-designs" ? (
+            /* ========================================================================= */
+            /* TAB 1: FOOTER REDESIGNS (3 CANDIDATE DIRECTIONS)                         */
+            /* ========================================================================= */
+            <div className="relative z-10 w-full">
+              {/* Context bar */}
+              <div className="bg-slate-900/90 border-b border-white/10 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <span className="text-xs uppercase font-extrabold tracking-wider bg-amber-400 text-slate-950 px-2.5 py-1 rounded-md mr-3">
+                    {footerStyle === "seamless" && "Direction A: Seamless Twilight Horizon"}
+                    {footerStyle === "stamp" && "Direction B: Editorial Cal Hacks California Stamp"}
+                    {footerStyle === "freeway-board" && "Direction C: Freeway Sign Directory Marker"}
+                  </span>
+                  <span className="text-xs text-slate-300 font-mono">
+                    {footerStyle === "seamless" && "Blends directly from the San Diego sunset beach artwork, 4 balanced columns, contact link"}
+                    {footerStyle === "stamp" && "Clean editorial typography with a bold 'MADE IN CALIFORNIA' badge and horizontal roadtrip links"}
+                    {footerStyle === "freeway-board" && "Authentic Caltrans highway green exit banner grounded over the coastline"}
+                  </span>
+                </div>
+                <div className="text-xs text-amber-300 font-mono">
+                  Simulated on Zone 6 (Beach) Seam
+                </div>
+              </div>
+
+              {/* Top Teaser: Bottom of Zone 6 CTA so user sees the exact seam transition */}
+              <div className="relative h-44 w-full overflow-hidden bg-slate-950">
+                <Image
+                  src="/assets/roadtrip/zone6-cta-footer/San-Diego-Beach.jpg"
+                  alt="Beach preview"
+                  fill
+                  className="object-cover object-bottom"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/40 to-slate-950/90" />
+                <div className="absolute inset-x-0 bottom-6 text-center">
+                  <span className="text-xs font-mono uppercase tracking-widest text-amber-300/80">
+                    ↑ Zone 6 CTA Beach Seam (End of Page Content)
+                  </span>
+                </div>
+              </div>
+
+              {/* ------------------------------------------------------------- */}
+              {/* OPTION A: SEAMLESS TWILIGHT HORIZON                           */}
+              {/* ------------------------------------------------------------- */}
+              {footerStyle === "seamless" && (
+                <div className="relative bg-[#020617] border-t border-amber-400/30 text-slate-100 font-sans">
+                  {/* Subtle golden sunset gradient overlay at the top edge */}
+                  <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-amber-500/10 via-slate-950/40 to-transparent pointer-events-none" />
+
+                  <div className="max-w-6xl mx-auto px-6 lg:px-8 py-14 relative z-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
+                      {/* Col 1: Wordmark & Narrative (Span 4) */}
+                      <div className="lg:col-span-4 space-y-3">
+                        <div className="flex items-center gap-2.5">
+                          <span className="font-heading text-3xl text-white tracking-wide">
+                            HackCC
+                          </span>
+                          <span className="bg-[#15803D] text-white border border-white/60 font-mono font-black text-[11px] px-2 py-0.5 rounded shadow-sm">
+                            ROUTE 2026
+                          </span>
+                        </div>
+                        <p className="text-slate-300 text-sm leading-relaxed">
+                          California&apos;s premier hackathon dedicated entirely to community college builders, designers, and visionaries.
+                        </p>
+                        <div className="pt-2 flex items-center gap-3">
+                          <a
+                            href="https://discord.gg/yRShGV7Py4"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Discord"
+                            className="w-12 h-12 rounded-xl bg-white/10 hover:bg-[#5865F2] border border-white/20 hover:border-transparent text-white flex items-center justify-center text-2xl transition-all shadow-md hover:scale-110 active:scale-95"
+                          >
+                            <FontAwesomeIcon icon={faDiscord} className="w-6 h-6" />
+                          </a>
+                          <a
+                            href="https://www.instagram.com/realhackcc/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Instagram"
+                            className="w-12 h-12 rounded-xl bg-white/10 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] border border-white/20 hover:border-transparent text-white flex items-center justify-center text-2xl transition-all shadow-md hover:scale-110 active:scale-95"
+                          >
+                            <FontAwesomeIcon icon={faInstagram} className="w-6 h-6" />
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Col 2: Stops & Zones (Span 3) */}
+                      <div className="lg:col-span-3 space-y-2.5">
+                        <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-amber-400">
+                          Roadtrip Stops
+                        </h4>
+                        <ul className="space-y-2 text-sm text-slate-300">
+                          <li><a href="#zone-hero" className="hover:text-amber-300 transition-colors">01 / Hollywood Hills</a></li>
+                          <li><a href="#zone-details" className="hover:text-amber-300 transition-colors">02 / Inglewood Skyline</a></li>
+                          <li><a href="#zone-about" className="hover:text-amber-300 transition-colors">03 / Santa Monica Pier</a></li>
+                          <li><a href="#zone-sponsors" className="hover:text-amber-300 transition-colors">04 / Anaheim Freeway</a></li>
+                          <li><a href="#zone-faq" className="hover:text-amber-300 transition-colors">05 / PCH Coast</a></li>
+                          <li><a href="#zone-apply" className="hover:text-amber-300 transition-colors">06 / San Diego Sunset</a></li>
+                        </ul>
+                      </div>
+
+                      {/* Col 3: Directory (Span 2) */}
+                      <div className="lg:col-span-2 space-y-2.5">
+                        <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-amber-400">
+                          Directory
+                        </h4>
+                        <ul className="space-y-2 text-sm text-slate-300">
+                          <li>
+                            <Link href="/organizers" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                              <span>Crew</span>
+                              <span className="text-[9px] bg-amber-400/20 text-amber-300 font-mono px-1 rounded">LEADS</span>
+                            </Link>
+                          </li>
+                          <li><Link href="/2026" className="hover:text-amber-300 transition-colors">Archive</Link></li>
+                          <li><Link href="/apply" className="text-amber-400 font-bold hover:underline">Apply Now →</Link></li>
+                        </ul>
+                      </div>
+
+                      {/* Col 4: Dispatch & Location (Span 3) */}
+                      <div className="lg:col-span-3 space-y-2.5">
+                        <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-amber-400">
+                          Dispatch &amp; Contact
+                        </h4>
+                        <p className="text-xs text-slate-300 leading-relaxed">
+                          Questions about partnerships, tracks, or volunteering?
+                        </p>
+                        <a
+                          href="mailto:team@hackcc.net"
+                          className="inline-block text-sm font-mono text-white underline underline-offset-4 decoration-amber-400 hover:text-amber-300 transition-colors"
+                        >
+                          team@hackcc.net
+                        </a>
+                        <div className="pt-2 text-xs text-slate-400">
+                          📍 Southern California, USA
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Sub-bar */}
+                    <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+                      <span>&copy; 2026 HackCC. Built for California community college students.</span>
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono text-amber-300">SUNSET HORIZON</span>
+                        <span>•</span>
+                        <a href="#zone-hero" className="hover:text-white transition-colors">Back to top ↑</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ------------------------------------------------------------- */}
+              {/* OPTION B: EDITORIAL CAL HACKS STATE STAMP                     */}
+              {/* ------------------------------------------------------------- */}
+              {footerStyle === "stamp" && (
+                <div className="relative bg-slate-950 border-t-2 border-white/20 text-slate-100 font-sans">
+                  <div className="max-w-6xl mx-auto px-6 lg:px-8 py-14">
+                    {/* Big Editorial Top Row: Massive Wordmark + California State Stamp */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-white/10">
+                      <div>
+                        <p className="font-serif italic text-amber-300 text-xl font-light mb-1">
+                          The road trip of a lifetime
+                        </p>
+                        <h3 className="font-heading text-5xl sm:text-6xl text-white tracking-tight">
+                          HackCC 2026
+                        </h3>
+                      </div>
+
+                      {/* Authentic California Road-Trip Stamp */}
+                      <div className="inline-flex items-center gap-4 bg-white/5 border border-white/15 px-5 py-3 rounded-2xl">
+                        <div className="text-right">
+                          <span className="block text-[10px] font-mono tracking-widest uppercase text-slate-400">ESTABLISHED</span>
+                          <span className="block font-heading text-lg text-white">CALIFORNIA</span>
+                        </div>
+                        <div className="h-8 w-[1px] bg-white/20" />
+                        <div className="text-left">
+                          <span className="block text-[10px] font-mono tracking-widest uppercase text-amber-400">STATEWIDE</span>
+                          <span className="block font-mono font-black text-sm text-emerald-400">ROUTE 1</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Middle Row: Balanced 3-Cluster Horizontal Navigation */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-10">
+                      <div>
+                        <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                          Event Navigation
+                        </h4>
+                        <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-200">
+                          <a href="#zone-about" className="hover:text-amber-300">About</a>
+                          <a href="#zone-details" className="hover:text-amber-300">Tracks</a>
+                          <a href="#zone-sponsors" className="hover:text-amber-300">Sponsors</a>
+                          <a href="#zone-faq" className="hover:text-amber-300">FAQ</a>
+                          <a href="#zone-apply" className="hover:text-amber-300">Register</a>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                          Connect &amp; Community
+                        </h4>
+                        <div className="flex items-center gap-3">
+                          <a
+                            href="https://discord.gg/yRShGV7Py4"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-[#5865F2] text-xs font-bold text-white transition-all"
+                          >
+                            <FontAwesomeIcon icon={faDiscord} className="w-4 h-4" />
+                            <span>Discord</span>
+                          </a>
+                          <a
+                            href="https://www.instagram.com/realhackcc/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-[#dc2743] text-xs font-bold text-white transition-all"
+                          >
+                            <FontAwesomeIcon icon={faInstagram} className="w-4 h-4" />
+                            <span>Instagram</span>
+                          </a>
+                          <Link
+                            href="/organizers"
+                            className="text-xs font-bold text-amber-300 hover:underline px-2 py-1.5"
+                          >
+                            Meet Team →
+                          </Link>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                          Direct Contact
+                        </h4>
+                        <a
+                          href="mailto:contact@hackcc.net"
+                          className="font-mono text-sm text-white hover:text-amber-300 transition-colors"
+                        >
+                          contact@hackcc.net
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Bottom Sub-bar */}
+                    <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+                      <span>&copy; 2026 HackCC • Designed with pride in California</span>
+                      <a href="#zone-hero" className="hover:text-white font-mono">BACK TO TOP ↑</a>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ------------------------------------------------------------- */}
+              {/* OPTION C: FREEWAY SIGN DIRECTORY BOARD                        */}
+              {/* ------------------------------------------------------------- */}
+              {footerStyle === "freeway-board" && (
+                <div className="relative bg-[#020b14] border-t-4 border-[#15803D] text-slate-100 font-sans">
+                  {/* Caltrans Highway Sign Board Header */}
+                  <div className="bg-[#15803D] py-2 px-6 shadow-inner border-b border-black/30">
+                    <div className="max-w-6xl mx-auto flex items-center justify-between text-white font-mono text-xs sm:text-sm font-black tracking-wider">
+                      <div className="flex items-center gap-2">
+                        <span>★ CALIFORNIA HIGHWAY PATROL</span>
+                        <span className="text-amber-300">•</span>
+                        <span>INTERSTATE CC-2026</span>
+                      </div>
+                      <span className="bg-white text-[#15803D] px-2 py-0.5 rounded text-[11px] font-bold">
+                        NEXT EXIT: HACKATHON
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="max-w-6xl mx-auto px-6 lg:px-8 py-12">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                      {/* Mile Marker 1 */}
+                      <div className="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-emerald-500/50 transition-colors">
+                        <span className="font-mono text-xs text-emerald-400 font-bold">MILE 01</span>
+                        <h4 className="font-heading text-xl text-white mt-1 mb-2">HackCC Mission</h4>
+                        <p className="text-xs text-slate-300 leading-relaxed">
+                          Empowering community college creators with real engineering experience.
+                        </p>
+                      </div>
+
+                      {/* Mile Marker 2 */}
+                      <div className="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-emerald-500/50 transition-colors">
+                        <span className="font-mono text-xs text-emerald-400 font-bold">MILE 02</span>
+                        <h4 className="font-heading text-xl text-white mt-1 mb-2">Quick Stops</h4>
+                        <div className="space-y-1 text-xs text-slate-300">
+                          <div><a href="#zone-about" className="hover:text-amber-300">About the Event</a></div>
+                          <div><a href="#zone-details" className="hover:text-amber-300">Tracks &amp; Prizes</a></div>
+                          <div><a href="#zone-sponsors" className="hover:text-amber-300">Sponsor Highway</a></div>
+                        </div>
+                      </div>
+
+                      {/* Mile Marker 3 */}
+                      <div className="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-emerald-500/50 transition-colors">
+                        <span className="font-mono text-xs text-emerald-400 font-bold">MILE 03</span>
+                        <h4 className="font-heading text-xl text-white mt-1 mb-2">Crew &amp; Route</h4>
+                        <div className="space-y-1 text-xs text-slate-300">
+                          <div><Link href="/organizers" className="hover:text-amber-300">Organizers</Link></div>
+                          <div><Link href="/2026" className="hover:text-amber-300">Past Archives</Link></div>
+                          <div><Link href="/apply" className="text-amber-400 font-bold">Apply (Open)</Link></div>
+                        </div>
+                      </div>
+
+                      {/* Mile Marker 4 */}
+                      <div className="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-emerald-500/50 transition-colors">
+                        <span className="font-mono text-xs text-emerald-400 font-bold">MILE 04</span>
+                        <h4 className="font-heading text-xl text-white mt-1 mb-2">Emergency Radio</h4>
+                        <div className="flex gap-3 mb-2">
+                          <a
+                            href="https://discord.gg/yRShGV7Py4"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2.5 rounded-lg bg-white/10 hover:bg-[#5865F2] text-white transition-colors"
+                          >
+                            <FontAwesomeIcon icon={faDiscord} className="w-5 h-5" />
+                          </a>
+                          <a
+                            href="https://www.instagram.com/realhackcc/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2.5 rounded-lg bg-white/10 hover:bg-[#dc2743] text-white transition-colors"
+                          >
+                            <FontAwesomeIcon icon={faInstagram} className="w-5 h-5" />
+                          </a>
+                        </div>
+                        <span className="text-[11px] font-mono text-slate-400">dispatch@hackcc.net</span>
+                      </div>
+                    </div>
+
+                    {/* Bottom Sub-bar */}
+                    <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-mono">
+                      <span>CALTRANS ROUTE 2026 • ALL RIGHTS RESERVED</span>
+                      <a href="#zone-hero" className="hover:text-amber-300">MILEPOST 0 (TOP) ↑</a>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : activeTab === "typography" ? (
+            /* ========================================================================= */
+            /* TAB 2: ARTIFACTS / LAYOUT VIEW                                            */
+            /* ========================================================================= */
+            <div className="relative z-10 p-4 sm:p-8 max-w-7xl mx-auto w-full">
+              {/* Unboxed Layout Hero Demo */}
+              <div className="space-y-6 sm:space-y-8 text-center lg:text-left py-4">
+                <div className="space-y-1">
+                  <p className="font-serif italic text-2xl sm:text-3xl md:text-4xl text-amber-300/95 font-light tracking-wide">
+                    California&apos;s premier
+                  </p>
+                  <h1 className="font-heading text-4xl sm:text-6xl md:text-7xl text-white leading-[1.08] tracking-normal font-normal">
+                    Statewide Hackathon
+                  </h1>
+                </div>
+                <p className="text-slate-200 text-base sm:text-lg max-w-2xl leading-relaxed font-sans mx-auto lg:mx-0">
+                  Bringing together community college builders, designers, and visionaries for a non-stop statewide journey of rapid invention and real-world technology.
+                </p>
+                <div className="grid grid-cols-3 gap-4 sm:gap-10 pt-4 pb-2 max-w-2xl mx-auto lg:mx-0 text-left">
+                  <div className="space-y-1">
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-heading text-4xl sm:text-5xl md:text-6xl text-amber-400">14</span>
+                      <span className="font-sans font-extrabold text-sm sm:text-xl text-amber-300">HRS</span>
+                    </div>
+                    <p className="font-sans font-bold text-xs uppercase tracking-wider text-white">Sprint duration</p>
+                    <p className="text-[11px] text-slate-400">Non-stop building</p>
+                  </div>
+                  <div className="space-y-1 sm:border-l sm:border-white/20 sm:pl-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-heading text-4xl sm:text-5xl md:text-6xl text-white">250</span>
+                      <span className="font-sans font-black text-xl text-amber-400">+</span>
+                    </div>
+                    <p className="font-sans font-bold text-xs uppercase tracking-wider text-white">Hacker capacity</p>
+                    <p className="text-[11px] text-slate-400">100% Community College</p>
+                  </div>
+                  <div className="space-y-1 sm:border-l sm:border-white/20 sm:pl-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-heading text-4xl sm:text-5xl md:text-6xl text-amber-300">$10K</span>
+                      <span className="font-sans font-black text-xl text-amber-400">+</span>
+                    </div>
+                    <p className="font-sans font-bold text-xs uppercase tracking-wider text-white">Prize purse</p>
+                    <p className="text-[11px] text-slate-400">Track &amp; sponsor awards</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           ) : (
             /* ========================================================================= */
-            /* TAB 2: TYPOGRAPHY PERSONALITY SHOWCASE                                    */
+            /* TAB 3: TYPOGRAPHY PERSONALITY SHOWCASE                                    */
             /* ========================================================================= */
             <div className="relative z-10 p-4 sm:p-8 max-w-7xl mx-auto w-full">
               {viewMode === "side-by-side" ? (

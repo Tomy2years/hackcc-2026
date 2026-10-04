@@ -1,0 +1,12 @@
+# CODEOWNERS for HackCC 2026
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for all files in the repository.
+# Every pull request must be reviewed and approved by code owners before merging.
+* @Tomy2years @PowerisTsutsun
+
+# Critical backend registration security and credentials
+/src/app/apply/ @Tomy2years @PowerisTsutsun
+/next.config.ts @Tomy2years @PowerisTsutsun
+/.env.example @Tomy2years @PowerisTsutsun
+/.github/ @Tomy2years @PowerisTsutsun

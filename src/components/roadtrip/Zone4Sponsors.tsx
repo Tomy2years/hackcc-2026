@@ -15,8 +15,6 @@ export default function Zone4Sponsors() {
           fill
           className="object-cover object-center"
         />
-        {/* Contrast Scrim Layer */}
-        <div className="absolute inset-0 bg-slate-950/40" />
       </div>
 
       {/* Top & Bottom Gradient Edge Transitions */}

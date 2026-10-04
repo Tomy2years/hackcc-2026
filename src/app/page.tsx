@@ -5,6 +5,7 @@ import Zone3About from "@/components/roadtrip/Zone3About";
 import Zone4Sponsors from "@/components/roadtrip/Zone4Sponsors";
 import Zone5FAQQuotes from "@/components/roadtrip/Zone5FAQQuotes";
 import Zone6FooterCTA from "@/components/roadtrip/Zone6FooterCTA";
+import RoadTripFooter from "@/components/roadtrip/RoadTripFooter";
 
 export default function Home() {
   return (
@@ -27,8 +28,12 @@ export default function Home() {
       {/* Zone 5: FAQ & Past Attendee Quotes (Pacific Coast Highway) */}
       <Zone5FAQQuotes />
 
-      {/* Zone 6: Get Involved, Apply, & Footer (SoCal Sunset Beach) */}
+      {/* Zone 6: Get Involved & Apply CTA (SoCal Sunset Beach) */}
       <Zone6FooterCTA />
+
+      {/* Site Footer */}
+      <RoadTripFooter />
     </main>
   );
 }
+

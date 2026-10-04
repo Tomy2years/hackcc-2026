@@ -2,7 +2,8 @@
 
 import { headers } from "next/headers";
 import { getRegistrationAccess } from "./access";
-import { appendRow, readRegisteredEmails } from "./googleSheets";
+import { appendRow } from "./googleSheets";
+import { checkIpRateLimit, getRegistrationCounts, recordSubmission } from "./cache";
 import { OTHER_COLLEGE, registrationSchema } from "./schema";
 import { verifyTurnstile } from "./turnstile";
 
@@ -27,7 +28,7 @@ function maxRows(): number {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_MAX_ROWS;
 }
 
-/** Best-effort client IP for Turnstile's `remoteip` hint. Platform headers first, then the proxy chain. */
+/** Best-effort client IP for rate limiting and Turnstile's `remoteip` hint. */
 async function clientIp(): Promise<string | undefined> {
   const h = await headers();
   return (
@@ -55,24 +56,33 @@ export async function submitRegistration(
     return { ok: false, error: "Some answers need another look. Please check the form and try again." };
   }
 
+  const ip = await clientIp();
+
+  const isAllowed = await checkIpRateLimit(ip);
+  if (!isAllowed) {
+    return {
+      ok: false,
+      error: "Too many registrations submitted from your network. Please wait a few minutes before trying again.",
+    };
+  }
+
   if (typeof turnstileToken !== "string" || !turnstileToken || turnstileToken.length > 2048) {
     return { ok: false, error: "Please complete the security check above the submit button." };
   }
 
   try {
-    if (!(await verifyTurnstile(turnstileToken, await clientIp()))) {
+    if (!(await verifyTurnstile(turnstileToken, ip))) {
       return { ok: false, error: "The security check expired or failed. Please try it again." };
     }
 
     const data = parsed.data;
     const email = data.email.toLowerCase();
-    const existing = await readRegisteredEmails();
+    const { earlierRows, totalRows } = await getRegistrationCounts(email);
 
-    if (existing.length >= maxRows()) {
+    if (totalRows >= maxRows()) {
       return { ok: false, error: `Registration is full. Email ${CONTACT} if you think this is a mistake.` };
     }
 
-    const earlierRows = existing.filter(stored => stored === email).length;
     if (earlierRows >= MAX_ROWS_PER_EMAIL) {
       return {
         ok: false,
@@ -96,6 +106,8 @@ export async function submitRegistration(
       yesNo(data.codeOfConduct),
       String(earlierRows + 1),
     ]);
+
+    await recordSubmission(email);
 
     return { ok: true };
   } catch (error) {

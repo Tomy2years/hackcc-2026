@@ -65,6 +65,7 @@ const CATEGORIES = [
   { id: "all", label: "All Crew" },
   { id: "leadership", label: "Leadership" },
   { id: "website", label: "Website" },
+  { id: "engineering", label: "Engineering" },
   { id: "marketing", label: "Marketing" },
   { id: "logistics", label: "Logistics" },
   { id: "sponsorships", label: "Sponsorships" },
@@ -97,22 +98,23 @@ export default function OrganizersPage() {
 
   // Helper function to rank members hierarchically
   const getSortScore = (member: OrganizerMember, category: string) => {
-    // 1. Overall Head / Top leader is always Paul Pham
-    const isHead = member.name.toLowerCase().includes("paul pham") || member.role.toLowerCase().includes("head organizer");
-    if (isHead) return 0;
+    const nameLower = member.name.toLowerCase();
 
-    // 2. Lead for the specific category
-    const isCurrentLead = member.role.toLowerCase().includes("lead") || member.role.toLowerCase().includes("director") || member.role.toLowerCase().includes("head");
-    
-    if (category === "all" || category === "leadership") {
-      // In all crew or leadership, leads come before team members
-      if (isCurrentLead) return 1;
-      return 2;
-    } else {
-      // In a specific subtab (e.g. website, sponsorships, logistics)
-      if (isCurrentLead) return 1;
-      return 2;
-    }
+    // 1. First row priority order:
+    // Paul Pham (0), Kareem Tadros (1), Tom Perel (2)
+    if (nameLower.includes("paul pham") || member.id === "paul-pham") return 0;
+    if (nameLower.includes("kareem tadros") || member.id === "kareem-tadros") return 1;
+    if (nameLower.includes("tom perel") || member.id === "tom-perel") return 2;
+
+    // 2. Leads for other areas starting in the second row (e.g. Ethan Wu - Engineering Lead, etc.)
+    const isLead =
+      member.role.toLowerCase().includes("lead") ||
+      member.role.toLowerCase().includes("director") ||
+      member.role.toLowerCase().includes("head");
+    if (isLead) return 3;
+
+    // 3. All other team members
+    return 4;
   };
 
   const filteredMembers = (

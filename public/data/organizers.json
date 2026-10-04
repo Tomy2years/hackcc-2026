@@ -97,5 +97,27 @@
     "linkedin": "https://www.linkedin.com/in/paul-pham-4219b8375/",
     "objectPosition": "center 20%",
     "imageScale": "scale-100"
+  },
+  {
+    "id": "ethan-wu",
+    "name": "Ethan Wu",
+    "role": "Engineering Lead",
+    "categories": ["leadership", "engineering"],
+    "college": "Diablo Valley College",
+    "image": "/assets/headshots/ethan-wu-headshot.jpeg",
+    "linkedin": "https://www.linkedin.com/in/ethankwu",
+    "objectPosition": "center 20%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "miles-li",
+    "name": "Miles Li",
+    "role": "Website Team",
+    "categories": ["website"],
+    "college": "Cal State Long Beach",
+    "image": "/assets/headshots/miles-li-headshot.png",
+    "linkedin": "https://www.linkedin.com/in/miles-li-399894285/",
+    "objectPosition": "center 25%",
+    "imageScale": "scale-105"
   }
 ]

@@ -31,7 +31,12 @@ function getSecret(): { secret: string; isTestKey: boolean } {
 /** Hostnames the token may have been solved on. Unset = accept any (fine for local dev only). */
 function allowedHostnames(): string[] | null {
   const raw = process.env.TURNSTILE_ALLOWED_HOSTNAMES;
-  if (!raw) return null;
+  if (!raw) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn("[turnstile] WARNING: TURNSTILE_ALLOWED_HOSTNAMES is not set. Hostname verification is bypassed.");
+    }
+    return null;
+  }
   return raw.split(",").map(host => host.trim().toLowerCase()).filter(Boolean);
 }
 

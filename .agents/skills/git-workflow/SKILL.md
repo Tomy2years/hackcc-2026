@@ -47,7 +47,7 @@ Each team member is assigned a specific roadtrip zone component:
   2. Stage their modified zone file (`git add src/components/roadtrip/...`).
   3. Create a clean commit with a descriptive message.
   4. Push to their `dev-<theirname>` branch.
-  5. Give them the clear 5-step GitHub link and reminder to DM Tom.
+  5. Give them the clear 5-step GitHub link and reminder to DM Tom. (MAKE SURE THIS IS DONE ANYTIME THEY MAKE A COMMIT/PUSH SOMETHING!)
 
 ---
 

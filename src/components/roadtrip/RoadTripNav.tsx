@@ -14,15 +14,12 @@ export default function RoadTripNav() {
   // Track scroll position to transition menu background from daytime/light to dark scenes
   useEffect(() => {
     const handleScroll = () => {
-      // In Zone1Hero, night mode latches when scroll reaches 0.35 * window.innerHeight
-      // and resets back when scroll is near the very top (<= 0.05 * window.innerHeight)
-      const nightThreshold = window.innerHeight * 0.35;
-      const dayThreshold = window.innerHeight * 0.05;
+      // In Zone1Hero, night mode latches when scroll reaches 0.38 * window.innerHeight
+      // Once night-time is reached, it stays night unless page is reloaded.
+      const nightThreshold = window.innerHeight * 0.38;
 
       if (window.scrollY >= nightThreshold) {
         setIsDarkScene(true);
-      } else if (window.scrollY <= dayThreshold) {
-        setIsDarkScene(false);
       }
     };
 

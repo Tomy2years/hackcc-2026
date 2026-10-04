@@ -20,30 +20,37 @@ export default function Zone1Hero() {
     offset: ["start start", "end end"],
   });
 
-  // Latch night state once user scrolls past sunset threshold (0.35)
-  // Reset back to day only if user scrolls all the way back to the very top (<= 0.02)
+  // Latch night state once user scrolls past sunset threshold (>= 0.38)
+  // Once users scroll down to become night-time, it stays night for the rest of the session
+  // unless they reload or reopen the page.
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest >= 0.35 && !hasTurnedNight) {
+    if (latest >= 0.38 && !hasTurnedNight) {
       setHasTurnedNight(true);
-    } else if (latest <= 0.02 && hasTurnedNight) {
-      setHasTurnedNight(false);
     }
   });
 
-  // Dynamic transforms for daytime -> sunset into city skyline -> night
-  const dayOpacityTransform = useTransform(scrollYProgress, [0.10, 0.35], [1, 0]);
-  const nightOpacityTransform = useTransform(scrollYProgress, [0.15, 0.40], [0, 1]);
+  // Dynamic transforms for daytime -> golden hour sunset -> city skyline disappearance -> night
+  // Daytime sky stays prominent while the sun descends
+  const dayOpacityTransform = useTransform(scrollYProgress, [0.18, 0.38], [1, 0]);
+  const nightOpacityTransform = useTransform(scrollYProgress, [0.22, 0.40], [0, 1]);
 
-  const sunX = useTransform(scrollYProgress, [0.0, 0.18, 0.35], ["0vw", "6vw", "15vw"]);
-  const sunY = useTransform(scrollYProgress, [0.0, 0.18, 0.35], ["0vh", "7vh", "28vh"]);
-  const sunScale = useTransform(scrollYProgress, [0.0, 0.18, 0.35], [1.0, 0.65, 0.25]);
-  // Sun stays fully visible through its descent and disappears as soon as it dips behind the skyline (0.35)
-  const sunOpacityTransform = useTransform(scrollYProgress, (latest) => (latest >= 0.35 ? 0 : 1));
+  // Sunset golden-hour horizon glow that blooms behind the skyline as the sun approaches it
+  const sunsetGlowTransform = useTransform(scrollYProgress, [0.10, 0.24, 0.38], [0, 0.85, 0]);
 
-  // Derived style opacities respecting latched night state
+  // Sun motion trajectory:
+  // Starts high left-of-center and arcs down towards DTLA skyline near center-right
+  const sunX = useTransform(scrollYProgress, [0.0, 0.16, 0.36], ["0vw", "7vw", "16vw"]);
+  const sunY = useTransform(scrollYProgress, [0.0, 0.16, 0.36], ["0vh", "12vh", "32vh"]);
+  const sunScale = useTransform(scrollYProgress, [0.0, 0.18, 0.36], [1.0, 0.7, 0.35]);
+
+  // Sun smoothly dissolves as it sinks into the skyline silhouette
+  const sunOpacityTransform = useTransform(scrollYProgress, [0.0, 0.22, 0.36], [1, 1, 0]);
+
+  // Derived style opacities respecting latched night state (stays night once turned)
   const dayOpacity = hasTurnedNight ? 0 : dayOpacityTransform;
   const nightOpacity = hasTurnedNight ? 1 : nightOpacityTransform;
   const sunOpacity = hasTurnedNight ? 0 : sunOpacityTransform;
+  const sunsetGlowOpacity = hasTurnedNight ? 0 : sunsetGlowTransform;
 
   return (
     <section ref={sectionRef} id="zone-hero" className="relative h-[200vh] w-full bg-slate-950">
@@ -74,10 +81,21 @@ export default function Zone1Hero() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/70" />
         </motion.div>
 
-        {/* Setting Sun (Arcs to the right & dips behind city skyline horizon) */}
+        {/* Golden Hour Sunset Horizon Atmospheric Glow */}
+        <motion.div
+          className="absolute inset-0 z-[2] pointer-events-none"
+          style={{ opacity: sunsetGlowOpacity }}
+        >
+          <div className="absolute top-[20vh] sm:top-[22vh] left-1/2 -translate-x-1/2 w-[90vw] max-w-5xl h-[26vh] bg-gradient-to-t from-amber-500/40 via-orange-400/25 to-transparent blur-3xl rounded-full" />
+        </motion.div>
+
+        {/* Setting Sun (Arcs naturally towards city skyline and dissolves behind rooftops) */}
         <div
           className="absolute inset-0 z-[5] pointer-events-none overflow-hidden"
-          style={{ clipPath: "inset(0 0 calc(100% - 35vh) 0)" }}
+          style={{
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 25vh, rgba(0,0,0,0.6) 30vh, transparent 35vh)",
+            maskImage: "linear-gradient(to bottom, black 0%, black 25vh, rgba(0,0,0,0.6) 30vh, transparent 35vh)",
+          }}
         >
           <motion.div
             className="absolute top-16 left-1/3 flex items-center justify-center"
@@ -89,10 +107,10 @@ export default function Zone1Hero() {
             }}
           >
             {/* Radiant Sunset Outer Glow Layers */}
-            <div className="absolute w-44 h-44 rounded-full bg-amber-400/30 blur-2xl animate-pulse" />
+            <div className="absolute w-44 h-44 rounded-full bg-amber-400/35 blur-2xl" />
             <div className="absolute w-32 h-32 rounded-full bg-orange-500/40 blur-xl" />
             {/* Core Vibrant SoCal Sun */}
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 via-[#FBFA74] to-yellow-100 shadow-[0_0_60px_rgba(251,250,116,0.9)] border-2 border-amber-200/80" />
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 via-[#FBFA74] to-yellow-100 shadow-[0_0_55px_rgba(251,250,116,0.9)] border-2 border-amber-200/80" />
           </motion.div>
         </div>
 

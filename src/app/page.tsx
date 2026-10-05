@@ -6,34 +6,35 @@ import Zone4Sponsors from "@/components/roadtrip/Zone4Sponsors";
 import Zone5FAQQuotes from "@/components/roadtrip/Zone5FAQQuotes";
 import Zone6FooterCTA from "@/components/roadtrip/Zone6FooterCTA";
 import RoadTripFooter from "@/components/roadtrip/RoadTripFooter";
+import { getRegistrationAccess } from "@/app/apply/access";
 
-export default function Home() {
+export default async function Home() {
+  // Read per request, so flipping REGISTRATION_ENABLED shows the Apply button without a rebuild.
+  const applyOpen = (await getRegistrationAccess()) === "open";
+
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950">
-      {/* Navigation Header */}
-      <RoadTripNav />
+    <main id="top" className="min-h-screen bg-night text-mist selection:bg-action selection:text-night">
+      <RoadTripNav applyOpen={applyOpen} />
 
-      {/* Zone 1: Hero Section (Hollywood Hills & Cloudscape) */}
+      {/* Stop 1: Hollywood Hills (hero) */}
       <Zone1Hero />
 
-      {/* Zone 2: Event Information (Inglewood & LA Metro) */}
+      {/* Stop 2: Inglewood (event details) */}
       <Zone2EventInfo />
 
-      {/* Zone 3: About HackCC (Santa Monica Pier) */}
+      {/* Stop 3: Santa Monica Pier (about) */}
       <Zone3About />
 
-      {/* Zone 4: Sponsors (Orange County Core & Irvine Spectrum) */}
+      {/* Stop 4: Orange County (sponsors) */}
       <Zone4Sponsors />
 
-      {/* Zone 5: FAQ & Past Attendee Quotes (Pacific Coast Highway) */}
+      {/* Stop 5: PCH (FAQ) */}
       <Zone5FAQQuotes />
 
-      {/* Zone 6: Get Involved & Apply CTA (SoCal Sunset Beach) */}
+      {/* Stop 6: San Diego (get involved) */}
       <Zone6FooterCTA />
 
-      {/* Site Footer */}
-      <RoadTripFooter />
+      <RoadTripFooter applyOpen={applyOpen} />
     </main>
   );
 }
-

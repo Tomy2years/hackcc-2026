@@ -1,45 +1,54 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Bagel_Fat_One, Montserrat_Alternates, Fraunces } from "next/font/google";
+import { Bagel_Fat_One, Fraunces, Montserrat } from "next/font/google";
+import { EVENT } from "@/lib/event";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const bagelFont = Bagel_Fat_One({
+// Display face: wordmark, giant dates, stop names. Never paragraphs or buttons.
+const bagelFatOne = Bagel_Fat_One({
   weight: "400",
-  variable: "--font-bagel",
+  variable: "--font-bagel-fat-one",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const montserratFont = Montserrat_Alternates({
+// Body face: everything readable.
+const montserrat = Montserrat({
   weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-montserrat-alternates",
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const frauncesFont = Fraunces({
+// Serif italic: postcards, pull quotes and the one hook line under a title.
+const fraunces = Fraunces({
+  style: ["normal", "italic"],
+  variable: "--font-fraunces-var",
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "HackCC",
-  description: "HackCC Official Website",
+  metadataBase: new URL(EVENT.siteUrl),
+  title: {
+    default: `${EVENT.edition} · ${EVENT.tagline}`,
+    template: `%s · ${EVENT.edition}`,
+  },
+  description: `${EVENT.edition} is a hackathon for California community college students, ${EVENT.dateLabel} at ${EVENT.venue.name}. Free to attend, beginners welcome.`,
+  openGraph: {
+    type: "website",
+    siteName: EVENT.name,
+    title: `${EVENT.edition} · ${EVENT.tagline}`,
+    description: `A hackathon for California community college students, ${EVENT.dateLabel}. Free, beginner-friendly, and run by students.`,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bagelFont.variable} ${montserratFont.variable} ${frauncesFont.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${bagelFatOne.variable} ${montserrat.variable} ${fraunces.variable} h-full`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

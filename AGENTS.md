@@ -11,9 +11,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 # HackCC 2026 Developer & Agent Guidelines
 
 - **Vibe & Aesthetic**: Maintain an authentic, human-crafted California Road Trip aesthetic inspired by Cal Hacks & HackMIT. Use expressive typographic pairings (serif italic hooks + bold geometric sans titles, unboxed layouts, and monumental stats) with natural California golden hour & twilight palette tokens from `src/app/globals.css`. Ditch generic floating glass boxes and comic-book cartoon drop shadows. See `.agents/skills/frontend-guidelines/SKILL.md`.
-- **UI Components**: Prefer using starter components in `@/components/ui/` (`<Button>`, `<Card>`, `<Badge>`).
+- **UI Components**: Use `<Button>` from `@/components/ui/Button` (variants `primary`, `secondary`, `outline`). There are no Card or Badge components on purpose: text sits on the scene, not in boxes. Event facts come from `src/lib/event.ts`.
 - **Explicit Routes Only**: Whenever generating or editing buttons/links, always specify real destination routes (`/2026`, `/organizers`, `https://...`). DO NOT output placeholder hrefs like `#` or `www.website.com/#example`. If the route is unknown, ask the user!
-- **Top-Level Image Imports**: Import all image assets and graphics at the top of the file before component definitions (e.g. `import logo from '@/public/images/logo.png'`). Never inline `require()` inside render blocks.
+- **Top-Level Image Imports**: Import all image assets and graphics at the top of the file before component definitions (e.g. `import hackccIcon from "../../../public/images/hackcc-icon.png"`; note `@/*` maps to `src/*`, so `@/public/...` does not resolve). Never inline `require()` inside render blocks.
 - **File & Asset Locations**: Put static assets in `public/images/`, page routes in `@/app/`, reusable UI in `@/components/ui/`, and roadtrip zone sections in `@/components/roadtrip/`.
 - **Design System Showcase**: Reference `/design-system` (`src/app/design-system/page.tsx`) for visual examples and copyable code snippets.
 

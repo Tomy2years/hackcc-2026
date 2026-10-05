@@ -41,24 +41,27 @@ HackCC pairs the unique, playful personality of `Bagel Fat One` with clean moder
 
 | Role | Typeface / Style | Tailwind Classes | Example Usage & Rules |
 | :--- | :--- | :--- | :--- |
-| **Primary Headings** | `Bagel Fat One` (Clean Vector) | `font-heading font-normal text-white leading-[1.08]` | Unique retro California beach/surf personality. Flat and crisp, with **strictly zero** cartoon drop shadows or colored borders. |
-| **Expressive Hook (Optional)** | Classy Serif Italic | `font-serif italic font-light text-amber-300/95` | *"California's premier"*, *"Hit the road"*. Subtle human touch above the main title. |
-| **Body & Descriptions** | Modern Sans (`Montserrat Alternates` / `Geist`) | `font-sans text-slate-200 text-base sm:text-lg leading-relaxed` | Clear, effortless readability. High contrast against dark scenic artwork. |
-| **Key Stats Numbers** | `Bagel Fat One` or Bold Sans | `font-heading text-5xl sm:text-7xl text-amber-400 font-normal` | `14 HRS`, `250+`, `$10K+`. Bold, proud, borderless. |
-| **Interactive Buttons** | Clean Sans Bold | `font-sans font-bold text-sm tracking-wide` | High-contrast, sharp legibility on solid amber buttons. |
+| **Display (wordmark, giant dates, stop names ONLY)** | `Bagel Fat One` | `font-heading text-white leading-[1.05]` | Flat and crisp, **zero** cartoon drop shadows or colored borders. Never on paragraphs, FAQ questions or buttons. |
+| **Hook line (one per view)** | `Fraunces` italic | `font-serif italic text-action/90` | *"Your road trip starts here"*. Also for postcards and pull quotes. Not an eyebrow on every section. |
+| **Body & Descriptions** | `Montserrat` | `font-sans text-mist text-base sm:text-lg leading-relaxed` | Everything you read. High contrast against dark scenic artwork. |
+| **Key Stats Numbers** | `Bagel Fat One` | `font-heading text-5xl sm:text-7xl text-action` | `14 HRS`, `250+`, `$10K+`. Bold, proud, borderless. Real numbers only, the same everywhere. |
+| **Interactive Buttons** | `Montserrat` bold | `<Button>` from `@/components/ui/Button` | Solid amber pill (`primary`), underlined link (`secondary`), translucent pill on photos (`outline`). |
+
+Fonts are loaded once in `src/app/layout.tsx` and exposed as the Tailwind tokens `--font-heading`, `--font-sans`, `--font-serif` (see `src/app/globals.css`). Do not add fonts elsewhere.
 
 ---
 
 ## 3. Scenic Road Trip Color Palette
 
-Draw directly from natural California golden hour, coastal twilight, and open-road scenery rather than synthetic neon:
+Draw directly from natural California golden hour, coastal twilight, and open-road scenery rather than synthetic neon. Every colour has **one job**; use the token, not a hue (tokens live in `src/app/globals.css`, examples at `/design-system`):
 
-- **Golden Hour Amber** (`#F59E0B` / `#FBBF24` / `#FCD34D`): Primary CTA buttons, key stat highlights, route badges. Reflects California sunset and city lights.
-- **Deep Coastal & Twilight Navy** (`#020617` / `#0B0F19` / `#0F172A`): Base background atmosphere for night scenes, button text on amber badges, deep shadows.
-- **Crisp High-Contrast White** (`#FFFFFF`): Primary titles, prominent stat numbers, sign lettering.
-- **Pacific Mist / Cloud Off-White** (`#E2E8F0` / `#F8FAFC`): Narrative body copy, secondary headings.
-- **Pacific Coast Cyan / Sky** (`#38BDF8` / `#BAE6FD`): Coastal accents, ocean highlights, active navigation indicators.
-- **Freeway Sign Green** (`#15803D` / `#166534`): Authentic overhead highway signs, exit badges, travel milestone indicators.
+- **`action` / `action-hover`** (`#FBBF24` / `#FCD34D`, golden-hour amber): the primary button, key stat numbers, the one accent on a scene. Nothing else.
+- **`sign` / `sign-deep`** (`#006B3F` / `#00522F`, real Caltrans green): wayfinding only (route markers, mile markers, section labels). Never a decorative badge on buttons or nav.
+- **`pacific` / `pacific-soft`** (`#38BDF8` / `#BAE6FD`): links and water.
+- **`night` / `night-deep`** (`#0B0F19` / `#020617`): page and section backgrounds, text on amber.
+- **`mist`** (`#E2E8F0`): body copy on dark scenes. **White** for titles and stat numbers.
+- **`paper` / `ink`** (`#FAF6EE` / `#1C1917`): postcards, receipts, anything that looks printed.
+- The purple/yellow tokens still in `globals.css` under "LEGACY" belong to the archived `/2026` site only.
 
 > [!CAUTION]
 > **Strictly Banned Colors & "Vibecoded" Styles:**
@@ -94,7 +97,8 @@ Draw directly from natural California golden hour, coastal twilight, and open-ro
 ## 6. Asset & Image Management (Top-Level Imports Only)
 
 - **Storage Location**: Place image assets in `public/images/` or `public/assets/roadtrip/`.
-- **STRICT IMPORT RULE**: All image assets and graphics MUST be imported at the very top of the file before component definitions (e.g. `import logoImage from '@/public/images/logo.png'` or static path constants at top module level). DO NOT inline `require()` calls or import images inside function bodies / render returns.
+- **STRICT IMPORT RULE**: All image assets and graphics MUST be imported at the very top of the file before component definitions (e.g. `import hackccIcon from "../../../public/images/hackcc-icon.png"`, or a `const SCENE = "/assets/roadtrip/..."` string at module level). Note `@/*` maps to `src/*`, so `@/public/...` does **not** resolve. DO NOT inline `require()` calls or import images inside function bodies / render returns.
+- **Event facts** (name, date, venue, contact, socials) come from `src/lib/event.ts`. Never hard-code them in a page.
 - **Path Resolution**: Reference static images from `public/` using clean root-relative paths like `/images/filename.svg` or `/assets/roadtrip/...`.
 
 ---

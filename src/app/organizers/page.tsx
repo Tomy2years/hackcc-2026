@@ -210,7 +210,7 @@ export default function OrganizersPage() {
                       />
                     </div>
                     <div className="flex flex-col justify-center text-right ml-auto">
-                      <span className="text-xs font-black tracking-wider uppercase font-[var(--font-mont)] text-amber-400">
+                      <span className="text-xs font-black tracking-wider uppercase text-amber-400">
                         HACKCC 2026
                       </span>
                       <span className="text-[10px] text-slate-400 font-mono">HIGHWAY DIRECTORY</span>
@@ -228,7 +228,7 @@ export default function OrganizersPage() {
                         <span className="shrink-0 bg-[#15803D] text-white border border-white font-mono font-black text-xs px-2 py-0.5 rounded shadow-sm group-hover:scale-105 transition-transform">
                           1
                         </span>
-                        <span className="font-bold text-sm transition-colors font-[var(--font-mont)] text-white group-hover:text-amber-300">
+                        <span className="font-bold text-sm transition-colors text-white group-hover:text-amber-300">
                           Main Site
                         </span>
                       </div>
@@ -244,7 +244,7 @@ export default function OrganizersPage() {
                         <span className="shrink-0 bg-[#15803D] text-white border border-white font-mono font-black text-xs px-2 py-0.5 rounded shadow-sm group-hover:scale-105 transition-transform">
                           2
                         </span>
-                        <span className="font-bold text-sm transition-colors font-[var(--font-mont)] text-white group-hover:text-amber-300">
+                        <span className="font-bold text-sm transition-colors text-white group-hover:text-amber-300">
                           Archive
                         </span>
                       </div>

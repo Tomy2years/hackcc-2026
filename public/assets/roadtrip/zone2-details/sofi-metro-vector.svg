@@ -1,7 +1,0 @@
-<svg width="1200" height="500" viewBox="0 0 1200 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Dome / Stadium Arc -->
-  <path d="M 150 400 A 300 200 0 0 1 750 400 Z" fill="#2E396B" stroke="#60A5FA" stroke-width="4"/>
-  <ellipse cx="450" cy="400" rx="300" ry="40" fill="#1E2442"/>
-  <!-- Metro Track Line -->
-  <path d="M 0 450 C 400 420 800 480 1200 440" stroke="#F59E0B" stroke-width="12" stroke-dasharray="24 12"/>
-</svg>

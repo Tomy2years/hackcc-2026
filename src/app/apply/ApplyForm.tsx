@@ -14,7 +14,7 @@ import { RegistrationReceivedCard } from "./RegistrationReceivedCard";
 import { TurnstileWidget } from "./TurnstileWidget";
 import hackccIcon from "../../../public/images/hackcc-icon.png";
 
-const SCENIC_BG = "/assets/roadtrip/zone6-cta-footer/San-Diego-Beach.jpg";
+const SCENIC_BG = "/assets/roadtrip/zone6-cta-footer/san-diego.jpg";
 
 // Fields checked before moving past each step
 const STEP_FIELDS: Record<number, (keyof RegistrationFormData)[]> = {
@@ -235,7 +235,7 @@ export function ApplyForm() {
       <div className="fixed inset-0 z-0 w-full h-full overflow-hidden">
         <Image
           src={SCENIC_BG}
-          alt="San Diego beach at sunset"
+          alt="San Diego Bay at sunrise"
           fill
           priority
           className="object-cover object-center scale-105"

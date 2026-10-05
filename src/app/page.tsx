@@ -17,7 +17,7 @@ export default async function Home() {
       <RoadTripNav applyOpen={applyOpen} />
 
       {/* Stop 1: Hollywood Hills (hero) */}
-      <Zone1Hero />
+      <Zone1Hero applyOpen={applyOpen} />
 
       {/* Stop 2: Inglewood (event details) */}
       <Zone2EventInfo />
@@ -32,7 +32,7 @@ export default async function Home() {
       <Zone5FAQQuotes />
 
       {/* Stop 6: San Diego (get involved) */}
-      <Zone6FooterCTA />
+      <Zone6FooterCTA applyOpen={applyOpen} />
 
       <RoadTripFooter applyOpen={applyOpen} />
     </main>

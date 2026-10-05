@@ -3,14 +3,14 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import hackccIcon from "../../../public/images/hackcc-icon.png";
 
-const SCENIC_BG = "/assets/roadtrip/zone6-cta-footer/San-Diego-Beach.jpg";
+const SCENIC_BG = "/assets/roadtrip/zone6-cta-footer/san-diego.jpg";
 
 /** Shown at /apply once REGISTRATION_CLOSES_AT has passed. */
 export function RegistrationClosed() {
   return (
     <main className="relative min-h-screen bg-slate-950 text-slate-100 font-sans overflow-x-hidden">
       <div className="fixed inset-0 z-0 w-full h-full overflow-hidden">
-        <Image src={SCENIC_BG} alt="San Diego beach at sunset" fill priority className="object-cover object-center scale-105" />
+        <Image src={SCENIC_BG} alt="San Diego Bay at sunrise" fill priority className="object-cover object-center scale-105" />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/40 to-slate-950/85 pointer-events-none" />
       </div>
 

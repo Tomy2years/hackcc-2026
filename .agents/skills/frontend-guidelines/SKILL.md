@@ -19,7 +19,7 @@ Websites look "vibecoded" (AI-generated or template-like) when generic dark-glas
    - Let typography breathe directly inside the scenic California landscape. High contrast is achieved through bold vector weights and natural negative space—never through artificial containers.
 
 2. **Highway Signs & Billboards: STRICTLY for Zone 4 (Sponsors) — Subtle Accent, Not the Main Attraction**:
-   - 🛣️ **Overhead Freeway Signs & Roadside Billboards must ONLY be used in Zone 4 (Sponsors)**.
+   - 🛣️ **Overhead Freeway Signs & Roadside Billboards must ONLY be used in Zone 4 (Sponsors)**. The one exception is the small `<StopMarker>` label ("STOP 3 · SANTA MONICA") that opens every stop: it is wayfinding, not decoration, and it is the only place sign-green appears outside Zone 4.
    - **Subtle Character Accent Only**: The road sign must **never** be the dominant, full-screen centerpiece of the scene. It is strictly a tasteful, modest roadside marker (e.g. a small wayside sign or compact overhead highway marker) meant to inject authentic California road-trip personality without overpowering the sponsor logos or scenery.
    - **Every other zone (Heroes, About, Tracks, Schedule, FAQ, CTA) must remain 100% unboxed.** Do NOT put signs, cards, or boxes around text in zones 1, 2, 3, 5, or 6.
 

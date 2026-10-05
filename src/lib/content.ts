@@ -1,193 +1,196 @@
 import { EVENT } from "./event";
 
 /**
- * Landing-page content. Facts here are real and sourced; anything not yet
- * decided by the team says so in plain words instead of guessing.
- * Sources: hackcc-2025.devpost.com (Fall 2025 numbers, prizes, winners),
- * the archived Spring 2026 site (testimonials, 2025 schedule).
+ * Homepage content. Every fact here is sourced; where the team hasn't decided
+ * something, the copy says so instead of guessing.
+ *
+ * Sources
+ * - hackcc-2025.devpost.com: date, venue, 103 registered participants, 29 submissions,
+ *   "$7,200+ in prizes", sponsors (MiraCosta College, Boot.dev), 14-hour format, rules.
+ * - Each project's Devpost page: award name, tagline, team names.
+ * - Archived Spring 2026 site (src/archive/2026): "18 community colleges", teams of up
+ *   to 4, team formation at the start, Boot.dev pass for every participant,
+ *   testimonials (quoted verbatim below), and the archived schedule.
+ * - Photos in public/archive/2026/2026-images, captioned by what they show.
  */
 
 export const LAST_EVENT = {
-  label: "HackCC Fall 2025",
-  venue: "MiraCosta College, Oceanside",
+  name: "HackCC Fall 2025",
   date: "November 8, 2025",
+  venue: "MiraCosta College, Oceanside",
+  devpostUrl: "https://hackcc-2025.devpost.com/project-gallery",
   stats: [
-    { value: "103", label: "hackers" },
+    { value: "103", label: "registered participants" },
     { value: "18", label: "community colleges" },
-    { value: "29", label: "projects shipped" },
+    { value: "29", label: "projects submitted" },
     { value: "$7,200+", label: "in prizes" },
   ],
-  devpostUrl: "https://hackcc-2025.devpost.com/project-gallery",
 } as const;
 
-export const PAST_WINNERS = [
-  {
-    name: "AssistAI",
-    award: "Overall winner",
-    blurb: "An AI transfer counselor for community college students.",
-    url: "https://devpost.com/software/assistai-wr5xsn",
-  },
+export type Project = {
+  name: string;
+  award: string;
+  summary: string;
+  team?: string;
+  url: string;
+  photo?: "overall" | "aiml" | "socialGood";
+};
+
+export const FEATURED_PROJECT: Project = {
+  name: "AssistAI",
+  award: "Overall Winner",
+  summary:
+    "An AI transfer counselor for community college students. It builds a personalized course plan and answers transfer questions for the colleges students apply to most.",
+  team: "Evan, Aiden Tabrizi and Ryan Pacheco",
+  url: "https://devpost.com/software/assistai-wr5xsn",
+  photo: "overall",
+};
+
+export const MORE_PROJECTS: Project[] = [
   {
     name: "Realibuddy",
     award: "Best AI/ML",
-    blurb: "A real-time voice coach that catches negative self-talk as you speak.",
+    summary: "A voice coach that catches negative self-talk as you speak, in real time.",
+    team: "Justin Allen, Sean Esla, Jonathan Aung and Peter Guan",
     url: "https://devpost.com/software/pavshock",
+    photo: "aiml",
   },
   {
     name: "ClubConnect",
-    award: "Best Social Good",
-    blurb: "Find, join and keep up with clubs on your campus.",
+    award: "Best Social Good/Impact",
+    summary: "A campus map, event listings and check-in to help students find and join clubs.",
     url: "https://devpost.com/software/clubconnect-mfcj74",
+    photo: "socialGood",
   },
   {
     name: "Dungeon Dweller",
-    award: "Best Creative / Game",
-    blurb: "A Zelda-style dungeon crawler built in one day.",
+    award: "Best Creative/Game",
+    summary: "A Zelda-style dungeon crawler built during the event.",
     url: "https://devpost.com/software/dungeon-dweller",
   },
-] as const;
+];
 
 export const PAST_SPONSORS = ["MiraCosta College", "Boot.dev"] as const;
 
-/** Real quotes from past attendees (archived site). Image keys map to files in public/archive/2026. */
+/** Verbatim excerpts from the archived site's testimonials ("…" marks a cut). */
 export const TESTIMONIALS = [
   {
     name: "Remiel Shirazi",
-    role: "First-place team, StudyCCC",
+    context: "First hackathon, first place (StudyCCC)",
     quote:
-      "I participated in HackCC as my first hackathon, where we won first place building StudyCCC. That led to joining the team, and HackCC 2025 was a full-circle moment.",
+      "Last year, I grouped up and participated in HackCC as my first hackathon where we won first place building StudyCCC. This led to joining their team and fast forward to HackCC 2025, another success!",
     image: "remiel",
   },
   {
     name: "Yinghao Guan",
-    role: "Best AI/ML, Realibuddy",
+    context: "Best AI/ML, Realibuddy",
     quote:
-      "We practiced rapid prototyping, AI integration and time-critical decision making under a 14-hour development window.",
+      "This gave us the chance to practice rapid prototyping, AI integration, and time-critical decision making under a 14-hour development window.",
     image: "yinghao",
   },
   {
     name: "Cameron Rafanan",
-    role: "Best Creative/Game, Dungeon Dweller",
+    context: "Best Creative/Game, Dungeon Dweller",
     quote:
-      "Together we created Dungeon Dweller, a dungeon crawler game, and our submission was voted Best Creative/Game. It was such a blast.",
+      "I had the most wonderful opportunity to work with amazing people at HackCC, hosted at MiraCosta College. Together, we created Dungeon Dweller, a dungeon crawler game — and our submission was voted Best Creative/Game!",
     image: "cameron",
   },
 ] as const;
 
-/** The 2025 run of show. Shown as "last year's itinerary" until the 2026 schedule is set. */
-export const LAST_SCHEDULE = [
-  { time: "8:00 AM", what: "Doors open, check-in, breakfast" },
-  { time: "9:00 AM", what: "Opening ceremony" },
-  { time: "10:00 AM", what: "Hacking starts, team formation" },
-  { time: "11:00 AM", what: "Workshop: APIs and vibe-coding intro" },
-  { time: "12:00 PM", what: "Lunch" },
-  { time: "1:00 PM", what: "Workshop: GitHub intro" },
-  { time: "2:00 PM", what: "Smash Bros, Clash Royale and poker tournaments through the afternoon" },
-  { time: "6:30 PM", what: "Dinner" },
-  { time: "8:00 PM", what: "Hacking ends (hard deadline)" },
-  { time: "8:15 PM", what: "Project expo" },
-  { time: "9:15 PM", what: "Closing ceremony and awards" },
-  { time: "10:00 PM", what: "Doors close" },
+/**
+ * Schedule from the archived site. It is not the 2026 schedule, and the archive
+ * doesn't say which event it belongs to, so it is only shown as a labelled example.
+ */
+export const ARCHIVED_SCHEDULE = [
+  { time: "8:00 AM", item: "Doors open" },
+  { time: "9:00 AM", item: "Opening ceremony" },
+  { time: "10:00 AM", item: "Hacking starts and team formation" },
+  { time: "11:00 AM", item: "Workshop: Vibecoding/API intro" },
+  { time: "12:00 PM", item: "Lunch" },
+  { time: "1:00 PM", item: "Workshop: GitHub intro" },
+  { time: "2:00 PM", item: "Super Smash Bros tournament" },
+  { time: "4:00 PM", item: "Clash Royale tournament" },
+  { time: "5:00 PM", item: "Poker tournament" },
+  { time: "6:30 PM", item: "Dinner" },
+  { time: "7:00 PM", item: "Submissions due (soft deadline)" },
+  { time: "8:00 PM", item: "Hacking ends (hard deadline)" },
+  { time: "8:15 PM", item: "Project expo" },
+  { time: "9:15 PM", item: "Closing ceremony" },
+  { time: "10:00 PM", item: "Doors close" },
 ] as const;
 
-/** Application milestones. `date: null` means the team hasn't set it yet. */
-export const TIMELINE = [
-  { label: "Applications open", date: null },
-  { label: "Applications close", date: null },
-  { label: "Decisions emailed", date: null },
-  { label: "Event day", date: EVENT.dateLabel },
-] as const;
-
-export type FaqItem = { q: string; a: string };
+export type FaqItem = { id: string; q: string; a: string };
 export type FaqGroup = { title: string; items: FaqItem[] };
 
-export const FAQ: FaqGroup[] = [
-  {
-    title: "The basics",
-    items: [
-      {
-        q: "What is a hackathon?",
-        a: "A one-day event where you team up, pick a problem, and build something you can demo by evening. HackCC runs about 14 hours. There are workshops, mentors, food and prizes. It's a sprint, not an exam.",
-      },
-      {
-        q: "Who can come?",
-        a: `Any California community college student who is 18 or older, from any major. Last time, 103 students from 18 colleges came, and many had never been to a hackathon.`,
-      },
-      {
-        q: "Do I need to know how to code?",
-        a: "No. Last year's workshops started from zero (an intro to GitHub, an intro to APIs), mentors walk the room all day, and teams need designers, writers and people who can present just as much as programmers. If you've attended a hackathon before but didn't submit a project, you still count as a first-timer to us.",
-      },
-      {
-        q: "I don't have a team.",
-        a: "Most people don't when they arrive. Teams are up to 4 people, and there's a team-formation session right after the opening ceremony. You can also find teammates in our Discord beforehand.",
-      },
-      {
-        q: "How much does it cost?",
-        a: "Nothing. Applying is free, attending is free, and meals are on us. Last year every participant also went home with a Boot.dev coding pass.",
-      },
-    ],
-  },
-  {
-    title: "Getting there",
-    items: [
-      {
-        q: "Where is it?",
-        a: `${EVENT.venue.name}, ${EVENT.venue.address}. We'll post the exact building and room, plus a parking map, before the event.`,
-      },
-      {
-        q: "Is there parking? What about the bus?",
-        a: "Orange Coast College has student lots and is served by OC Bus. We'll confirm whether weekend parking permits are needed and post the details here and on Discord.",
-      },
-      {
-        q: "Can you help with gas or travel?",
-        a: "We don't have a travel budget confirmed yet. If that changes we'll say so here with exact amounts. In the meantime, we'll open a carpool channel on Discord.",
-      },
-      {
-        q: "Is it overnight?",
-        a: "No. HackCC is a single day, roughly 8 AM to 10 PM. You sleep in your own bed.",
-      },
-    ],
-  },
-  {
-    title: "The day",
-    items: [
-      {
-        q: "What should I bring?",
-        a: "A laptop and charger, your student ID, headphones, a water bottle and a hoodie. Classrooms get cold by the afternoon.",
-      },
-      {
-        q: "What's the food situation?",
-        a: "Breakfast, lunch, dinner and snacks are provided. Tell us about dietary restrictions on your application so we can plan for them.",
-      },
-      {
-        q: "What are the prizes?",
-        a: "Last year we awarded $7,200+ in prizes across an overall winner and three categories: Best AI/ML, Best Social Good, and Best Creative/Game. 2026 prizes will be announced with the sponsors.",
-      },
-      {
-        q: "How does judging work?",
-        a: "You submit your project to Devpost with a short description, an image and your GitHub repo before the deadline, then demo it at the project expo. Judges score every team. Previous projects aren't allowed; everything is built on the day.",
-      },
-    ],
-  },
-  {
-    title: "Applying",
-    items: [
-      {
-        q: "When do applications open?",
-        a: "Dates aren't set yet. The Apply button will appear at the top of this page the moment they are, and we'll announce it on Discord and Instagram.",
-      },
-      {
-        q: "What does the application ask?",
-        a: "Your name, email, phone, college, what you're interested in, a T-shirt size and any dietary needs. It takes about five minutes. There's no essay.",
-      },
-      {
-        q: "Will everyone who applies get in?",
-        a: "Space depends on the venue, so we review applications and email every applicant a decision. Applying early helps.",
-      },
-      {
-        q: "Who runs this?",
-        a: "Students from community colleges across Southern California, on their own time. You can meet all of us on the organizers page.",
-      },
-    ],
-  },
-];
+/** The FAQ. The "When can I apply?" answer comes from the application status. */
+export function buildFaq(applyAnswer: string): FaqGroup[] {
+  return [
+    {
+      title: "The basics",
+      items: [
+        {
+          id: "what-is-a-hackathon",
+          q: "What is a hackathon?",
+          a: "An event where you team up and build a project in a short time, then show it to judges and other teams. Last year HackCC ran for 14 hours in one day, with workshops and prizes.",
+        },
+        { id: "who-can-apply", q: "Who can apply?", a: `${EVENT.eligibility}. Any major, any experience level.` },
+        {
+          id: "need-to-code",
+          q: "Do I need to know how to code?",
+          a: "No. Past HackCC schedules included beginner workshops such as an intro to GitHub and an intro to APIs, and teams need people who design, write and present as well as program.",
+        },
+        {
+          id: "teams",
+          q: "Do I need a team?",
+          a: "No. Teams can have up to 4 people, and there is a team formation session at the start. You can also look for teammates on Discord beforehand.",
+        },
+        {
+          id: "cost",
+          q: "How much does it cost?",
+          a: "Nothing. Applying and attending are free. Last year every participant also received a Boot.dev coding pass.",
+        },
+      ],
+    },
+    {
+      title: "Applying",
+      items: [
+        { id: "when-apply", q: "When can I apply?", a: applyAnswer },
+        {
+          id: "application-questions",
+          q: "What does the application ask?",
+          a: "Your name, email, phone number, college, interests, T-shirt size and any dietary restrictions. There is no essay.",
+        },
+        {
+          id: "acceptance",
+          q: "Does everyone who applies get in?",
+          a: "Applications are reviewed and every applicant gets an email with a decision. How many people we can accept depends on the venue.",
+        },
+      ],
+    },
+    {
+      title: "On the day",
+      items: [
+        {
+          id: "food",
+          q: "Is food provided?",
+          a: "Yes. Breakfast, lunch, dinner and snacks are provided. Tell us about dietary restrictions in your application.",
+        },
+        {
+          id: "getting-there",
+          q: "Where is it, and how do I get there?",
+          a: `${EVENT.venue.name}, ${EVENT.venue.address}. Parking, transit and room details will be posted here and on Discord before the event.`,
+        },
+        {
+          id: "overnight",
+          q: "Is it overnight?",
+          a: "No. HackCC is a one-day event. The 2026 start and end times will be posted with the date.",
+        },
+        {
+          id: "judging",
+          q: "How is judging done?",
+          a: "Last year teams submitted to Devpost with an image of the project and a GitHub link before the deadline, then demoed at the project expo. Projects had to be started at the event.",
+        },
+      ],
+    },
+  ];
+}

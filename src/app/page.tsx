@@ -1,40 +1,30 @@
-import RoadTripNav from "@/components/roadtrip/RoadTripNav";
+import { getPublicApplicationStatus } from "@/lib/publicStatus";
+import { SiteHeader } from "@/components/roadtrip/SiteHeader";
+import { SiteFooter } from "@/components/roadtrip/SiteFooter";
 import Zone1Hero from "@/components/roadtrip/Zone1Hero";
 import Zone2EventInfo from "@/components/roadtrip/Zone2EventInfo";
 import Zone3About from "@/components/roadtrip/Zone3About";
 import Zone4Sponsors from "@/components/roadtrip/Zone4Sponsors";
 import Zone5FAQQuotes from "@/components/roadtrip/Zone5FAQQuotes";
 import Zone6FooterCTA from "@/components/roadtrip/Zone6FooterCTA";
-import RoadTripFooter from "@/components/roadtrip/RoadTripFooter";
-import { getRegistrationAccess } from "@/app/apply/access";
 
 export default async function Home() {
-  // Read per request, so flipping REGISTRATION_ENABLED shows the Apply button without a rebuild.
-  const applyOpen = (await getRegistrationAccess()) === "open";
+  // Read per request, so flipping REGISTRATION_ENABLED changes every Apply surface without a rebuild.
+  const status = await getPublicApplicationStatus();
 
   return (
-    <main id="top" className="min-h-screen bg-night text-mist selection:bg-action selection:text-night">
-      <RoadTripNav applyOpen={applyOpen} />
-
-      {/* Stop 1: Hollywood Hills (hero) */}
-      <Zone1Hero applyOpen={applyOpen} />
-
-      {/* Stop 2: Inglewood (event details) */}
-      <Zone2EventInfo />
-
-      {/* Stop 3: Santa Monica Pier (about) */}
-      <Zone3About />
-
-      {/* Stop 4: Orange County (sponsors) */}
-      <Zone4Sponsors />
-
-      {/* Stop 5: PCH (FAQ) */}
-      <Zone5FAQQuotes />
-
-      {/* Stop 6: San Diego (get involved) */}
-      <Zone6FooterCTA applyOpen={applyOpen} />
-
-      <RoadTripFooter applyOpen={applyOpen} />
-    </main>
+    <>
+      <SiteHeader status={status} overArtwork />
+      <main id="main" className="flex-1 bg-night text-cream selection:bg-action selection:text-night">
+        {/* The drive south: Hollywood Hills → Inglewood → Santa Monica → Orange County → San Onofre → San Diego */}
+        <Zone1Hero status={status} />
+        <Zone2EventInfo />
+        <Zone3About />
+        <Zone4Sponsors />
+        <Zone5FAQQuotes applyAnswer={status.faqAnswer} />
+        <Zone6FooterCTA status={status} />
+      </main>
+      <SiteFooter status={status} />
+    </>
   );
 }

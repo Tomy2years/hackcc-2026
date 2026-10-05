@@ -1,102 +1,100 @@
 import Link from "next/link";
 import { EVENT } from "@/lib/event";
-import { Scene, StopMarker, StopTitle } from "./Scene";
+import type { ApplicationStatus } from "@/lib/applicationStatus";
+import { Scene, StopMarker } from "./Scene";
+import { TONE } from "./tones";
 
-const SAN_DIEGO_BEACH = "/assets/roadtrip/zone6-cta-footer/san-diego.jpg";
+const SAN_DIEGO = "/assets/roadtrip/zone6-cta-footer/san-diego.jpg";
 
-interface Zone6FooterCTAProps {
-  applyOpen: boolean;
-}
+const volunteerMail = `mailto:${EVENT.contactEmail}?subject=${encodeURIComponent(`Mentoring, judging or volunteering at ${EVENT.edition}`)}`;
+const sponsorMail = `mailto:${EVENT.contactEmail}?subject=${encodeURIComponent(`Sponsoring ${EVENT.edition}`)}`;
 
 const linkClass =
-  "font-bold text-white hover:text-action underline underline-offset-8 decoration-white/40 hover:decoration-action transition-colors";
+  "font-bold text-cream underline decoration-2 decoration-cream/45 underline-offset-4 hover:text-action hover:decoration-action";
 
-export default function Zone6FooterCTA({ applyOpen }: Zone6FooterCTAProps) {
-  const volunteerMail = `mailto:${EVENT.contactEmail}?subject=${encodeURIComponent(`Volunteering, mentoring or judging at HackCC ${EVENT.year}`)}`;
-
+/**
+ * Stop 6, the arrival. The sunrise band is bright and open, so the invitation is set
+ * directly on it in midnight type (9:1+ contrast) with no overlay.
+ */
+export default function Zone6FooterCTA({ status }: { status: ApplicationStatus }) {
   return (
-    <Scene id="zone-apply" image={SAN_DIEGO_BEACH} alt="San Diego Bay at sunrise: a lifeguard tower, the Coronado bridge and the skyline across the water" tone="day">
-      <StopMarker number={6} place="San Diego" />
-      <StopTitle hook="Last stop" title="Come build with us" />
-
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-        {/* A short, signed note. Human words, no slogans. */}
-        <div className="lg:col-span-7 font-serif text-xl sm:text-2xl leading-relaxed text-mist/95 max-w-2xl">
-          <p className="italic">Dear hacker,</p>
-          <p className="mt-5">
-            Most of us organizing this went to our first hackathon unsure we belonged there. Some of us didn&apos;t have a
-            team, a laptop charger, or any idea what an API was. We left with a project, a few friends and a different
-            picture of what we could do in a day.
+    <Scene
+      edgeAbove={TONE.faq}
+      blendAbove
+      tone={TONE.apply}
+      id="apply"
+      aliases={["zone-apply"]}
+      labelledBy="invite-title"
+      image={SAN_DIEGO}
+      alt="Illustration of San Diego Bay at sunrise: a lifeguard tower, the Coronado bridge and the downtown skyline across the water"
+      position="object-[62%_50%] md:object-[50%_50%]"
+      overlayClassName="items-start justify-center pt-[2vh] text-center"
+      overlay={
+        <div className="flex max-w-[40rem] flex-col items-center">
+          <StopMarker number={6} place="San Diego" tone="dark" />
+          <h2 id="invite-title" className="font-heading text-[clamp(2.5rem,7vw,4.75rem)] leading-[0.98] text-night text-balance">
+            See you in Costa Mesa
+          </h2>
+          <p className="mt-4 max-w-[40rem] text-xl font-bold leading-relaxed text-night">
+            {status.canApply
+              ? "Applications are open. No experience or team needed."
+              : status.state === "closed"
+                ? "Applications are closed for this year."
+                : "Applications open soon. No experience or team needed."}
           </p>
-          <p className="mt-5">
-            That&apos;s the whole point of HackCC. You don&apos;t need experience, a team or money. You need a Saturday and
-            some curiosity. We&apos;ll handle the rest.
-          </p>
-          <p className="mt-5 italic">See you on the road,</p>
-          <p className="font-sans text-base font-bold text-white mt-1">The HackCC {EVENT.year} organizers</p>
-        </div>
-
-        {/* Ways in */}
-        <div className="lg:col-span-5 lg:pt-2">
-          <div className="pb-8 border-b border-white/15">
-            <p className="text-xs font-bold uppercase tracking-wider text-mist/70">Hackers</p>
-            {applyOpen ? (
+          <div className="mt-6">
+            {status.canApply && status.href ? (
               <Link
-                href="/apply"
-                className="mt-4 inline-flex items-center gap-2.5 rounded-full bg-action hover:bg-action-hover text-night font-bold text-lg px-8 py-4 shadow-lg shadow-black/30 transition-all hover:scale-105 active:scale-95"
+                href={status.href}
+                className="inline-flex min-h-12 items-center gap-2 rounded-full bg-night px-7 text-base font-bold text-cream transition-colors duration-150 hover:bg-surface"
               >
-                <span>Apply to HackCC {EVENT.year}</span>
-                <span aria-hidden className="text-xl leading-none">→</span>
+                {status.actionLabel}
+                <span aria-hidden>→</span>
               </Link>
             ) : (
-              <p className="mt-3 text-lg text-mist/90 leading-relaxed">
-                Applications open soon. The button will appear right here, and the{" "}
-                <a href={EVENT.social.discord} target="_blank" rel="noopener noreferrer" className={linkClass}>
-                  Discord
-                </a>{" "}
-                hears first.
-              </p>
+              <a
+                href={EVENT.social.discord}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-12 items-center gap-2 rounded-full bg-night px-7 text-base font-bold text-cream transition-colors duration-150 hover:bg-surface"
+              >
+                Join the Discord for updates
+              </a>
             )}
           </div>
-
-          <dl className="mt-8 space-y-7">
-            <div>
-              <dt className="text-xs font-bold uppercase tracking-wider text-mist/70">Mentors, judges, volunteers</dt>
-              <dd className="mt-2 text-mist/90 leading-relaxed">
-                Spend a Saturday helping students ship their first project.{" "}
-                <a href={volunteerMail} className={linkClass}>
-                  Email us
-                </a>
-                .
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs font-bold uppercase tracking-wider text-mist/70">Organizers</dt>
-              <dd className="mt-2 text-mist/90 leading-relaxed">
-                We&apos;re students across Southern California, and we have room on the team.{" "}
-                <Link href="/apply/organizer" className={linkClass}>
-                  Join the organizing team
-                </Link>{" "}
-                or{" "}
-                <Link href="/organizers" className={linkClass}>
-                  meet who&apos;s already on it
-                </Link>
-                .
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs font-bold uppercase tracking-wider text-mist/70">Sponsors</dt>
-              <dd className="mt-2 text-mist/90 leading-relaxed">
-                Fund prizes, meals and swag for a few hundred future transfers.{" "}
-                <a href={`mailto:${EVENT.contactEmail}?subject=${encodeURIComponent(`Sponsoring HackCC ${EVENT.year}`)}`} className={linkClass}>
-                  Ask for the prospectus
-                </a>
-                .
-              </dd>
-            </div>
-          </dl>
         </div>
-      </div>
+      }
+    >
+      <h3 className="text-[13px] font-bold uppercase tracking-[0.14em] text-mist">Other ways to be part of it</h3>
+      <dl className="mt-4 grid gap-8 border-t border-line pt-6 md:grid-cols-3">
+        <div>
+          <dt className="text-lg font-bold text-cream">Mentor, judge or volunteer</dt>
+          <dd className="mt-2 leading-relaxed text-mist">
+            Help students with their projects on the day.{" "}
+            <a href={volunteerMail} className={linkClass}>
+              Email us
+            </a>
+          </dd>
+        </div>
+        <div>
+          <dt className="text-lg font-bold text-cream">Organize</dt>
+          <dd className="mt-2 leading-relaxed text-mist">
+            Join the student team that plans HackCC.{" "}
+            <Link href="/apply/organizer" className={linkClass}>
+              Join the organizing team
+            </Link>
+          </dd>
+        </div>
+        <div>
+          <dt className="text-lg font-bold text-cream">Sponsor</dt>
+          <dd className="mt-2 leading-relaxed text-mist">
+            Fund prizes, food and the venue.{" "}
+            <a href={sponsorMail} className={linkClass}>
+              Ask for details
+            </a>
+          </dd>
+        </div>
+      </dl>
     </Scene>
   );
 }

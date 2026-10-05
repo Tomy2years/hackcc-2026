@@ -43,17 +43,17 @@ export default function Collage() {
 
       {/* Corner clouds */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/Purple Cloud Cluster 1.webp" alt="" aria-hidden
+      <img src="/archive/2026/Purple Cloud Cluster 1.webp" alt="" aria-hidden
         className="pn-corner-cloud" style={{ position: 'absolute', left: -60, top: '10%', width: 320, opacity: 0.85, pointerEvents: 'none', zIndex: 0 }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/Violet Cloud Cluster 1.webp" alt="" aria-hidden
+      <img src="/archive/2026/Violet Cloud Cluster 1.webp" alt="" aria-hidden
         className="pn-corner-cloud" style={{ position: 'absolute', left: -40, bottom: '5%', width: 280, opacity: 0.75, pointerEvents: 'none', zIndex: 0 }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/Purple Cloud Cluster 2.webp" alt="" aria-hidden
+      <img src="/archive/2026/Purple Cloud Cluster 2.webp" alt="" aria-hidden
         className="pn-corner-cloud" style={{ position: 'absolute', right: -60, top: '8%', width: 320, opacity: 0.85, pointerEvents: 'none', zIndex: 0, transform: 'scaleX(-1)' }} />
       {/* Top cloud */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/Pink Cloud Cluster 1.webp" alt="" aria-hidden style={{
+      <img src="/archive/2026/Pink Cloud Cluster 1.webp" alt="" aria-hidden style={{
           position: 'absolute', bottom: 670, left: '60%',
           transform: 'translateX(-50%)',
           width: '110%', maxWidth: 1100,
@@ -66,7 +66,7 @@ export default function Collage() {
 
         {/* This lower cloud fills the open base of the collage and softens the handoff into the sections below. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/Pink Cloud Cluster 1.webp" alt="" aria-hidden style={{
+        <img src="/archive/2026/Pink Cloud Cluster 1.webp" alt="" aria-hidden style={{
           position: 'absolute', bottom: -60, left: '50%',
           transform: 'translateX(-50%)',
           width: '110%', maxWidth: 1300,

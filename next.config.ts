@@ -12,7 +12,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https://www.elcamino.edu https://www.smc.edu",
   "font-src 'self' data:",
   "connect-src 'self' https://challenges.cloudflare.com",
-  "frame-src https://challenges.cloudflare.com https://maps.google.com",
+  "frame-src https://challenges.cloudflare.com https://maps.google.com https://www.google.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -34,6 +34,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: {
+    // 75 is the default for photos and headshots; the full-bleed scene plates use 90 so the
+    // screen-print grain survives a second compression pass.
+    qualities: [75, 90],
+  },
   async headers() {
     return [
       {

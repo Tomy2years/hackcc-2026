@@ -1,30 +1,40 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   HackCC 2026 design tokens
-   Every colour has one job. Reach for the role, not a hue.
+   HackCC 2026 design tokens, sampled from the road-trip artwork.
+   Contrast (WCAG 2.1): cream/night 17.9 · cream/surface 16.3 · mist/surface 10.5 ·
+   night/sunflower 13.4 · line-strong/surface 4.7 (UI 3:1).
    Full rules: .agents/skills/frontend-guidelines/SKILL.md and /design-system
    ========================================================================== */
 @theme {
-  /* Action: buttons, key stats, the one accent on a scene. Nothing else. */
-  --color-action: #FBBF24;
-  --color-action-hover: #FCD34D;
+  /* Page content width. Grows on large screens so the copy uses the art instead of a wide empty margin. */
+  --container-page: 1200px;
+  /* Surfaces */
+  --color-night: #0F1114;        /* night asphalt page background */
+  --color-night-deep: #0A0B0D;   /* footer */
+  --color-surface: #191C20;      /* solid panels for forms, FAQ, schedules */
+  --color-surface-raised: #23272C;
 
-  /* Sign: wayfinding only (nav markers, mile markers, section labels). Caltrans green. */
-  --color-sign: #006B3F;
-  --color-sign-deep: #00522F;
+  /* Text */
+  --color-cream: #FFF8EB;        /* primary text */
+  --color-mist: #C9CCD0;         /* secondary text on charcoal */
 
-  /* Pacific: links and water. */
-  --color-pacific: #38BDF8;
-  --color-pacific-soft: #BAE6FD;
+  /* Actions: sunflower for the main action and key emphasis only */
+  --color-action: #FFD044;
+  --color-action-hover: #F2BD28;
 
-  /* Night: page and section backgrounds, button text on amber. */
-  --color-night: #0B0F19;
-  --color-night-deep: #020617;
+  /* Lines */
+  --color-line: rgb(255 248 235 / 0.16);
+  --color-line-strong: #82878E;
 
-  /* Neutrals: body copy on dark scenes, and postcard/paper surfaces. */
-  --color-mist: #E2E8F0;
-  --color-paper: #FAF6EE;
+  /* Feedback (kept distinct from the decorative palette) */
+  --color-error: #FF8A80;
+  --color-error-bg: #3A1A1F;
+  --color-success: #7DDBA8;
+  --color-success-bg: #12302A;
+
+  /* Paper for photo prints and postcards */
+  --color-paper: #F2F0EB;        /* neutral warm off-white photo frames */
   --color-ink: #1C1917;
 
   /* Type. Loaded in src/app/layout.tsx via next/font. */
@@ -73,19 +83,99 @@
   }
 }
 
+/* Entrance for hero copy: CSS-only, so the text is visible even if JavaScript fails. */
+/* Edges where a scene meets its neighbour. Short, on a smootherstep curve (flat at both ends, so no visible
+   corner at the seam or where the fade ends), opaque only at the seam itself, in a colour
+   sampled from the artwork either side (--edge, see components/roadtrip/tones.ts). */
+.edge-fade-top {
+  background: linear-gradient(180deg, var(--edge) 0%, color-mix(in srgb, var(--edge) 99%, transparent) 10%, color-mix(in srgb, var(--edge) 94%, transparent) 20%, color-mix(in srgb, var(--edge) 84%, transparent) 30%, color-mix(in srgb, var(--edge) 68%, transparent) 40%, color-mix(in srgb, var(--edge) 50%, transparent) 50%, color-mix(in srgb, var(--edge) 32%, transparent) 60%, color-mix(in srgb, var(--edge) 16%, transparent) 70%, color-mix(in srgb, var(--edge) 6%, transparent) 80%, color-mix(in srgb, var(--edge) 1%, transparent) 90%, transparent 100%);
+}
+.edge-fade-bottom {
+  background: linear-gradient(0deg, var(--edge) 0%, color-mix(in srgb, var(--edge) 99%, transparent) 10%, color-mix(in srgb, var(--edge) 94%, transparent) 20%, color-mix(in srgb, var(--edge) 84%, transparent) 30%, color-mix(in srgb, var(--edge) 68%, transparent) 40%, color-mix(in srgb, var(--edge) 50%, transparent) 50%, color-mix(in srgb, var(--edge) 32%, transparent) 60%, color-mix(in srgb, var(--edge) 16%, transparent) 70%, color-mix(in srgb, var(--edge) 6%, transparent) 80%, color-mix(in srgb, var(--edge) 1%, transparent) 90%, transparent 100%);
+}
+/* Text backings ease in below a scene's top edge so they never draw their own line at a seam. */
+.backing-from-edge {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 140px);
+}
+/* Also ease out at the bottom, only where this painting crossfades into the next one. */
+.backing-from-edge.backing-open-bottom {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px, #000 calc(100% - 120px), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 140px, #000 calc(100% - 120px), transparent 100%);
+}
+/* Same, bottom edge only: for the hero, whose top sits under the header rather than another scene. */
+.backing-to-edge {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 120px), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 120px), transparent 100%);
+}
+
+/* Event photos: a warm print grade that tames the venue's purple lighting so the photos sit with the art. */
+.print-grade {
+  filter: sepia(0.38) saturate(0.62) contrast(1.05);
+}
+
+@media (min-width: 1600px) {
+  :root { --container-page: 1440px; }
+}
+@media (min-width: 1920px) {
+  :root { --container-page: 1600px; }
+}
+
+/* Crossfade between two paintings: the lower scene overlaps the one above by --blend and fades in
+   from transparent, so the art meets art with no dark band. Used where no content sits between. */
+.blend-above {
+  --blend: 4rem;
+  margin-top: calc(-1 * var(--blend));
+  /* Above the previous scene's content layer, or that content would hide the crossfade */
+  z-index: 30;
+}
+@media (min-width: 768px) {
+  .blend-above { --blend: 8rem; }
+}
+.blend-above .blend-mask {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, rgb(0 0 0 / 0.5) calc(var(--blend) * 0.5), #000 var(--blend));
+  mask-image: linear-gradient(180deg, transparent 0, rgb(0 0 0 / 0.5) calc(var(--blend) * 0.5), #000 var(--blend));
+}
+.blend-above .blend-offset {
+  margin-top: var(--blend);
+}
+
+/* The sharp column of a tall painting fades out at its sides, but only once the screen is wider than it. */
+@media (min-width: 1400px) {
+  .tall-column {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+  }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.rise-in {
+  animation: rise-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 80ms + 100ms);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Anchor targets land below the sticky header */
+    scroll-padding-top: 5rem;
   }
 
   body {
     font-family: var(--font-sans);
     background-color: var(--color-night);
-    color: var(--color-mist);
+    color: var(--color-cream);
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Static scenes for people who asked for less motion. */
+  :focus-visible {
+    outline: 3px solid var(--color-action);
+    outline-offset: 3px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;

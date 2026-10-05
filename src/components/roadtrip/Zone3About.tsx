@@ -1,119 +1,150 @@
 import Image, { type StaticImageData } from "next/image";
 import { LAST_EVENT, TESTIMONIALS } from "@/lib/content";
-import { Scene, StopMarker, StopTitle } from "./Scene";
+import { Button } from "@/components/ui/Button";
+import { Scene, StopHeading, StopMarker } from "./Scene";
+import { PrintGallery, type Print } from "./PrintGallery";
+import { SEAM, TONE } from "./tones";
 
+import photoHacking from "@2026-public/2026-images/image1.png";
+import photoRoom from "@2026-public/2026-images/image6.png";
+import photoStage from "@2026-public/2026-images/image4.png";
+import photoHallway from "@2026-public/2026-images/image5.png";
 import remiel from "@2026-public/remiel.webp";
 import yinghao from "@2026-public/2026-images/Yinghao.jpg";
 import cameron from "@2026-public/2026-images/Cameron.jpg";
-import photoCrew from "@2026-public/2026-images/image5.png";
-import photoWinners from "@2026-public/2026-images/image7.png";
-import photoAiml from "@2026-public/2026-images/image9.png";
-import photoTrio from "@2026-public/2026-images/image3.png";
 
-const SANTA_MONICA_PIER = "/assets/roadtrip/zone3-about/santa-monica.jpg";
+const SANTA_MONICA = "/assets/roadtrip/zone3-about/santa-monica.jpg";
 
-const PORTRAITS: Record<(typeof TESTIMONIALS)[number]["image"], StaticImageData> = {
-  remiel,
-  yinghao,
-  cameron,
-};
+const PORTRAITS: Record<(typeof TESTIMONIALS)[number]["image"], StaticImageData> = { remiel, yinghao, cameron };
 
-const PHOTOS = [
-  { src: photoCrew, alt: "Eight hackers posing in a hallway at HackCC 2025", caption: "Morning check-in, MiraCosta", rotate: "-rotate-2" },
-  { src: photoWinners, alt: "Three students holding Overall Winner certificates", caption: "Overall winners, AssistAI", rotate: "rotate-1" },
-  { src: photoAiml, alt: "Four students holding Best AI/ML certificates", caption: "Best AI/ML, Realibuddy", rotate: "-rotate-1" },
-  { src: photoTrio, alt: "Three hackers smiling for the camera", caption: "Somewhere around hour nine", rotate: "rotate-2" },
+// Real photos from HackCC Fall 2025, captioned by what they show. Small, alternating tilts only.
+const PRINTS: Print[] = [
+  { src: photoHacking, alt: "Students working on laptops around a table, with lit marquee letters behind them", caption: "Teams at work", tilt: "md:-rotate-1" },
+  { src: photoRoom, alt: "A room of students coding at long tables, with purple balloons and marquee letters", caption: "The hacking room", tilt: "md:rotate-[0.75deg]" },
+  { src: photoHallway, alt: "Eight participants with event lanyards smiling in a hallway", caption: "Between sessions", tilt: "md:-rotate-[0.5deg]" },
+  { src: photoStage, alt: "About fifteen participants posing together on stage at the end of the event", caption: "Closing ceremony", tilt: "md:rotate-1" },
 ];
 
+/** Stop 3. The pier and Ferris wheel own the right; the story sits in the open sky to the left. */
 export default function Zone3About() {
   return (
-    <Scene id="zone-about" image={SANTA_MONICA_PIER} alt="Santa Monica Pier at blue hour, the Ferris wheel lit, reflections on the water">
-      <StopMarker number={3} place="Santa Monica" />
-      <StopTitle hook="You belong here, even if you've never been to one" title="What HackCC is" />
-
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-        <div className="lg:col-span-7 space-y-5 text-lg leading-relaxed text-mist/90 max-w-2xl">
-          <p>
-            HackCC is a one-day hackathon built for community college students, by community college students. You
-            show up in the morning, find a team, pick a problem you care about, and by evening you&apos;re demoing
-            something real to a room full of people who get it.
-          </p>
-          <p>
-            Most hackathons in California are at universities. Ours isn&apos;t. Transfer students, first-generation
-            students, people working two jobs, people who&apos;ve never written a line of code: this one is for you.
-            There are workshops that start from zero, mentors in the room all day, and prizes for first-timers as well
-            as veterans.
-          </p>
+    <Scene
+      edgeAbove={SEAM.detailsToAbout}
+      blendAbove
+      tone={TONE.about}
+      // Inglewood ends on dark hillside and this plate starts on bright sky, so the blend runs a little longer
+      edgeTopHeight="h-16 md:h-32"
+      contentClassName="xl:hidden"
+      id="about"
+      aliases={["zone-about"]}
+      labelledBy="about-title"
+      image={SANTA_MONICA}
+      alt="Illustration of Santa Monica Pier at blue hour, the Ferris wheel lit and the beach in front"
+      position="object-[80%_50%] md:object-[50%_50%] lg:object-[80%_40%]"
+      backing="bg-[linear-gradient(100deg,rgb(15_17_20/0.88)_0%,rgb(15_17_20/0.72)_40%,rgb(15_17_20/0)_62%)] lg:bg-[linear-gradient(100deg,rgb(15_17_20/0.85)_0%,rgb(15_17_20/0.65)_36%,rgb(15_17_20/0)_55%),linear-gradient(0deg,#10202D_0%,rgb(16_32_45/0.9)_28%,rgb(16_32_45/0.7)_40%,rgb(16_32_45/0)_56%)] max-md:bg-[linear-gradient(180deg,rgb(15_17_20/0.85)_0%,rgb(15_17_20/0.55)_55%,rgb(15_17_20/0.2)_100%)]"
+      overlayClassName="items-start md:items-center lg:items-start lg:pt-32"
+      overlay={
+        <div className="w-full">
+          <div className="max-w-[34rem]">
+            <StopMarker number={3} place="Santa Monica" />
+            <StopHeading id="about-title">What HackCC is</StopHeading>
+            <p className="mt-5 text-lg leading-relaxed text-cream">
+              HackCC is a hackathon built for community college students, by community college students. You show up in
+              the morning, find a team, pick a problem you care about, and by evening you demo something real.
+            </p>
+            <p className="mt-4 text-lg leading-relaxed text-cream">
+              Most California hackathons are at universities. This one is for transfer students, first-timers and anyone
+              who has never written a line of code.
+            </p>
+          </div>
+          {/* Desktop: prints on the waterline, then the numbers and the quotes down the beach; the Ferris wheel stays clear */}
+          <div className="mt-16 hidden lg:block">
+            <Prints columns="grid-cols-4" sizes="300px" />
+            <div className="mt-10">
+              <LastTime />
+              <Stats columns="grid-cols-4" compact />
+            </div>
+            {/* Quotes join them on the beach only from 1280px; any narrower and the scene gets so tall the wheel drops out of frame */}
+            <div className="mt-12 hidden [text-shadow:0_1px_3px_rgb(0_0_0/0.9),0_2px_14px_rgb(0_0_0/0.85)] xl:block">
+              <Testimonials />
+            </div>
+          </div>
         </div>
-
-        {/* Last time, as monumental numbers */}
-        <div className="lg:col-span-5">
-          <p className="text-xs font-bold uppercase tracking-wider text-mist/70">
-            Last time: {LAST_EVENT.label}, {LAST_EVENT.venue}
-          </p>
-          <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-6">
-            {LAST_EVENT.stats.map(stat => (
-              <div key={stat.label} className="border-l border-white/20 pl-4">
-                <dd className="font-heading text-4xl sm:text-5xl text-action leading-none">{stat.value}</dd>
-                <dt className="mt-1.5 text-sm font-semibold text-mist/80">{stat.label}</dt>
-              </div>
-            ))}
-          </dl>
-          <a
-            href={LAST_EVENT.devpostUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mt-6 text-sm font-bold text-white hover:text-action underline underline-offset-8 decoration-white/40 hover:decoration-action transition-colors"
-          >
-            See all 29 projects on Devpost
-          </a>
+      }
+    >
+      {/* Narrower screens: whatever isn't on the art stacks under it (everything below 1024px, the quotes up to 1279px) */}
+      <div className="lg:hidden">
+        <LastTime />
+        <Stats columns="grid-cols-2 md:grid-cols-4" />
+        <div className="mt-14">
+          <Prints columns="grid-cols-1 sm:grid-cols-2" sizes="(min-width: 640px) 50vw, 100vw" />
         </div>
       </div>
+      <div className="mt-16 lg:mt-0">
+        <Testimonials />
+      </div>
+    </Scene>
+  );
+}
 
-      {/* Photo strip: real pictures from last year, taped up like a dorm wall */}
-      <ul className="mt-16 sm:mt-20 grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-        {PHOTOS.map(photo => (
-          <li key={photo.caption} className={`${photo.rotate} transition-transform duration-300 hover:rotate-0`}>
-            <figure className="bg-paper p-2 pb-3 sm:p-3 sm:pb-4 shadow-xl shadow-black/40">
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                sizes="(max-width: 1024px) 50vw, 25vw"
-                placeholder="blur"
-                className="w-full aspect-[4/3] object-cover"
-              />
-              <figcaption className="mt-2 font-serif italic text-ink/80 text-xs sm:text-sm text-center">{photo.caption}</figcaption>
-            </figure>
-          </li>
-        ))}
-      </ul>
-
-      {/* Postcards: real quotes from people who were there */}
-      <ul className="mt-14 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {TESTIMONIALS.map((t, i) => (
-          <li key={t.name} className={i === 1 ? "md:translate-y-6" : ""}>
-            <figure className="relative h-full bg-paper text-ink p-6 sm:p-7 shadow-xl shadow-black/40">
-              <div aria-hidden className="absolute top-4 right-4 w-10 h-12 border border-ink/30 bg-paper rotate-3 flex items-center justify-center">
-                <span className="text-[9px] font-bold uppercase tracking-wider text-ink/60 text-center leading-tight">2025<br />Oceanside</span>
-              </div>
-              <blockquote className="font-serif italic text-lg leading-relaxed pr-10">&ldquo;{t.quote}&rdquo;</blockquote>
-              <figcaption className="mt-5 flex items-center gap-3 border-t border-ink/15 pt-4">
-                <Image
-                  src={PORTRAITS[t.image]}
-                  alt=""
-                  width={44}
-                  height={44}
-                  className="w-11 h-11 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-bold text-sm">{t.name}</p>
-                  <p className="text-xs text-ink/70">{t.role}</p>
-                </div>
+/** Verbatim quotes from people who were there, set straight on the scene or its tone. */
+function Testimonials() {
+  return (
+    <>
+      <h3 className="font-heading text-[clamp(1.75rem,3.5vw,2.5rem)] text-cream">In their words</h3>
+      <ul className="mt-6 grid items-start gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
+        {TESTIMONIALS.map(t => (
+          <li key={t.name} className="border-t border-cream/25 pt-6">
+            <figure className="max-w-[36rem]">
+              <span aria-hidden className="block h-9 font-serif text-6xl leading-none text-action">&ldquo;</span>
+              <blockquote className="font-serif text-xl font-medium italic leading-relaxed text-cream">{t.quote}</blockquote>
+              <figcaption className="mt-5 flex items-center gap-3">
+                <Image src={PORTRAITS[t.image]} alt="" width={48} height={48} className="size-12 shrink-0 rounded-full object-cover ring-2 ring-cream/30" />
+                <span>
+                  <span className="block text-base font-bold text-cream">{t.name}</span>
+                  <span className="block text-[15px] text-cream/85">{t.context}</span>
+                </span>
               </figcaption>
             </figure>
           </li>
         ))}
       </ul>
-    </Scene>
+    </>
+  );
+}
+
+function LastTime() {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-x-4 border-b border-line pb-3">
+      <h3 className="text-[13px] font-bold uppercase tracking-[0.14em] text-mist">
+        Last time · {LAST_EVENT.name} · {LAST_EVENT.venue}
+      </h3>
+      <Button href={LAST_EVENT.devpostUrl} variant="tertiary">
+        All 29 projects on Devpost
+      </Button>
+    </div>
+  );
+}
+
+function Stats({ columns, compact = false }: { columns: string; compact?: boolean }) {
+  return (
+    <dl className={`grid gap-y-8 ${compact ? "mt-4" : "mt-6"} ${columns}`}>
+      {LAST_EVENT.stats.map(stat => (
+        <div key={stat.label} className="border-l-2 border-action/70 pl-4">
+          <dt className="sr-only">{stat.label}</dt>
+          <dd className={`font-heading leading-none text-action ${compact ? "text-[2.5rem]" : "text-[clamp(2.25rem,5vw,3.5rem)]"}`}>{stat.value}</dd>
+          <dd className="mt-2 text-base text-cream/90">{stat.label}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function Prints({ columns, sizes }: { columns: string; sizes: string }) {
+  return (
+    <>
+      <PrintGallery prints={PRINTS} columns={columns} sizes={sizes} />
+      <p className="mt-4 text-sm text-mist [text-shadow:0_1px_8px_rgb(0_0_0/0.8)]">Photos from {LAST_EVENT.name}. Select a photo to see it larger.</p>
+    </>
   );
 }

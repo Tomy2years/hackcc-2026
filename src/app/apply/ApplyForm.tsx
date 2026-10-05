@@ -1,107 +1,132 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useForm, useWatch, type FieldErrors } from "react-hook-form";
+import React, { useId, useRef, useState } from "react";
+import { useForm, useWatch, type FieldErrors, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Car, Check, CheckCircle, ChevronDown, Info, Search } from "lucide-react";
 import { CALIFORNIA_COMMUNITY_COLLEGES } from "./colleges";
 import { INTEREST_OPTIONS, OTHER_COLLEGE, TSHIRT_SIZES, registrationSchema, type RegistrationFormData } from "./schema";
 import { submitRegistration } from "./actions";
-import { RegistrationReceivedCard } from "./RegistrationReceivedCard";
+import { ApplicationReceived } from "./RegistrationReceivedCard";
 import { TurnstileWidget } from "./TurnstileWidget";
-import hackccIcon from "../../../public/images/hackcc-icon.png";
+import { caretAfterDigits, formatPhone } from "./phone";
+import { Button } from "@/components/ui/Button";
 
-const SCENIC_BG = "/assets/roadtrip/zone6-cta-footer/san-diego.jpg";
+type StepId = 1 | 2 | 3 | 4;
 
-// Fields checked before moving past each step
-const STEP_FIELDS: Record<number, (keyof RegistrationFormData)[]> = {
-  1: ["name", "email", "phone", "college", "otherCollege", "ageCheck"],
-  2: ["interests"],
-  3: ["tshirtSize"],
+const STEPS: { id: StepId; title: string; fields: FieldPath<RegistrationFormData>[] }[] = [
+  { id: 1, title: "About you", fields: ["name", "email", "phone", "college", "otherCollege", "ageCheck"] },
+  { id: 2, title: "Interests", fields: ["interests", "isFirstTimer"] },
+  { id: 3, title: "Logistics", fields: ["tshirtSize", "dietaryRestrictions"] },
+  { id: 4, title: "Review and submit", fields: ["codeOfConduct"] },
+];
+
+/** The element to focus for each field when it has an error. */
+const FIELD_FOCUS_ID: Record<string, string> = {
+  name: "apply-name",
+  email: "apply-email",
+  phone: "apply-phone",
+  college: "apply-college",
+  otherCollege: "apply-other-college",
+  ageCheck: "apply-age",
+  interests: "apply-interest-0",
+  tshirtSize: `apply-size-${TSHIRT_SIZES[0]}`,
+  dietaryRestrictions: "apply-dietary",
+  codeOfConduct: "apply-coc",
 };
 
-const STEPS = [
-  { id: 1, name: "Basic Info", title: "Driver Details", hook: "First, a little about who's behind the wheel" },
-  { id: 2, name: "Experience", title: "Plot Your Route", hook: "Pick the roads you want to explore this trip" },
-  { id: 3, name: "Logistics", title: "Pack the Car", hook: "Swag sizes and snacks for the journey" },
-  { id: 4, name: "Consent", title: "Buckle Up", hook: "A few ground rules before we hit the highway" },
+const CODE_OF_CONDUCT = [
+  "Be respectful, welcoming, and collaborative. Harassment, discrimination, or abusive behavior means immediate removal.",
+  "Write your project during the hackathon. Bringing in existing project code isn't allowed.",
+  "Look out for each other and keep the event safe, inclusive, and fun.",
 ];
 
-const SUBMIT_STAGES = [
-  "Fueling up the engine...",
-  "Checking tire pressure...",
-  "Plotting route to Orange Coast College...",
-  "Ready for departure!",
-];
+const inputBase =
+  "w-full min-h-12 rounded-xl border-2 bg-night px-3.5 py-2.5 text-base text-cream placeholder:text-mist/60 " +
+  "transition-colors duration-150 focus:outline-none focus-visible:outline-none focus:ring-4 focus:ring-action/25";
 
-// Smooth deceleration shared by every transition on the page
-const EASE = [0.22, 1, 0.36, 1] as const;
+const inputClass = (invalid: boolean) =>
+  `${inputBase} ${invalid ? "border-error focus:border-error" : "border-line-strong focus:border-action"}`;
 
-type ApplyView = "form" | "submitted";
+const choiceClass =
+  "flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border-2 border-line-strong bg-night px-3.5 text-[15px] text-cream transition-colors duration-150 " +
+  "hover:border-cream/70 has-[:checked]:border-action has-[:checked]:bg-action/10 has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-action/25";
 
-const inputClass =
-  "w-full bg-sky-950/45 border border-sky-100/30 rounded-xl px-4 py-3 text-sm sm:text-base font-medium text-white placeholder:text-sky-100/55 outline-none transition-all duration-200 hover:border-sky-100/60 focus:border-amber-400 focus:ring-4 focus:ring-amber-400/15";
-const labelClass = "block text-xs font-bold uppercase tracking-wider text-sky-50 mb-2";
-const errorClass = "text-xs sm:text-sm text-rose-300 font-semibold mt-1.5";
+const describedBy = (...ids: (string | false | undefined)[]) => ids.filter(Boolean).join(" ") || undefined;
 
-function FieldError({ message }: { message?: string }) {
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
   return (
-    <AnimatePresence initial={false}>
-      {message && (
-        <motion.p
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.2, ease: EASE }}
-          role="alert"
-          className={errorClass}
-        >
-          {message}
-        </motion.p>
-      )}
-    </AnimatePresence>
+    <p id={id} className="mt-2 flex items-start gap-2 text-[15px] font-medium text-error">
+      <svg aria-hidden viewBox="0 0 20 20" className="mt-0.5 size-4 shrink-0 fill-current">
+        <path d="M10 1.5 19 18H1L10 1.5Zm-1 6v5h2v-5H9Zm0 6.5v2h2v-2H9Z" />
+      </svg>
+      <span>
+        <span className="sr-only">Error: </span>
+        {message}
+      </span>
+    </p>
   );
 }
 
-// Themed checkbox: the real input stays (visually hidden) right before this as its `peer`
-function CheckMark() {
+function Label({ htmlFor, children, optional }: { htmlFor?: string; children: React.ReactNode; optional?: boolean }) {
   return (
-    <span
-      aria-hidden
-      className="mt-0.5 w-6 h-6 shrink-0 rounded-lg border-2 border-sky-50/80 bg-sky-950/40 shadow-md shadow-black/40 flex items-center justify-center transition-all duration-200 group-hover:border-amber-300 peer-checked:bg-amber-400 peer-checked:border-amber-400 peer-checked:[&>svg]:opacity-100 peer-checked:[&>svg]:scale-100 peer-focus-visible:ring-4 peer-focus-visible:ring-amber-400/30"
-    >
-      <Check className="w-4 h-4 stroke-[3.5] text-slate-950 opacity-0 scale-50 transition-all duration-200" />
-    </span>
+    <label htmlFor={htmlFor} className="block text-[15px] font-bold text-cream">
+      {children}
+      {optional && <span className="ml-1.5 font-normal text-mist">(optional)</span>}
+    </label>
   );
 }
+
+function Hint({ id, children }: { id: string; children: React.ReactNode }) {
+  return (
+    <p id={id} className="mt-1 text-sm text-mist">
+      {children}
+    </p>
+  );
+}
+
+/** Search by name or by acronym ("OCC"), always offering "Other / Not Listed". */
+function filterColleges(query: string): string[] {
+  const q = query.toLowerCase().trim();
+  const matches = CALIFORNIA_COMMUNITY_COLLEGES.filter(college => {
+    if (!q) return true;
+    if (college.toLowerCase().includes(q)) return true;
+    const acronym = college
+      .split(/\s+/)
+      .map(word => word.replace(/[^a-zA-Z]/g, ""))
+      .filter(Boolean)
+      .map(word => word[0])
+      .join("")
+      .toLowerCase();
+    return acronym.startsWith(q);
+  });
+  return [...matches, OTHER_COLLEGE];
+}
+
+type FormApi = ReturnType<typeof useForm<RegistrationFormData>>;
+type StepProps = { register: FormApi["register"]; errors: FieldErrors<RegistrationFormData> };
 
 export function ApplyForm() {
-  const [view, setView] = useState<ApplyView>("form");
-  const [submittedEmail, setSubmittedEmail] = useState("");
+  const [step, setStep] = useState<StepId>(1);
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileKey, setTurnstileKey] = useState(0);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStage, setSubmitStage] = useState(0);
-  const [collegeQuery, setCollegeQuery] = useState("");
-  const [collegeDropdownOpen, setCollegeDropdownOpen] = useState(false);
-
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const formTopRef = useRef<HTMLDivElement>(null);
+  const stepHeadingRef = useRef<HTMLHeadingElement>(null);
+  // A ref, not state, so a fast double click can't start two submissions before React re-renders.
+  const submittingRef = useRef(false);
 
   const {
     register,
     handleSubmit,
     control,
     getValues,
+    getFieldState,
     setError,
     setValue,
     trigger,
-    formState: { errors }
+    formState: { errors },
   } = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
@@ -109,97 +134,95 @@ export function ApplyForm() {
       isFirstTimer: false,
       ageCheck: false,
       codeOfConduct: false,
-      dietaryRestrictions: ""
+      dietaryRestrictions: "",
     },
-    mode: "onBlur"
+    // Validate a field when you leave it, then live as you fix it.
+    mode: "onTouched",
+    // Answers from earlier steps stay in the form when their inputs unmount.
+    shouldUnregister: false,
   });
 
-  const selectedCollege = useWatch({ control, name: "college" });
-  const selectedInterests = useWatch({ control, name: "interests" });
-  const selectedSize = useWatch({ control, name: "tshirtSize" });
+  const values = useWatch({ control });
+  const current = STEPS[step - 1];
 
-  // Close dropdown on click outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setCollegeDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const focusField = (field?: string) => {
+    if (field) requestAnimationFrame(() => document.getElementById(FIELD_FOCUS_ID[field])?.focus());
+  };
 
-  // Bring the stepper back into view when the step changes on a scrolled page
-  const goToStep = (step: number) => {
-    setCurrentStep(step);
-    const top = formTopRef.current?.getBoundingClientRect().top ?? 0;
-    if (top < 0) formTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const goTo = (target: StepId) => {
+    setStep(target);
+    setSubmitError(null);
+    // Announce the new step to screen readers and bring it into view.
+    requestAnimationFrame(() => {
+      stepHeadingRef.current?.focus({ preventScroll: true });
+      stepHeadingRef.current?.scrollIntoView({ block: "nearest" });
+    });
   };
 
   /**
-   * Validates the current step. The schema's cross-field "Other college needs a name"
-   * rule only runs once every field parses, so it is checked explicitly here; otherwise
-   * step 1 would pass and the final submit would fail on a field that is no longer on screen.
+   * Validates one step. The schema's "Other college needs a name" rule only runs once every
+   * field parses, so it is checked here too; otherwise step 1 would pass and the final submit
+   * would fail on a field that is no longer on screen.
    */
-  const validateStep = async (step: number) => {
-    const isValid = await trigger(STEP_FIELDS[step] ?? []);
-    if (step === 1 && getValues("college") === OTHER_COLLEGE && !getValues("otherCollege")?.trim()) {
-      setError("otherCollege", { type: "required", message: "Please write in your college name" });
-      return false;
+  const validateStep = async (target: StepId) => {
+    const fields = STEPS[target - 1].fields;
+    let valid = await trigger(fields, { shouldFocus: false });
+    if (target === 1 && getValues("college") === OTHER_COLLEGE && !getValues("otherCollege")?.trim()) {
+      setError("otherCollege", { type: "required", message: "Enter the name of your college" });
+      valid = false;
     }
-    return isValid;
+    if (!valid) {
+      // Mark the step's fields as touched so their errors update live while they're fixed.
+      // Otherwise an error only clears on blur, and the layout shift under the cursor can
+      // swallow the click on Continue.
+      for (const field of fields) {
+        setValue(field, getValues(field) as never, { shouldTouch: true, shouldValidate: false, shouldDirty: false });
+      }
+    }
+    return valid;
   };
 
-  const handleNext = async () => {
-    if (await validateStep(currentStep)) goToStep(currentStep + 1);
-  };
-
-  const handleStepClick = async (stepId: number) => {
-    if (stepId < currentStep) {
-      goToStep(stepId);
-    } else if (stepId === currentStep + 1) {
-      if (await validateStep(currentStep)) goToStep(stepId);
+  const handleContinue = async () => {
+    if (await validateStep(step)) {
+      goTo((step + 1) as StepId);
+    } else {
+      focusField(current.fields.find(field => getFieldState(field).invalid));
     }
   };
 
   // If the final submit finds an error on an earlier step, take the applicant there.
   const onInvalid = (formErrors: FieldErrors<RegistrationFormData>) => {
-    const stepWithError = STEPS.find(s => (STEP_FIELDS[s.id] ?? []).some(field => formErrors[field]));
-    if (stepWithError && stepWithError.id !== currentStep) {
-      goToStep(stepWithError.id);
-      setSubmitError(`Something on the "${stepWithError.name}" stop needs another look.`);
+    const target = STEPS.find(s => s.fields.some(field => formErrors[field as keyof RegistrationFormData]));
+    if (!target) return;
+    if (target.id !== step) {
+      setStep(target.id);
+      setSubmitError(`Please check the "${target.title}" step.`);
     }
+    focusField(target.fields.find(field => formErrors[field as keyof RegistrationFormData]));
   };
 
   const onSubmit = async (data: RegistrationFormData) => {
+    if (submittingRef.current) return;
     if (!turnstileToken) {
-      setSubmitError("Please complete the security check above the submit button.");
+      setSubmitError("Complete the security check above the submit button, then try again.");
       return;
     }
 
+    submittingRef.current = true;
     setIsSubmitting(true);
-    setSubmitStage(0);
     setSubmitError(null);
-
-    // Road-trip loading phases tick while the request is in flight, but never delay it.
-    const stageTimer = setInterval(() => {
-      setSubmitStage(stage => Math.min(stage + 1, SUBMIT_STAGES.length - 1));
-    }, 700);
-    const minimumVisible = new Promise(resolve => setTimeout(resolve, 600));
-
     try {
-      const [result] = await Promise.all([submitRegistration(data, turnstileToken), minimumVisible]);
-      setSubmitStage(SUBMIT_STAGES.length);
+      const result = await submitRegistration(data, turnstileToken);
       if (result.ok) {
         setSubmittedEmail(data.email);
-        setView("submitted");
+        window.scrollTo({ top: 0 });
       } else {
         setSubmitError(result.error);
       }
     } catch {
-      setSubmitError("We couldn't reach the server. Please check your connection and try again. Your answers are still here.");
+      setSubmitError("We couldn't reach the server. Check your connection and try again. Your answers are still here.");
     } finally {
-      clearInterval(stageTimer);
+      submittingRef.current = false;
       setIsSubmitting(false);
       // Turnstile tokens work once, so every attempt gets a fresh check.
       setTurnstileToken(null);
@@ -207,645 +230,526 @@ export function ApplyForm() {
     }
   };
 
-  // College filtering with both name and acronym search
-  const filteredColleges = [
-    ...CALIFORNIA_COMMUNITY_COLLEGES.filter((college) => {
-      const query = collegeQuery.toLowerCase().trim();
-      if (!query) return true;
-
-      const matchesName = college.toLowerCase().includes(query);
-      const acronym = college
-        .split(/\s+/)
-        .map((word) => word.replace(/[^a-zA-Z]/g, ""))
-        .filter(Boolean)
-        .map((word) => word[0])
-        .join("")
-        .toLowerCase();
-
-      return matchesName || acronym.startsWith(query);
-    }),
-    OTHER_COLLEGE
-  ];
-
-  const step = STEPS[currentStep - 1];
+  if (submittedEmail) return <ApplicationReceived email={submittedEmail} />;
 
   return (
-    <main className="relative min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950 overflow-x-hidden">
-      {/* Scenic Background with subtle luminous blend */}
-      <div className="fixed inset-0 z-0 w-full h-full overflow-hidden">
-        <Image
-          src={SCENIC_BG}
-          alt="San Diego Bay at sunrise"
-          fill
-          priority
-          className="object-cover object-center scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/40 to-slate-950/85 pointer-events-none" />
-      </div>
+    <div>
+      <nav aria-label="Application progress" className="[text-shadow:0_1px_3px_rgb(0_0_0/0.9),0_2px_12px_rgb(0_0_0/0.7)]">
+        <p className="text-sm font-bold uppercase tracking-[0.14em] text-cream">
+          Step {step} of {STEPS.length}
+        </p>
+        <ol className="mt-3 grid grid-cols-4 gap-2">
+          {STEPS.map(s => {
+            const done = s.id < step;
+            const isCurrent = s.id === step;
+            const bar = (
+              <span
+                aria-hidden
+                className={`block h-2 rounded-full ${done ? "bg-action" : isCurrent ? "bg-action/70" : "bg-cream/30"}`}
+              />
+            );
+            const label = (
+              <span aria-hidden className={`mt-2 hidden text-sm sm:block ${isCurrent ? "font-bold text-cream" : "font-medium text-cream/85"}`}>
+                {s.title}
+              </span>
+            );
+            return (
+              <li key={s.id} aria-current={isCurrent ? "step" : undefined}>
+                {done ? (
+                  <button
+                    type="button"
+                    onClick={() => goTo(s.id)}
+                    className="block min-h-11 w-full text-left [&>span:nth-child(2)]:hover:text-cream"
+                  >
+                    {bar}
+                    {label}
+                    <span className="sr-only">{s.title}, completed. Go back to this step.</span>
+                  </button>
+                ) : (
+                  <>
+                    {bar}
+                    {label}
+                    <span className="sr-only">
+                      {s.title}
+                      {isCurrent ? ", current step" : ", not started"}
+                    </span>
+                  </>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
 
-      {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-950/40 border-b border-sky-100/25 px-4 sm:px-6 lg:px-8 py-3.5">
-        <div className="w-full flex items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="group inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-sm"
-          >
-            <ArrowLeft className="w-4 h-4 text-amber-400 transition-transform group-hover:-translate-x-1" />
-            <span>Back to main site</span>
-          </Link>
+      <form
+        onSubmit={e => void handleSubmit(onSubmit, onInvalid)(e)}
+        noValidate
+        aria-busy={isSubmitting}
+        className="mt-6 rounded-2xl bg-[rgb(15_17_20/0.86)] p-5 shadow-[0_20px_60px_rgb(0_0_0/0.45)] ring-1 ring-cream/10 sm:p-8"
+      >
+        <h2 ref={stepHeadingRef} tabIndex={-1} className="scroll-mt-24 text-2xl font-bold text-cream focus:outline-none">
+          {current.title}
+        </h2>
 
-          <div className="flex items-center gap-2.5">
-            <Image src={hackccIcon} alt="HackCC Logo" width={36} height={36} className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
-            <span className="font-heading text-base sm:text-lg tracking-wider text-amber-400 hidden sm:inline-block">
-              HACKCC 2026
-            </span>
-          </div>
-        </div>
-      </header>
-
-      <div className="relative z-10 w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-24">
-        <AnimatePresence mode="wait">
-          {view === "submitted" ? (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: EASE }}
-            >
-              <RegistrationReceivedCard email={submittedEmail} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.5, ease: EASE }}
-            >
-              {/* Hero: Unboxed Typography */}
-              <div className="text-center mb-12 sm:mb-14">
-                <p className="font-serif italic text-amber-200/95 text-lg sm:text-2xl font-light tracking-wide mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
-                  Your road trip starts here
-                </p>
-                <h1 className="font-heading text-4xl sm:text-6xl md:text-7xl text-white leading-[1.08] tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
-                  REGISTER FOR HACKCC
-                </h1>
-
-                {/* Borderless key facts */}
-                <div className="grid grid-cols-3 max-w-md mx-auto mt-9 pt-7 border-t border-white/30">
-                  <div>
-                    <div className="font-heading text-2xl sm:text-4xl text-amber-400 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">FREE</div>
-                    <div className="text-[11px] sm:text-sm font-black uppercase tracking-wider text-white mt-1 [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_2px_10px_rgba(0,0,0,0.8)]">To Attend</div>
-                  </div>
-                  <div className="border-x border-white/30">
-                    <div className="font-heading text-2xl sm:text-4xl text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">5 MIN</div>
-                    <div className="text-[11px] sm:text-sm font-black uppercase tracking-wider text-white mt-1 [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_2px_10px_rgba(0,0,0,0.8)]">To Apply</div>
-                  </div>
-                  <div>
-                    <div className="font-heading text-2xl sm:text-4xl text-amber-400 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">4</div>
-                    <div className="text-[11px] sm:text-sm font-black uppercase tracking-wider text-white mt-1 [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_2px_10px_rgba(0,0,0,0.8)]">Quick Stops</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Route Progress */}
-              <div ref={formTopRef} className="scroll-mt-24 mb-8">
-                <ol className="flex items-start">
-                  {STEPS.map((s) => {
-                    const isActive = s.id === currentStep;
-                    const isCompleted = s.id < currentStep;
-                    const isReachable = s.id <= currentStep + 1;
-
-                    return (
-                      <li key={s.id} className="relative flex-1 flex flex-col items-center">
-                        {/* Road segment leading into this stop */}
-                        {s.id > 1 && (
-                          <div className="absolute top-[18px] right-1/2 w-full h-1 rounded-full bg-white/35 shadow-[0_1px_6px_rgba(0,0,0,0.6)] overflow-hidden" aria-hidden>
-                            <motion.div
-                              className="h-full bg-amber-400 origin-left"
-                              initial={false}
-                              animate={{ scaleX: s.id <= currentStep ? 1 : 0 }}
-                              transition={{ duration: 0.5, ease: EASE }}
-                            />
-                          </div>
-                        )}
-
-                        <button
-                          type="button"
-                          onClick={() => handleStepClick(s.id)}
-                          disabled={!isReachable || isSubmitting}
-                          aria-current={isActive ? "step" : undefined}
-                          aria-label={`Step ${s.id}: ${s.name}`}
-                          className="relative z-10 flex flex-col items-center gap-2 group cursor-pointer disabled:cursor-default"
-                        >
-                          <motion.span
-                            initial={false}
-                            animate={{ scale: isActive ? 1.1 : 1 }}
-                            transition={{ duration: 0.3, ease: EASE }}
-                            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-black border-2 shadow-lg shadow-black/50 transition-colors duration-300 ${
-                              isActive
-                                ? "bg-amber-400 border-white text-slate-950"
-                                : isCompleted
-                                  ? "bg-sky-950 border-amber-400 text-amber-400"
-                                  : "bg-sky-950 border-sky-50/80 text-white"
-                            }`}
-                          >
-                            {isActive ? <Car className="w-5 h-5" /> : isCompleted ? <Check className="w-4 h-4 stroke-[3]" /> : s.id}
-                          </motion.span>
-                          <span
-                            className={`text-xs sm:text-base font-black tracking-wide transition-colors duration-300 [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_2px_10px_rgba(0,0,0,0.8)] ${
-                              isActive ? "text-amber-300" : isCompleted ? "text-white group-hover:text-amber-300" : "text-white/90"
-                            }`}
-                          >
-                            {s.name}
-                          </span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </div>
-
-              {/* Form Panel */}
-              <div className="relative bg-gradient-to-b from-sky-400/35 via-sky-700/45 to-sky-900/60 backdrop-blur-xl backdrop-saturate-150 border border-sky-100/40 rounded-3xl p-6 sm:p-9 shadow-2xl shadow-sky-950/50">
-                <AnimatePresence mode="wait" initial={false}>
-                  {isSubmitting ? (
-                    <motion.div
-                      key="submitting"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3, ease: EASE }}
-                      className="min-h-[380px] flex flex-col items-center justify-center text-center gap-6"
-                    >
-                      <div className="relative w-24 h-24 flex items-center justify-center">
-                        <div className="absolute inset-0 rounded-full border-4 border-sky-100/25 border-t-amber-400 animate-spin" />
-                        <Car className="w-10 h-10 text-amber-400" />
-                      </div>
-                      <h2 className="font-heading text-2xl sm:text-3xl text-white">Saving Your Seat</h2>
-                      <div className="h-7">
-                        <AnimatePresence mode="wait">
-                          <motion.p
-                            key={submitStage}
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -8 }}
-                            transition={{ duration: 0.25, ease: EASE }}
-                            className="font-serif italic text-amber-200/95 text-lg"
-                          >
-                            {SUBMIT_STAGES[Math.min(submitStage, SUBMIT_STAGES.length - 1)]}
-                          </motion.p>
-                        </AnimatePresence>
-                      </div>
-                      <div className="w-56 h-1 bg-white/10 rounded-full overflow-hidden">
-                        <motion.div
-                          className="h-full bg-amber-400"
-                          initial={false}
-                          animate={{ width: `${(submitStage / SUBMIT_STAGES.length) * 100}%` }}
-                          transition={{ duration: 0.6, ease: EASE }}
-                        />
-                      </div>
-                    </motion.div>
-                  ) : (
-                    <motion.form
-                      key="form-body"
-                      onSubmit={(e) => void handleSubmit(onSubmit, onInvalid)(e)}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3, ease: EASE }}
-                      noValidate
-                    >
-                      {/* Step Heading */}
-                      <AnimatePresence mode="wait" initial={false}>
-                        <motion.div
-                          key={`heading-${currentStep}`}
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{ duration: 0.25, ease: EASE }}
-                          className="mb-7 pb-6 border-b border-sky-100/25"
-                        >
-                          <div className="text-xs font-bold uppercase tracking-[0.2em] text-amber-400 mb-2">
-                            Stop {currentStep} of {STEPS.length}
-                          </div>
-                          <h2 className="font-heading text-2xl sm:text-4xl text-white tracking-wide">{step.title}</h2>
-                          <p className="font-serif italic text-amber-200/90 text-base sm:text-lg font-light mt-1.5">{step.hook}</p>
-                        </motion.div>
-                      </AnimatePresence>
-
-                      <div className="min-h-[300px]">
-                        <AnimatePresence mode="wait" initial={false}>
-                          {/* STEP 1: Basic Info */}
-                          {currentStep === 1 && (
-                            <motion.div
-                              key="step1"
-                              initial={{ opacity: 0, x: 24 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: -24 }}
-                              transition={{ duration: 0.3, ease: EASE }}
-                              className="space-y-5"
-                            >
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <div>
-                                  <label htmlFor="apply-name" className={labelClass}>Full Name</label>
-                                  <input
-                                    id="apply-name"
-                                    {...register("name")}
-                                    type="text"
-                                    autoComplete="name"
-                                    maxLength={100}
-                                    placeholder="Sandy Cheeks"
-                                    aria-invalid={!!errors.name}
-                                    className={inputClass}
-                                  />
-                                  <FieldError message={errors.name?.message} />
-                                </div>
-
-                                <div>
-                                  <label htmlFor="apply-email" className={labelClass}>Email Address</label>
-                                  <input
-                                    id="apply-email"
-                                    {...register("email")}
-                                    type="email"
-                                    inputMode="email"
-                                    autoComplete="email"
-                                    maxLength={254}
-                                    placeholder="sandy@beach.edu"
-                                    aria-invalid={!!errors.email}
-                                    className={inputClass}
-                                  />
-                                  <FieldError message={errors.email?.message} />
-                                </div>
-
-                                <div>
-                                  <label htmlFor="apply-phone" className={labelClass}>Phone Number</label>
-                                  <input
-                                    id="apply-phone"
-                                    {...register("phone")}
-                                    type="tel"
-                                    autoComplete="tel"
-                                    maxLength={30}
-                                    placeholder="714-555-0199"
-                                    aria-invalid={!!errors.phone}
-                                    className={inputClass}
-                                  />
-                                  <FieldError message={errors.phone?.message} />
-                                </div>
-                              </div>
-
-                              {/* Community College Autocomplete */}
-                              <div className="relative" ref={dropdownRef}>
-                                <label htmlFor="apply-college" className={labelClass}>California Community College</label>
-                                <div className="relative">
-                                  <Search className="w-4 h-4 text-sky-100/75 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                  <input
-                                    id="apply-college"
-                                    type="text"
-                                    role="combobox"
-                                    aria-expanded={collegeDropdownOpen}
-                                    aria-controls="college-options"
-                                    autoComplete="off"
-                                    placeholder="Search by name or acronym (e.g. OCC)"
-                                    value={collegeDropdownOpen ? collegeQuery : (selectedCollege || "")}
-                                    onChange={(e) => {
-                                      setCollegeQuery(e.target.value);
-                                      setCollegeDropdownOpen(true);
-                                    }}
-                                    onFocus={() => {
-                                      setCollegeQuery("");
-                                      setCollegeDropdownOpen(true);
-                                    }}
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Escape") setCollegeDropdownOpen(false);
-                                      // Enter picks the only remaining match (e.g. after typing an acronym)
-                                      if (e.key === "Enter" && collegeDropdownOpen) {
-                                        e.preventDefault();
-                                        const matches = filteredColleges.filter(c => c !== OTHER_COLLEGE);
-                                        if (matches.length === 1) {
-                                          setValue("college", matches[0], { shouldValidate: true });
-                                          setCollegeDropdownOpen(false);
-                                          setCollegeQuery("");
-                                        }
-                                      }
-                                    }}
-                                    aria-invalid={!!errors.college}
-                                    className={`${inputClass} pl-11 pr-11`}
-                                  />
-                                  {selectedCollege && !collegeDropdownOpen ? (
-                                    <CheckCircle className="w-4 h-4 text-amber-400 absolute right-4 top-1/2 -translate-y-1/2" />
-                                  ) : (
-                                    <ChevronDown
-                                      className={`w-4 h-4 text-sky-100/75 absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-200 ${collegeDropdownOpen ? "rotate-180 text-amber-400" : ""}`}
-                                    />
-                                  )}
-                                </div>
-
-                                <AnimatePresence>
-                                  {collegeDropdownOpen && (
-                                    <motion.ul
-                                      id="college-options"
-                                      role="listbox"
-                                      initial={{ opacity: 0, y: -6, scale: 0.98 }}
-                                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                                      exit={{ opacity: 0, y: -4, scale: 0.98 }}
-                                      style={{ transformOrigin: "top center" }}
-                                      transition={{ duration: 0.18, ease: EASE }}
-                                      className="absolute left-0 right-0 top-full mt-2 max-h-64 overflow-y-auto bg-sky-900/95 backdrop-blur-xl border border-sky-100/30 rounded-2xl z-50 shadow-2xl shadow-sky-950/70 p-1.5"
-                                    >
-                                      {filteredColleges.map((college) => (
-                                        <li key={college} role="presentation">
-                                          <button
-                                            type="button"
-                                            role="option"
-                                            aria-selected={selectedCollege === college}
-                                            onClick={() => {
-                                              setValue("college", college);
-                                              setCollegeDropdownOpen(false);
-                                              setCollegeQuery("");
-                                              trigger("college");
-                                            }}
-                                            className={`w-full text-left px-3.5 py-2.5 text-sm font-semibold rounded-xl transition-colors cursor-pointer flex items-center justify-between gap-3 ${
-                                              selectedCollege === college
-                                                ? "bg-amber-400 text-slate-950"
-                                                : college === OTHER_COLLEGE
-                                                  ? "text-amber-200 hover:bg-white/10 italic"
-                                                  : "text-slate-100 hover:bg-white/10 hover:text-white"
-                                            }`}
-                                          >
-                                            <span>{college}</span>
-                                            {selectedCollege === college && <Check className="w-4 h-4 stroke-[3] shrink-0" />}
-                                          </button>
-                                        </li>
-                                      ))}
-                                    </motion.ul>
-                                  )}
-                                </AnimatePresence>
-                                <FieldError message={errors.college?.message} />
-                              </div>
-
-                              {/* Write-in for Other College */}
-                              <AnimatePresence initial={false}>
-                                {selectedCollege === OTHER_COLLEGE && (
-                                  <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.3, ease: EASE }}
-                                    className="overflow-hidden"
-                                  >
-                                    <label htmlFor="apply-other-college" className={labelClass}>School Name</label>
-                                    <input
-                                      id="apply-other-college"
-                                      {...register("otherCollege")}
-                                      type="text"
-                                      maxLength={150}
-                                      placeholder="Santa Monica College"
-                                      aria-invalid={!!errors.otherCollege}
-                                      className={inputClass}
-                                    />
-                                    <FieldError message={errors.otherCollege?.message} />
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-
-                              {/* Age Confirmation */}
-                              <div className="pt-1">
-                                <label className="relative flex items-start gap-3 cursor-pointer group">
-                                  <input
-                                    {...register("ageCheck")}
-                                    type="checkbox"
-                                    className="peer sr-only"
-                                  />
-                                  <CheckMark />
-                                  <span>
-                                    <span className="block text-sm sm:text-base font-semibold text-slate-100 group-hover:text-white transition-colors">
-                                      I&apos;ll be 18 or older by Fall 2026.
-                                    </span>
-                                    <span className="block text-xs text-sky-100/75 mt-0.5">
-                                      HackCC is an 18+ event for insurance reasons.
-                                    </span>
-                                  </span>
-                                </label>
-                                <FieldError message={errors.ageCheck?.message} />
-                              </div>
-                            </motion.div>
-                          )}
-
-                          {/* STEP 2: Experience */}
-                          {currentStep === 2 && (
-                            <motion.div
-                              key="step2"
-                              initial={{ opacity: 0, x: 24 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: -24 }}
-                              transition={{ duration: 0.3, ease: EASE }}
-                              className="space-y-8"
-                            >
-                              <fieldset>
-                                <legend className={labelClass}>Your Interests (pick at least one)</legend>
-                                <div className="flex flex-wrap gap-2.5">
-                                  {INTEREST_OPTIONS.map((interest) => {
-                                    const isChecked = selectedInterests?.includes(interest);
-                                    return (
-                                      <button
-                                        key={interest}
-                                        type="button"
-                                        aria-pressed={isChecked}
-                                        onClick={() => {
-                                          setValue(
-                                            "interests",
-                                            isChecked
-                                              ? selectedInterests.filter(i => i !== interest)
-                                              : [...(selectedInterests || []), interest]
-                                          );
-                                          trigger("interests");
-                                        }}
-                                        className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer active:scale-95 ${
-                                          isChecked
-                                            ? "bg-amber-400 text-slate-950 shadow-lg shadow-black/30"
-                                            : "bg-sky-950/40 text-sky-50 hover:text-white hover:bg-sky-800/60 border border-sky-100/30"
-                                        }`}
-                                      >
-                                        {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                                        <span>{interest}</span>
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                                <FieldError message={errors.interests?.message} />
-                              </fieldset>
-
-                              <label className="relative flex items-start gap-3 cursor-pointer group pt-6 border-t border-sky-100/25">
-                                <input
-                                  {...register("isFirstTimer")}
-                                  type="checkbox"
-                                  className="peer sr-only"
-                                />
-                                <CheckMark />
-                                <span>
-                                  <span className="block text-sm sm:text-base font-bold text-amber-300">
-                                    This is my first hackathon!
-                                  </span>
-                                  <span className="block text-sm text-sky-50/90 leading-relaxed mt-1">
-                                    Beginners are welcome. Over half of HackCC hackers are first-timers, and we have mentors, workshops, and beginner prizes to help you ship your first project.
-                                  </span>
-                                </span>
-                              </label>
-                            </motion.div>
-                          )}
-
-                          {/* STEP 3: Logistics */}
-                          {currentStep === 3 && (
-                            <motion.div
-                              key="step3"
-                              initial={{ opacity: 0, x: 24 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: -24 }}
-                              transition={{ duration: 0.3, ease: EASE }}
-                              className="space-y-8"
-                            >
-                              <fieldset>
-                                <legend className={labelClass}>T-Shirt Size</legend>
-                                <div className="flex flex-wrap gap-2.5">
-                                  {TSHIRT_SIZES.map((size) => {
-                                    const isSelected = selectedSize === size;
-                                    return (
-                                      <button
-                                        key={size}
-                                        type="button"
-                                        aria-pressed={isSelected}
-                                        onClick={() => setValue("tshirtSize", size, { shouldValidate: true })}
-                                        className={`min-w-14 px-4 py-2.5 rounded-full text-sm font-black transition-all duration-200 cursor-pointer active:scale-95 ${
-                                          isSelected
-                                            ? "bg-amber-400 text-slate-950 shadow-lg shadow-black/30"
-                                            : "bg-sky-950/40 text-sky-50 hover:text-white hover:bg-sky-800/60 border border-sky-100/30"
-                                        }`}
-                                      >
-                                        {size}
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                                <FieldError message={errors.tshirtSize?.message} />
-                              </fieldset>
-
-                              <div>
-                                <div className="flex items-baseline justify-between gap-3">
-                                  <label htmlFor="apply-dietary" className={labelClass}>Dietary Restrictions & Allergies</label>
-                                  <span className="text-[11px] font-bold uppercase tracking-wider text-sky-100/60 mb-2">Optional</span>
-                                </div>
-                                <textarea
-                                  id="apply-dietary"
-                                  {...register("dietaryRestrictions")}
-                                  rows={3}
-                                  maxLength={300}
-                                  placeholder="e.g. Vegetarian, gluten-free, peanut allergy. Leave blank if none."
-                                  className={`${inputClass} resize-none`}
-                                />
-                                <FieldError message={errors.dietaryRestrictions?.message} />
-                                <p className="flex items-start gap-2 text-xs text-sky-100/75 mt-2">
-                                  <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-amber-400/80" />
-                                  <span>We cater free breakfast, lunch, dinner, boba, and midnight snacks, with allergen-safe options.</span>
-                                </p>
-                              </div>
-                            </motion.div>
-                          )}
-
-                          {/* STEP 4: Consent */}
-                          {currentStep === 4 && (
-                            <motion.div
-                              key="step4"
-                              initial={{ opacity: 0, x: 24 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: -24 }}
-                              transition={{ duration: 0.3, ease: EASE }}
-                              className="space-y-6"
-                            >
-                              <div>
-                                <h3 className="font-heading text-lg sm:text-xl text-white tracking-wide mb-3">Community Norms</h3>
-                                <ul className="space-y-3 text-sm sm:text-base text-sky-50 leading-relaxed">
-                                  {[
-                                    "Be respectful, welcoming, and collaborative. Harassment, discrimination, or abusive behavior means immediate removal.",
-                                    "Write your project during the hackathon. Bringing in existing project code isn't allowed.",
-                                    "Look out for each other and keep the road trip safe, inclusive, and fun.",
-                                  ].map((rule) => (
-                                    <li key={rule} className="flex items-start gap-3">
-                                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                                      <span>{rule}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                                <p className="text-xs text-sky-100/75 mt-4 pt-4 border-t border-sky-100/25">
-                                  We store only what&apos;s on this form. Only HackCC organizers can see it, and we delete it after the event.
-                                </p>
-                              </div>
-
-                              <div>
-                                <label className="relative flex items-start gap-3 cursor-pointer group">
-                                  <input
-                                    {...register("codeOfConduct")}
-                                    type="checkbox"
-                                    className="peer sr-only"
-                                  />
-                                  <CheckMark />
-                                  <span className="text-sm sm:text-base font-semibold text-slate-100 group-hover:text-white transition-colors">
-                                    I agree to follow the <span className="text-amber-300 font-bold">HackCC Code of Conduct</span>.
-                                  </span>
-                                </label>
-                                <FieldError message={errors.codeOfConduct?.message} />
-                              </div>
-
-                              {/* Bot check (Cloudflare Turnstile) */}
-                              <TurnstileWidget key={turnstileKey} onToken={setTurnstileToken} />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-
-                      <FieldError message={submitError ?? undefined} />
-
-                      {/* Step Navigation */}
-                      <div className="flex items-center justify-between gap-4 border-t border-sky-100/25 pt-6 mt-8">
-                        {currentStep > 1 ? (
-                          <button
-                            type="button"
-                            onClick={() => goToStep(currentStep - 1)}
-                            className="text-sm sm:text-base text-white hover:text-amber-300 font-bold underline underline-offset-8 decoration-white/30 hover:decoration-amber-400 transition-colors cursor-pointer"
-                          >
-                            ← Back
-                          </button>
-                        ) : (
-                          <span />
-                        )}
-
-                        {currentStep < STEPS.length ? (
-                          <button
-                            type="button"
-                            onClick={handleNext}
-                            className="inline-flex items-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-7 py-3 rounded-full text-sm sm:text-base shadow-xl shadow-black/40 transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                          >
-                            <span>Next Stop</span>
-                            <span className="text-lg leading-none">→</span>
-                          </button>
-                        ) : (
-                          <button
-                            type="submit"
-                            className="inline-flex items-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-7 py-3 rounded-full text-sm sm:text-base shadow-xl shadow-black/40 transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                          >
-                            <span>Hit the Road</span>
-                            <span className="text-lg leading-none">→</span>
-                          </button>
-                        )}
-                      </div>
-                    </motion.form>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
+        <div className="mt-6">
+          {step === 1 && (
+            <StepAboutYou register={register} errors={errors} setValue={setValue} trigger={trigger} college={values.college} />
           )}
-        </AnimatePresence>
+          {step === 2 && <StepInterests register={register} errors={errors} />}
+          {step === 3 && <StepLogistics register={register} errors={errors} />}
+          {step === 4 && (
+            <StepReview
+              values={values}
+              register={register}
+              errors={errors}
+              onEdit={goTo}
+              turnstile={<TurnstileWidget key={turnstileKey} onToken={setTurnstileToken} />}
+            />
+          )}
+        </div>
+
+        {submitError && (
+          <div role="alert" className="mt-6 rounded-xl border-2 border-error bg-error-bg px-4 py-3 text-[15px] text-error">
+            <strong className="font-bold">Not submitted.</strong> {submitError}
+          </div>
+        )}
+
+        <div className="mt-8 flex flex-col-reverse gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+          {step > 1 ? (
+            <Button variant="secondary" onClick={() => goTo((step - 1) as StepId)} disabled={isSubmitting}>
+              Back
+            </Button>
+          ) : (
+            <span className="hidden sm:block" />
+          )}
+          {step < 4 ? (
+            <Button onClick={handleContinue} arrow>
+              Continue
+            </Button>
+          ) : (
+            <Button type="submit" loading={isSubmitting} disabled={isSubmitting}>
+              {isSubmitting ? "Submitting…" : "Submit application"}
+            </Button>
+          )}
+        </div>
+      </form>
+    </div>
+  );
+}
+
+/* ── Step 1: About you ──────────────────────────────────────────────────── */
+
+function StepAboutYou({
+  register,
+  errors,
+  setValue,
+  trigger,
+  college,
+}: StepProps & { setValue: FormApi["setValue"]; trigger: FormApi["trigger"]; college?: string }) {
+  const phoneField = register("phone");
+  return (
+    <div className="space-y-6">
+      <div>
+        <Label htmlFor="apply-name">Full name</Label>
+        <input
+          id="apply-name"
+          type="text"
+          autoComplete="name"
+          maxLength={100}
+          aria-invalid={!!errors.name}
+          aria-describedby={describedBy(errors.name && "apply-name-error")}
+          className={`mt-2 ${inputClass(!!errors.name)}`}
+          {...register("name")}
+        />
+        <FieldError id="apply-name-error" message={errors.name?.message} />
       </div>
-    </main>
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="apply-email">Email</Label>
+          <Hint id="apply-email-hint">We&apos;ll send your decision here.</Hint>
+          <input
+            id="apply-email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            spellCheck={false}
+            maxLength={254}
+            aria-invalid={!!errors.email}
+            aria-describedby={describedBy("apply-email-hint", errors.email && "apply-email-error")}
+            className={`mt-2 ${inputClass(!!errors.email)}`}
+            {...register("email")}
+          />
+          <FieldError id="apply-email-error" message={errors.email?.message} />
+        </div>
+        <div>
+          <Label htmlFor="apply-phone">Phone number</Label>
+          <Hint id="apply-phone-hint">For contact on the day, like 714-555-0199</Hint>
+          <input
+            id="apply-phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            // No maxLength: it would cut a pasted "+1 (714) 555-0199" before formatPhone can tidy it; formatPhone caps at 10 digits
+            placeholder="714-555-0199"
+            aria-invalid={!!errors.phone}
+            aria-describedby={describedBy("apply-phone-hint", errors.phone && "apply-phone-error")}
+            className={`mt-2 tabular-nums ${inputClass(!!errors.phone)}`}
+            {...phoneField}
+            onChange={e => {
+              // Digits only, at most 10, dashes added as you type; the caret stays after the digit you typed
+              const el = e.target;
+              const digitsBefore = el.value.slice(0, el.selectionStart ?? el.value.length).replace(/\D/g, "").length;
+              const formatted = formatPhone(el.value);
+              el.value = formatted;
+              const caret = caretAfterDigits(formatted, digitsBefore);
+              el.setSelectionRange(caret, caret);
+              void phoneField.onChange(e);
+            }}
+          />
+          <FieldError id="apply-phone-error" message={errors.phone?.message} />
+        </div>
+      </div>
+
+      <CollegePicker
+        value={college}
+        invalid={!!errors.college}
+        error={errors.college?.message}
+        onSelect={name => {
+          setValue("college", name as RegistrationFormData["college"], { shouldValidate: true, shouldTouch: true });
+          if (name !== OTHER_COLLEGE) setValue("otherCollege", "");
+        }}
+        onBlur={() => void trigger("college")}
+      />
+
+      {college === OTHER_COLLEGE && (
+        <div>
+          <Label htmlFor="apply-other-college">College name</Label>
+          <input
+            id="apply-other-college"
+            type="text"
+            maxLength={150}
+            autoComplete="organization"
+            aria-invalid={!!errors.otherCollege}
+            aria-describedby={describedBy(errors.otherCollege && "apply-other-college-error")}
+            className={`mt-2 ${inputClass(!!errors.otherCollege)}`}
+            {...register("otherCollege")}
+          />
+          <FieldError id="apply-other-college-error" message={errors.otherCollege?.message} />
+        </div>
+      )}
+
+      <div>
+        <label className="flex min-h-11 cursor-pointer items-start gap-3">
+          <input
+            id="apply-age"
+            type="checkbox"
+            aria-invalid={!!errors.ageCheck}
+            aria-describedby={describedBy("apply-age-hint", errors.ageCheck && "apply-age-error")}
+            className="mt-0.5 size-5 shrink-0 cursor-pointer accent-action"
+            {...register("ageCheck")}
+          />
+          <span>
+            <span className="block text-[15px] font-bold text-cream">I&apos;ll be 18 or older by Fall 2026.</span>
+            <span id="apply-age-hint" className="block text-sm text-mist">
+              HackCC is an 18+ event.
+            </span>
+          </span>
+        </label>
+        <FieldError id="apply-age-error" message={errors.ageCheck?.message} />
+      </div>
+    </div>
+  );
+}
+
+/** Accessible combobox: type to filter, arrow keys to move, Enter to choose, Escape to close. */
+function CollegePicker({
+  value,
+  invalid,
+  error,
+  onSelect,
+  onBlur,
+}: {
+  value?: string;
+  invalid: boolean;
+  error?: string;
+  onSelect: (college: string) => void;
+  onBlur: () => void;
+}) {
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const listId = useId();
+  const options = filterColleges(query);
+
+  const choose = (college: string) => {
+    onSelect(college);
+    setQuery("");
+    setOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      <Label htmlFor="apply-college">California community college</Label>
+      <Hint id="apply-college-hint">
+        Type a name or an acronym, like OCC. Not listed? Choose &ldquo;{OTHER_COLLEGE}&rdquo;.
+      </Hint>
+      <input
+        id="apply-college"
+        type="text"
+        role="combobox"
+        aria-expanded={open}
+        aria-controls={listId}
+        aria-autocomplete="list"
+        aria-activedescendant={open && options[active] ? `${listId}-opt-${active}` : undefined}
+        aria-invalid={invalid}
+        aria-describedby={describedBy("apply-college-hint", invalid && "apply-college-error")}
+        autoComplete="off"
+        value={open ? query : value ?? ""}
+        onChange={e => {
+          setQuery(e.target.value);
+          setActive(0);
+          setOpen(true);
+        }}
+        onFocus={() => {
+          setQuery("");
+          setActive(0);
+          setOpen(true);
+        }}
+        onBlur={() => {
+          // Let a click on an option land before closing.
+          setTimeout(() => {
+            setOpen(false);
+            onBlur();
+          }, 120);
+        }}
+        onKeyDown={e => {
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            setOpen(true);
+            setActive(i => Math.min(i + 1, options.length - 1));
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            setActive(i => Math.max(i - 1, 0));
+          } else if (e.key === "Enter" && open) {
+            e.preventDefault();
+            if (options[active]) choose(options[active]);
+          } else if (e.key === "Escape") {
+            setOpen(false);
+          }
+        }}
+        className={`mt-2 ${inputClass(invalid)}`}
+      />
+      {open && (
+        <ul
+          id={listId}
+          role="listbox"
+          aria-label="Colleges"
+          className="absolute inset-x-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-xl border-2 border-line-strong bg-night py-1 shadow-[0_12px_32px_rgb(0_0_0/0.5)]"
+        >
+          {options.map((college, i) => {
+            const selected = value === college;
+            return (
+              <li
+                key={college}
+                id={`${listId}-opt-${i}`}
+                role="option"
+                aria-selected={selected}
+                onMouseDown={e => e.preventDefault()}
+                onClick={() => choose(college)}
+                onMouseEnter={() => setActive(i)}
+                className={`flex min-h-11 cursor-pointer items-center justify-between gap-3 px-3.5 text-[15px] ${
+                  i === active ? "bg-surface-raised" : ""
+                } ${selected ? "font-bold text-action" : "text-cream"} ${college === OTHER_COLLEGE ? "border-t border-line" : ""}`}
+              >
+                {college}
+                {selected && <span className="text-sm">Selected</span>}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <FieldError id="apply-college-error" message={error} />
+    </div>
+  );
+}
+
+/* ── Step 2: Interests ──────────────────────────────────────────────────── */
+
+function StepInterests({ register, errors }: StepProps) {
+  return (
+    <div className="space-y-8">
+      <fieldset aria-describedby={describedBy("apply-interests-hint", errors.interests && "apply-interests-error")}>
+        <legend className="text-[15px] font-bold text-cream">What are you interested in?</legend>
+        <p id="apply-interests-hint" className="mt-1 text-sm text-mist">
+          Choose at least one.
+        </p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          {INTEREST_OPTIONS.map((interest, i) => (
+            <label key={interest} className={choiceClass}>
+              <input
+                id={`apply-interest-${i}`}
+                type="checkbox"
+                value={interest}
+                className="size-5 shrink-0 cursor-pointer accent-action"
+                {...register("interests")}
+              />
+              {interest}
+            </label>
+          ))}
+        </div>
+        <FieldError id="apply-interests-error" message={errors.interests?.message} />
+      </fieldset>
+
+      <label className="flex min-h-11 cursor-pointer items-start gap-3">
+        <input type="checkbox" className="mt-0.5 size-5 shrink-0 cursor-pointer accent-action" {...register("isFirstTimer")} />
+        <span>
+          <span className="block text-[15px] font-bold text-cream">This will be my first hackathon</span>
+          <span className="block text-sm text-mist">Optional. Beginners are welcome.</span>
+        </span>
+      </label>
+    </div>
+  );
+}
+
+/* ── Step 3: Logistics ──────────────────────────────────────────────────── */
+
+function StepLogistics({ register, errors }: StepProps) {
+  return (
+    <div className="space-y-8">
+      <fieldset aria-describedby={describedBy(errors.tshirtSize && "apply-size-error")}>
+        <legend className="text-[15px] font-bold text-cream">T-shirt size</legend>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {TSHIRT_SIZES.map(size => (
+            <label key={size} className={`${choiceClass} min-w-16 justify-center font-bold`}>
+              <input id={`apply-size-${size}`} type="radio" value={size} className="size-4 accent-action" {...register("tshirtSize")} />
+              {size}
+            </label>
+          ))}
+        </div>
+        <FieldError id="apply-size-error" message={errors.tshirtSize?.message} />
+      </fieldset>
+
+      <div>
+        <Label htmlFor="apply-dietary" optional>
+          Dietary restrictions or allergies
+        </Label>
+        <Hint id="apply-dietary-hint">Leave blank if none.</Hint>
+        <textarea
+          id="apply-dietary"
+          rows={3}
+          maxLength={300}
+          aria-invalid={!!errors.dietaryRestrictions}
+          aria-describedby={describedBy("apply-dietary-hint", errors.dietaryRestrictions && "apply-dietary-error")}
+          className={`mt-2 resize-y ${inputClass(!!errors.dietaryRestrictions)}`}
+          {...register("dietaryRestrictions")}
+        />
+        <FieldError id="apply-dietary-error" message={errors.dietaryRestrictions?.message} />
+      </div>
+    </div>
+  );
+}
+
+/* ── Step 4: Review and submit ──────────────────────────────────────────── */
+
+function StepReview({
+  values,
+  register,
+  errors,
+  onEdit,
+  turnstile,
+}: StepProps & {
+  values: Partial<RegistrationFormData>;
+  onEdit: (step: StepId) => void;
+  turnstile: React.ReactNode;
+}) {
+  const college = values.college === OTHER_COLLEGE ? values.otherCollege || OTHER_COLLEGE : values.college;
+  const sections: { step: StepId; title: string; items: [string, string][] }[] = [
+    {
+      step: 1,
+      title: "About you",
+      items: [
+        ["Name", values.name ?? ""],
+        ["Email", values.email ?? ""],
+        ["Phone", values.phone ?? ""],
+        ["College", college ?? ""],
+      ],
+    },
+    {
+      step: 2,
+      title: "Interests",
+      items: [
+        ["Interests", (values.interests ?? []).join(", ")],
+        ["First hackathon", values.isFirstTimer ? "Yes" : "No"],
+      ],
+    },
+    {
+      step: 3,
+      title: "Logistics",
+      items: [
+        ["T-shirt size", values.tshirtSize ?? ""],
+        ["Dietary needs", values.dietaryRestrictions?.trim() || "None"],
+      ],
+    },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div className="space-y-5">
+        {sections.map(section => (
+          <section key={section.title} aria-label={section.title} className="border-b border-line pb-5">
+            <div className="flex items-center justify-between gap-4">
+              <h3 className="font-bold text-cream">{section.title}</h3>
+              <button
+                type="button"
+                onClick={() => onEdit(section.step)}
+                className="min-h-11 px-1 text-[15px] font-bold text-cream underline decoration-2 decoration-cream/45 underline-offset-4 hover:text-action hover:decoration-action"
+              >
+                Edit<span className="sr-only"> {section.title}</span>
+              </button>
+            </div>
+            <dl className="mt-1 grid gap-x-6 gap-y-1 text-[15px] sm:grid-cols-[9rem_1fr]">
+              {section.items.map(([term, detail]) => (
+                <React.Fragment key={term}>
+                  <dt className="text-mist">{term}</dt>
+                  <dd className="break-words text-cream">{detail}</dd>
+                </React.Fragment>
+              ))}
+            </dl>
+          </section>
+        ))}
+      </div>
+
+      <div>
+        <h3 className="font-bold text-cream">Code of Conduct</h3>
+        <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[15px] leading-relaxed text-mist">
+          {CODE_OF_CONDUCT.map(rule => (
+            <li key={rule}>{rule}</li>
+          ))}
+        </ul>
+        <p className="mt-3 text-sm text-mist">
+          We store only what&apos;s on this form. Only HackCC organizers can see it, and we delete it after the event.
+        </p>
+        <label className="mt-4 flex min-h-11 cursor-pointer items-start gap-3">
+          <input
+            id="apply-coc"
+            type="checkbox"
+            aria-invalid={!!errors.codeOfConduct}
+            aria-describedby={describedBy(errors.codeOfConduct && "apply-coc-error")}
+            className="mt-0.5 size-5 shrink-0 cursor-pointer accent-action"
+            {...register("codeOfConduct")}
+          />
+          <span className="text-[15px] font-bold text-cream">I agree to follow the HackCC Code of Conduct.</span>
+        </label>
+        <FieldError id="apply-coc-error" message={errors.codeOfConduct?.message} />
+      </div>
+
+      <div>
+        <h3 className="font-bold text-cream">Security check</h3>
+        <p className="mt-1 text-sm text-mist">This confirms you&apos;re not a bot. It usually completes on its own.</p>
+        <div className="mt-3">{turnstile}</div>
+      </div>
+    </div>
   );
 }

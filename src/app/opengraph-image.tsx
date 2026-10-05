@@ -20,8 +20,8 @@ export default async function OpenGraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "72px 80px",
-          background: "linear-gradient(180deg, #0B0F19 0%, #020617 100%)",
-          color: "#FFFFFF",
+          background: "linear-gradient(180deg, #191C20 0%, #0F1114 100%)",
+          color: "#FFF8EB",
           fontFamily: "sans-serif",
         }}
       >
@@ -30,16 +30,16 @@ export default async function OpenGraphImage() {
           <img src={`data:image/png;base64,${icon}`} width={120} height={120} alt="" />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ fontSize: 88, fontWeight: 800, letterSpacing: -2, lineHeight: 1 }}>{EVENT.edition}</div>
-            <div style={{ fontSize: 34, color: "#FBBF24", marginTop: 14 }}>{EVENT.tagline}</div>
+            <div style={{ fontSize: 34, color: "#FFD044", marginTop: 14 }}>{EVENT.tagline}</div>
           </div>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 30, color: "#E2E8F0" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 30, color: "#FFF8EB" }}>
             <div>{`${EVENT.dateLabel} · ${EVENT.venue.name}`}</div>
-            <div style={{ color: "#94A3B8", fontSize: 26 }}>{EVENT.audience}</div>
+            <div style={{ color: "#C9CCD0", fontSize: 26 }}>{`Free · ${EVENT.eligibility}`}</div>
           </div>
-          <div style={{ fontSize: 28, color: "#FBBF24", fontWeight: 700 }}>hackcc.net</div>
+          <div style={{ fontSize: 28, color: "#FFD044", fontWeight: 700 }}>hackcc.net</div>
         </div>
       </div>
     ),

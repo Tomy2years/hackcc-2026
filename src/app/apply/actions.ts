@@ -48,12 +48,22 @@ export async function submitRegistration(
   turnstileToken: unknown
 ): Promise<SubmitRegistrationResult> {
   const access = await getRegistrationAccess();
-  if (access === "closed") return { ok: false, error: "Registration has closed." };
-  if (access !== "open") return { ok: false, error: "Registration isn't open yet." };
+  if (access === "closed") return { ok: false, error: "Applications have closed." };
+  if (access !== "open") return { ok: false, error: "Applications aren't open yet." };
 
   const parsed = registrationSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: "Some answers need another look. Please check the form and try again." };
+  }
+
+  // Local testing only: exercise the UI without touching the rate limiter, Turnstile or the sheet.
+  // REGISTRATION_DRY_RUN=ok succeeds, =fail returns a server error. Ignored in production builds.
+  const dryRun = process.env.NODE_ENV !== "production" ? process.env.REGISTRATION_DRY_RUN : undefined;
+  if (dryRun === "ok" || dryRun === "fail") {
+    await new Promise(resolve => setTimeout(resolve, 900));
+    return dryRun === "ok"
+      ? { ok: true }
+      : { ok: false, error: "We couldn't save your application. Please try again. Your answers are still here." };
   }
 
   const ip = await clientIp();
@@ -62,7 +72,7 @@ export async function submitRegistration(
   if (!isAllowed) {
     return {
       ok: false,
-      error: "Too many registrations submitted from your network. Please wait a few minutes before trying again.",
+      error: "Too many applications were submitted from your network. Please wait a few minutes and try again.",
     };
   }
 
@@ -80,7 +90,7 @@ export async function submitRegistration(
     const { earlierRows, totalRows } = await getRegistrationCounts(email);
 
     if (totalRows >= maxRows()) {
-      return { ok: false, error: `Registration is full. Email ${CONTACT} if you think this is a mistake.` };
+      return { ok: false, error: `We can't accept more applications right now. Email ${CONTACT} if you think this is a mistake.` };
     }
 
     if (earlierRows >= MAX_ROWS_PER_EMAIL) {
@@ -113,6 +123,6 @@ export async function submitRegistration(
   } catch (error) {
     // Log the failure reason only, never the applicant's answers.
     console.error("[register] save failed:", error instanceof Error ? error.message : "unknown error");
-    return { ok: false, error: "We couldn't save your registration. Please try again. Your answers are still here." };
+    return { ok: false, error: "We couldn't save your application. Please try again. Your answers are still here." };
   }
 }

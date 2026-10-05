@@ -1,77 +1,144 @@
-import { EVENT } from "@/lib/event";
-import { PAST_SPONSORS, PAST_WINNERS } from "@/lib/content";
-import { Scene, StopMarker, StopTitle } from "./Scene";
+import Image, { type StaticImageData } from "next/image";
+import { FEATURED_PROJECT, LAST_EVENT, MORE_PROJECTS, type Project } from "@/lib/content";
+import { Scene, StopHeading, StopMarker } from "./Scene";
+import { TONE } from "./tones";
 
-const OC_ANAHEIM = "/assets/roadtrip/zone4-sponsors/orange-county.jpg";
+import photoOverall from "@2026-public/2026-images/image7.png";
+import photoAiml from "@2026-public/2026-images/image9.png";
+import photoSocialGood from "@2026-public/2026-images/image8.png";
 
-const sponsorMail = `mailto:${EVENT.contactEmail}?subject=${encodeURIComponent(`Sponsoring HackCC ${EVENT.year}`)}`;
+const ORANGE_COUNTY = "/assets/roadtrip/zone4-sponsors/orange-county.jpg";
 
+const PHOTOS: Record<NonNullable<Project["photo"]>, { src: StaticImageData; alt: string }> = {
+  overall: { src: photoOverall, alt: "Three students holding Overall Winner certificates in front of lit marquee letters" },
+  aiml: { src: photoAiml, alt: "Four students holding Best AI/ML certificates" },
+  socialGood: { src: photoSocialGood, alt: "Four students holding Best Social Good/Impact certificates" },
+};
+
+const linkClass =
+  "inline-flex min-h-11 items-center font-bold text-cream underline decoration-2 decoration-cream/45 underline-offset-[6px] hover:text-action hover:decoration-action";
+
+/** Stop 4. The night sky is open across the top; the heading sits right, clear of the moon. */
 export default function Zone4Sponsors() {
+
   return (
-    <Scene id="zone-sponsors" image={OC_ANAHEIM} alt="Orange groves and a freeway at night, Anaheim lit in the distance under a full moon">
-      <StopMarker number={4} place="Orange County" />
-      <StopTitle hook="Proof it works" title="What people built last time" />
-
-      {/* Winners: named projects with links, not vague claims */}
-      <ol className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8 max-w-4xl">
-        {PAST_WINNERS.map(project => (
-          <li key={project.name} className="border-l border-white/20 pl-5">
-            <p className="text-xs font-bold uppercase tracking-wider text-action">{project.award}</p>
-            <h3 className="font-heading text-2xl sm:text-3xl text-white mt-1">
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-action transition-colors"
-              >
-                {project.name}
-              </a>
-            </h3>
-            <p className="mt-1.5 text-mist/85 leading-relaxed">{project.blurb}</p>
-          </li>
-        ))}
-      </ol>
-
-      {/* Sponsors */}
-      <div className="mt-20 sm:mt-24 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        <div className="lg:col-span-7">
-          <h3 className="font-heading text-3xl sm:text-5xl text-white leading-tight">Sponsors</h3>
-          <p className="mt-4 text-lg text-mist/90 leading-relaxed max-w-xl">
-            Last year, {PAST_SPONSORS[0]} and {PAST_SPONSORS[1]} put ${"7,200+"} in prizes into students&apos; hands and
-            gave every participant a coding pass to keep learning after the event. {EVENT.year} sponsors will be
-            announced here as they sign on.
-          </p>
-          <p className="mt-6 text-xs font-bold uppercase tracking-wider text-mist/70">Past sponsors</p>
-          <ul className="mt-3 flex flex-wrap gap-x-10 gap-y-3">
-            {PAST_SPONSORS.map(name => (
-              <li key={name} className="font-heading text-2xl sm:text-3xl text-white/90">
-                {name}
+    <Scene
+      edgeAbove={TONE.about}
+      blendAbove
+      tone={TONE.projects}
+      // Desktop shows every project on the art, so nothing stacks below it there
+      contentClassName="lg:hidden"
+      id="projects"
+      labelledBy="projects-title"
+      image={ORANGE_COUNTY}
+      alt="Illustration of Orange County at night: orange groves, a freeway with headlights and the lit stadium under a full moon"
+      position="object-[70%_50%] md:object-[50%_50%]"
+      backing="bg-[linear-gradient(255deg,rgb(15_17_20/0.88)_0%,rgb(15_17_20/0.7)_30%,rgb(15_17_20/0)_55%)] lg:bg-[radial-gradient(ellipse_55%_60%_at_12%_92%,rgb(15_17_20/0.85)_0%,rgb(15_17_20/0.6)_45%,rgb(15_17_20/0)_78%),radial-gradient(ellipse_50%_55%_at_80%_80%,rgb(15_17_20/0.88)_0%,rgb(15_17_20/0.72)_50%,rgb(15_17_20/0)_85%),linear-gradient(255deg,rgb(15_17_20/0.88)_0%,rgb(15_17_20/0.65)_35%,rgb(15_17_20/0)_60%)] max-md:bg-[linear-gradient(180deg,rgb(15_17_20/0.85)_0%,rgb(15_17_20/0.6)_50%,rgb(15_17_20/0)_75%)]"
+      overlayClassName="items-start justify-end pt-28 md:pt-32"
+      overlay={
+        <div className="w-full lg:grid lg:grid-cols-12 lg:gap-10">
+          {/* Desktop: the featured winner sits on the orange groves, left of the heading */}
+          <div className="hidden lg:col-span-6 lg:block lg:pt-24">
+            <FeaturedProject compact />
+          </div>
+          <div className="lg:col-span-6">
+            <div className="ml-auto max-w-[32rem] md:text-right">
+              <StopMarker number={4} place="Orange County" />
+              <StopHeading id="projects-title">What people built last year</StopHeading>
+              <p className="mt-4 text-lg leading-relaxed text-cream">
+                Four award winners from {LAST_EVENT.name}. Each was started and finished on the day.
+              </p>
+            </div>
+            {/* Desktop: the other winners ride along the freeway, under the heading */}
+            <ul className="mt-8 hidden lg:block">
+              {MORE_PROJECTS.map(project => (
+                <li key={project.name}>
+                  <ProjectRow project={project} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      }
+    >
+      {/* Below desktop width the projects stack under the artwork instead */}
+      <div>
+        <FeaturedProject />
+        <ul className="mt-8 grid gap-8 md:grid-cols-3">
+          {MORE_PROJECTS.map(project => {
+            const photo = project.photo ? PHOTOS[project.photo] : null;
+            return (
+              <li key={project.name} className="flex flex-col border-t-2 border-action/70 pt-5">
+                <p className="text-[13px] font-bold uppercase tracking-[0.1em] text-action">{project.award}</p>
+                <h3 className="mt-1 text-2xl font-bold text-cream">{project.name}</h3>
+                <p className="mt-2 leading-relaxed text-mist">{project.summary}</p>
+                {project.team && <p className="mt-2 text-sm text-mist">Built by {project.team}.</p>}
+                {photo && (
+                  <Image src={photo.src} alt={photo.alt} sizes="(min-width: 768px) 360px, 100vw" placeholder="blur" className="print-grade mt-4 h-auto w-full rounded-lg" />
+                )}
+                <a href={project.url} target="_blank" rel="noopener noreferrer" className={`${linkClass} mt-2`}>
+                  View on Devpost<span className="sr-only">: {project.name}</span>
+                </a>
               </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* The one roadside sign on the whole trip */}
-        <div className="lg:col-span-5 flex lg:justify-end">
-          <a
-            href={sponsorMail}
-            className="group relative block w-full max-w-sm bg-sign text-white border-[3px] border-white/90 rounded-md px-6 py-6 shadow-2xl shadow-black/50 transition-transform hover:-translate-y-1"
-          >
-            <span className="absolute -top-3.5 right-6 bg-sign-deep border-2 border-white/90 rounded-sm px-2 py-0.5 text-[11px] font-bold tracking-[0.18em] uppercase">
-              Exit {EVENT.year}
-            </span>
-            <span className="block text-xs font-bold uppercase tracking-[0.2em] text-white/80">Companies &amp; colleges</span>
-            <span className="block font-heading text-3xl sm:text-4xl mt-1 leading-tight">Sponsor HackCC</span>
-            <span className="mt-3 block text-sm text-white/90 leading-relaxed">
-              Reach a few hundred students who are about to transfer, with a day of real projects to show for it.
-              Email us for the prospectus.
-            </span>
-            <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold group-hover:gap-3 transition-all">
-              {EVENT.contactEmail} <span aria-hidden>→</span>
-            </span>
-          </a>
-        </div>
+            );
+          })}
+        </ul>
       </div>
+
     </Scene>
+  );
+}
+
+/** The overall winner. Compact is the version set on the artwork at desktop width: a print, then text, no box. */
+function FeaturedProject({ compact = false }: { compact?: boolean }) {
+  const photo = FEATURED_PROJECT.photo ? PHOTOS[FEATURED_PROJECT.photo] : null;
+  return (
+    <article className={compact ? "[text-shadow:0_1px_3px_rgb(0_0_0/0.9),0_2px_14px_rgb(0_0_0/0.85)]" : "grid gap-8 md:grid-cols-12"}>
+      {photo && (
+        <div className={compact ? "max-w-[30rem] md:-rotate-1" : "md:col-span-5"}>
+          {compact ? (
+            <figure className="rounded-[3px] bg-paper p-2.5 shadow-[0_4px_14px_rgb(0_0_0/0.35)]">
+              <Image src={photo.src} alt={photo.alt} sizes="480px" placeholder="blur" className="print-grade aspect-[16/9] w-full rounded-[2px] object-cover object-[50%_35%]" />
+            </figure>
+          ) : (
+            <Image src={photo.src} alt={photo.alt} sizes="(min-width: 768px) 440px, 100vw" placeholder="blur" className="print-grade h-auto w-full rounded-lg" />
+          )}
+        </div>
+      )}
+      <div className={compact ? "mt-6 max-w-[36rem]" : "md:col-span-7"}>
+        <p className="inline-flex rounded-md bg-action px-2.5 py-1 text-[13px] font-bold uppercase tracking-[0.1em] text-night [text-shadow:none]">
+          {FEATURED_PROJECT.award}
+        </p>
+        <h3 className={`mt-3 font-heading leading-none text-cream ${compact ? "text-[3.5rem]" : "text-[clamp(2rem,4vw,3rem)]"}`}>
+          {FEATURED_PROJECT.name}
+        </h3>
+        <p className={`mt-3 max-w-[58ch] leading-relaxed ${compact ? "text-xl font-medium text-cream" : "text-lg text-mist"}`}>{FEATURED_PROJECT.summary}</p>
+        {FEATURED_PROJECT.team && <p className={`mt-2 text-cream ${compact ? "text-[17px]" : "text-[15px]"}`}>Built by {FEATURED_PROJECT.team}.</p>}
+        <a href={FEATURED_PROJECT.url} target="_blank" rel="noopener noreferrer" className={`${linkClass} mt-2`}>
+          See {FEATURED_PROJECT.name} on Devpost
+        </a>
+      </div>
+    </article>
+  );
+}
+
+/** One supporting winner as a slim row set on the artwork at desktop width. */
+function ProjectRow({ project }: { project: Project }) {
+  const photo = project.photo ? PHOTOS[project.photo] : null;
+  return (
+    <article className="flex items-center gap-5 border-t border-cream/25 py-5 text-left [text-shadow:0_1px_3px_rgb(0_0_0/0.9),0_2px_14px_rgb(0_0_0/0.85)]">
+      {/* Winners with a photo get a large print; the rest are text only, with no placeholder tile */}
+      {photo && (
+        <Image src={photo.src} alt={photo.alt} sizes="224px" placeholder="blur" className="print-grade aspect-[4/3] w-56 shrink-0 rounded-md object-cover object-[50%_30%]" />
+      )}
+      <div className="min-w-0">
+        <p className="text-[13px] font-bold uppercase tracking-[0.1em] text-action">{project.award}</p>
+        <h3 className="text-xl font-bold leading-tight text-cream">{project.name}</h3>
+        <p className="mt-1 text-base font-medium leading-snug text-cream">{project.summary}</p>
+        <a href={project.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-sm font-bold text-cream underline decoration-cream/45 decoration-2 underline-offset-4 hover:text-action hover:decoration-action">
+          View on Devpost<span className="sr-only">: {project.name}</span>
+        </a>
+      </div>
+    </article>
   );
 }

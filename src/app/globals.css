@@ -140,14 +140,6 @@
   margin-top: var(--blend);
 }
 
-/* The sharp column of a tall painting fades out at its sides, but only once the screen is wider than it. */
-@media (min-width: 1400px) {
-  .tall-column {
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
-  }
-}
-
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: none; }

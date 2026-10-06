@@ -7,7 +7,7 @@ import { Sponsors } from "./Sponsors";
 
 // One tall painting: the coast and domes at the top, the road running on down under the questions
 // Upscaled 2x (Lanczos + light sharpen) from the 887px source; replace with a native 2000px+ export when there is one
-const SAN_ONOFRE = "/assets/roadtrip/zone5-faq/san-onofre-tall-2x.jpg";
+const SAN_ONOFRE = "/assets/roadtrip/zone5-faq/san-onofre-square.png";
 
 const linkClass =
   "font-bold text-cream underline decoration-2 decoration-cream/45 underline-offset-4 hover:text-action hover:decoration-action";

@@ -89,12 +89,7 @@ export function Scene({
       {tall && (
         // The painting starts at the top of the stop and runs down behind everything in it
         <div className="blend-mask absolute inset-0 overflow-hidden" style={{ backgroundColor: below }}>
-          {/* Wide screens: a soft, dark, blurred copy fills the sides... */}
-          <Image src={image} alt="" fill quality={50} sizes="50vw" className="scale-110 object-cover object-top opacity-60 blur-2xl" />
-          {/* ...and the sharp painting is never shown wider than its pixels allow, its edges melting into that copy */}
-          <div className="tall-column absolute inset-y-0 left-1/2 w-full max-w-[1400px] -translate-x-1/2">
-            <Image src={image} alt={alt} fill quality={SCENE_QUALITY} sizes="(min-width: 1400px) 1400px, 100vw" className="object-cover object-top" />
-          </div>
+          <Image src={image} alt={alt} fill quality={SCENE_QUALITY} sizes="100vw" className="object-cover object-top" />
         </div>
       )}
       {aliases.map(alias => (

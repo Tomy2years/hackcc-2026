@@ -45,8 +45,13 @@ const TEAM_LABELS: Record<string, string> = {
   marketing: "Marketing",
 };
 
-// Head organizer first, then leads, then everyone else alphabetically.
-const rank = (o: Organizer) => (o.id === "paul-pham" ? 0 : /lead|head|director/i.test(o.role) ? 1 : 2);
+// First row is fixed (Paul, Kareem, Tom), then the other leads, then everyone else alphabetically.
+const FIRST_ROW = ["paul-pham", "kareem-tadros", "tom-perel"];
+const rank = (o: Organizer) => {
+  const pinned = FIRST_ROW.indexOf(o.id);
+  if (pinned !== -1) return pinned;
+  return /lead|head|director/i.test(o.role) ? FIRST_ROW.length : FIRST_ROW.length + 1;
+};
 
 const ORGANIZERS: Organizer[] = (organizersData as RawOrganizer[])
   .map(o => ({

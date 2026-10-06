@@ -27,6 +27,59 @@ Open [http://localhost:3000](http://localhost:3000) in your browser!
 
 ---
 
+## 🌿 Git Workflow: Personal Dev Branches (`dev-<name>`)
+
+To prevent merge conflicts and keep our team synchronized:
+
+### 1. Dedicated Dev Branch
+Every contributor works on their personal development branch: `dev-<yourname>` (e.g., `dev-tom`, `dev-rohan`, `dev-kaden`, `dev-dasha`).
+- If you don't have one yet:
+  ```bash
+  git checkout main
+  git pull origin main
+  git checkout -b dev-<yourname>
+  git push -u origin dev-<yourname>
+  ```
+
+### 2. The Golden Rule: Always Pull `main` Before Coding
+Other team members merge PRs into `main` continuously. Pulling before you code ensures your branch never drifts far behind:
+```bash
+# 1. Ensure your working directory is clean
+git status
+
+# 2. Switch to your personal branch
+git checkout dev-<yourname>
+
+# 3. Fetch all remote changes
+git fetch origin
+
+# 4. Merge main into your branch
+git pull origin main
+```
+
+### 3. Pre-Flight Checks Before Committing
+Before creating a commit or opening a PR, always verify:
+```bash
+npm run lint
+npm run typecheck
+```
+
+### 4. Commits & Pull Requests
+- Follow conventional commit style: `feat:`, `fix:`, `style:`, `refactor:`, `docs:`.
+- **Never commit `.env.local` or secrets.**
+- Push to your branch: `git push origin dev-<yourname>`.
+- **Open a Pull Request into `main`** on GitHub (click the green "Compare & pull request" button).
+- **DM Tom (@Tomy2years)** on Discord with your PR link so he can review and merge your changes!
+
+### 5. What If You Hit a Merge Conflict?
+Resolving merge conflicts on `main` is Tom's job! If `git pull origin main` ever shows a conflict:
+```bash
+git merge --abort
+```
+Then DM Tom on Discord and let him know which files had conflicts. He'll help merge it cleanly.
+
+---
+
 ## 📂 Repository Tour (Where Everything Goes)
 
 Understanding the distinction between folders makes editing super easy:

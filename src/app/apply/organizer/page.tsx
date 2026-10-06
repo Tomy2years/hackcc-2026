@@ -1,143 +1,102 @@
-"use client";
-
+import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, Mail, Users, Terminal, Megaphone, Handshake, HeartHandshake } from "lucide-react";
-import hackccIcon from "../../../../public/images/hackcc-icon.png";
+import { EVENT } from "@/lib/event";
+import { getPublicApplicationStatus } from "@/lib/publicStatus";
+import { SiteHeader } from "@/components/roadtrip/SiteHeader";
+import { SiteFooter } from "@/components/roadtrip/SiteFooter";
+import { HighwaySign } from "@/components/roadtrip/HighwaySign";
+import { SCENE_QUALITY, SCENE_SIZES } from "@/components/roadtrip/Scene";
+import { Button } from "@/components/ui/Button";
 
-const SCENIC_BG = "/assets/roadtrip/organizers/coastal-overlook.jpeg";
+export const metadata: Metadata = {
+  title: "Join the organizing team",
+  description: "Help California community college students organize HackCC 2026.",
+};
 
+// The drive starts at the Golden Gate: crew pages open with the bridge at blue hour.
+const GOLDEN_GATE = "/assets/roadtrip/organizers/golden-gate.jpg";
+
+// The teams that exist today (see /organizers). Keep in step with public/data/organizers.json.
 const TEAMS = [
-  {
-    icon: Terminal,
-    title: "Engineering & Tech",
-    description: "Build web apps, check-in software, Discord integrations, and hacker portals for hundreds of hackers.",
-  },
-  {
-    icon: Users,
-    title: "Logistics & Operations",
-    description: "Coordinate venue layout, hardware, scheduling, catering, day-of flow, and hacker hospitality.",
-  },
-  {
-    icon: Handshake,
-    title: "Sponsorship & Industry",
-    description: "Partner with top tech companies, secure funding, organize company workshops, and coordinate prizes.",
-  },
-  {
-    icon: Megaphone,
-    title: "Design & Marketing",
-    description: "Craft visual identity, road-trip swag, merchandise, flyers, social media campaigns, and web graphics.",
-  },
-  {
-    icon: HeartHandshake,
-    title: "Hacker Experience",
-    description: "Plan mini-events, workshops, mentor matching, beginner-friendly tracks, and community engagement.",
-  },
+  { title: "Website", work: "Build and maintain hackcc.net, including the application form." },
+  { title: "Engineering", work: "The technical side of the day: tools, check-in and judging support." },
+  { title: "Logistics", work: "Venue layout, food, the schedule, volunteers and the day-of flow." },
+  { title: "Sponsorships", work: "Reach out to companies and colleges, and look after sponsors and prizes." },
 ];
 
-export default function OrganizerApplyPage() {
+const MAILTO = `mailto:${EVENT.contactEmail}?subject=${encodeURIComponent(`${EVENT.edition} organizer interest`)}`;
+
+export default async function OrganizerApplyPage() {
+  const status = await getPublicApplicationStatus();
+
   return (
-    <main className="relative min-h-screen w-full bg-slate-950 text-white overflow-x-hidden selection:bg-amber-400 selection:text-slate-950">
-      {/* Background Image Layer */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <Image
-          src={SCENIC_BG}
-          alt="California Coastal Overlook"
-          fill
-          priority
-          className="object-cover object-center"
-        />
-        {/* Deep atmospheric scrim */}
-        <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px]" />
-        {/* Soft edge gradients */}
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-950 via-slate-950/60 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent" />
-      </div>
-
-      {/* Top Header Navigation */}
-      <header className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 flex items-center justify-between">
-        <Link
-          href="/organizers"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-200 hover:text-white border border-white/15 text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
-        >
-          <ArrowLeft className="w-4 h-4 text-amber-400" />
-          <span>Back to Organizers</span>
-        </Link>
-
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 relative">
-            <Image
-              src={hackccIcon}
-              alt="HackCC Logo"
-              width={36}
-              height={36}
-              className="w-full h-full object-contain"
-            />
+    <>
+      <SiteHeader status={status} />
+      <main id="main" className="flex-1 bg-night text-cream">
+        <section aria-labelledby="organize-title" className="relative isolate overflow-hidden">
+          <Image
+            src={GOLDEN_GATE}
+            alt=""
+            fill
+            priority
+            quality={SCENE_QUALITY}
+            sizes={SCENE_SIZES}
+            className="-z-10 object-cover object-[64%_52%] md:object-[60%_48%]"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgb(15_17_20/0.85)_0%,rgb(15_17_20/0.55)_45%,rgb(15_17_20/0)_75%),linear-gradient(180deg,rgb(15_17_20/0)_60%,rgb(15_17_20)_100%)]"
+          />
+          <div className="mx-auto w-full max-w-page px-5 pb-20 pt-16 md:px-8 md:pb-28 md:pt-24">
+            <HighwaySign>Crew wanted</HighwaySign>
+            <h1 id="organize-title" className="mt-4 max-w-[14ch] font-heading text-[clamp(2.5rem,6vw,4rem)] leading-none">
+              Join the organizing team
+            </h1>
+            <p className="mt-4 max-w-[36rem] text-lg leading-relaxed">
+              {EVENT.name} is run by community college students who volunteer their time. If you&apos;re a California
+              community college student and want to help put on {EVENT.edition}, we&apos;d like to hear from you.
+            </p>
           </div>
-          <span className="font-heading text-lg tracking-wider text-amber-400 hidden sm:inline-block">
-            HACKCC 2026
-          </span>
-        </div>
-      </header>
+        </section>
 
-      {/* Main Content */}
-      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 text-center">
-        {/* Unboxed Header */}
-        <div className="mb-14">
-          <h1 className="font-heading text-4xl sm:text-6xl text-white leading-tight mb-4 drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
-            JOIN THE ORGANIZING TEAM
-          </h1>
-          <p className="font-serif italic text-amber-200/95 text-xl sm:text-2xl font-light mb-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
-            Build California&apos;s premier community college hackathon
-          </p>
-          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
-            We are looking for motivated students across California community colleges who want to shape the 2026 road trip, gain real-world leadership experience, and make a massive impact.
-          </p>
-        </div>
-
-        {/* Organizer Roles */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-14 text-left">
-          {TEAMS.map((team, idx) => {
-            const Icon = team.icon;
-            return (
-              <div
-                key={idx}
-                className="bg-slate-900/85 border border-white/15 rounded-2xl p-6 backdrop-blur-md shadow-xl hover:border-amber-400/50 transition-all hover:-translate-y-1"
-              >
-                <div className="w-10 h-10 rounded-xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center text-amber-400 mb-4">
-                  <Icon className="w-5 h-5" />
+        <div className="mx-auto grid w-full max-w-page gap-12 px-5 pb-24 md:px-8 lg:grid-cols-12">
+          <section aria-labelledby="teams-title" className="lg:col-span-7">
+            <h2 id="teams-title" className="text-2xl font-bold">
+              The teams
+            </h2>
+            <dl className="mt-4 divide-y divide-line border-y border-line">
+              {TEAMS.map(team => (
+                <div key={team.title} className="grid gap-1 py-4 sm:grid-cols-[10rem_1fr] sm:gap-6">
+                  <dt className="font-bold text-action">{team.title}</dt>
+                  <dd className="text-mist">{team.work}</dd>
                 </div>
-                <h3 className="font-heading text-xl text-white mb-2">
-                  {team.title}
-                </h3>
-                <p className="text-slate-300 text-sm leading-relaxed">
-                  {team.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+              ))}
+            </dl>
+          </section>
 
-        {/* Call to Action Unboxed Section */}
-        <div className="pt-10 border-t border-white/15 max-w-xl mx-auto">
-          <h2 className="font-heading text-2xl sm:text-3xl text-white mb-3">
-            READY TO RIDE SHOTGUN?
-          </h2>
-          <p className="text-slate-300 text-sm sm:text-base mb-6 leading-relaxed">
-            Send us a message with your background, college, and areas you&apos;d love to help lead. We review rolling inquiries weekly.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="mailto:team@hackcc.net?subject=HackCC%202026%20Organizer%20Application"
-              className="inline-flex items-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-8 py-3.5 rounded-full text-base shadow-xl shadow-black/40 transition-all hover:scale-105 active:scale-95"
-            >
-              <Mail className="w-5 h-5" />
-              <span>Email team@hackcc.net</span>
-              <span className="text-lg">→</span>
-            </a>
-          </div>
+          <section aria-labelledby="how-title" className="rounded-2xl border border-line bg-surface p-6 md:p-8 lg:col-span-5">
+            <h2 id="how-title" className="text-2xl font-bold">
+              How to get involved
+            </h2>
+            <p className="mt-3 text-mist">Email us with:</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-cream">
+              <li>your name and college</li>
+              <li>which team interests you</li>
+              <li>anything you&apos;ve built or organized before (optional)</li>
+            </ul>
+            <div className="mt-6">
+              <Button href={MAILTO} arrow>
+                Email the team
+              </Button>
+            </div>
+            <p className="mt-4 text-sm text-mist">
+              Or write to <span className="font-bold text-cream">{EVENT.contactEmail}</span> directly. Want to mentor,
+              judge or volunteer on the day instead? Use the same address and say so in the subject.
+            </p>
+          </section>
         </div>
-      </div>
-    </main>
+      </main>
+      <SiteFooter status={status} />
+    </>
   );
 }

@@ -1,150 +1,124 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { EVENT } from "@/lib/event";
+import type { ApplicationStatus } from "@/lib/applicationStatus";
+import { Button } from "@/components/ui/Button";
+import { HighwaySign } from "./HighwaySign";
+import { SCENE_QUALITY, SCENE_SIZES } from "./Scene";
 
-// Top-level Image Asset paths
-const DAY_BG = "/assets/roadtrip/zone1-hero/hero-background.jpeg";
-const NIGHT_BG = "/assets/roadtrip/zone1-hero/hero-background-night.jpeg";
-const HACKCC_SIGN = "/assets/roadtrip/zone1-hero/HackCC-sign.png";
-const DATE_SIGN = "/assets/roadtrip/zone1-hero/date-sign.png";
+// Screen-print plate of the Hollywood Hills at golden hour. A pixel-aligned night plate
+// (hero-night.jpg) is still to come; until then dusk is a colour wash over this one.
+// The painted sun was patched out of this copy: it sat behind the "HackCC" wordmark
+const DAY_BG = "/assets/roadtrip/zone1-hero/hero-day-nosun.jpg";
 
-export default function Zone1Hero() {
+// Deterministic star field (percent of the scene) so server and client render the same thing.
+const STARS: [number, number, number][] = [
+  [6, 8, 2], [14, 22, 1.5], [23, 6, 2], [31, 17, 1.5], [40, 10, 2.5], [48, 24, 1.5], [56, 5, 2],
+  [63, 15, 1.5], [71, 9, 2], [79, 20, 1.5], [87, 7, 2.5], [94, 18, 1.5], [18, 32, 1.5], [52, 34, 1.5],
+  [84, 31, 1.5], [36, 29, 1.5], [68, 28, 1.5], [10, 40, 1.5], [90, 41, 1.5],
+];
+
+export default function Zone1Hero({ status }: { status: ApplicationStatus }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [hasTurnedNight, setHasTurnedNight] = useState(false);
+  const reduceMotion = useReducedMotion();
 
-  // Track scroll position across the hero section for pinned sticky scroll
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
-  // Latch night state once user scrolls past sunset threshold (>= 0.38)
-  // Once users scroll down to become night-time, it stays night for the rest of the session
-  // unless they reload or reopen the page.
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest >= 0.38 && !hasTurnedNight) {
-      setHasTurnedNight(true);
-    }
-  });
-
-  // Dynamic transforms for daytime -> golden hour sunset -> city skyline disappearance -> night
-  // Daytime sky stays prominent while the sun descends
-  const dayOpacityTransform = useTransform(scrollYProgress, [0.18, 0.38], [1, 0]);
-  const nightOpacityTransform = useTransform(scrollYProgress, [0.22, 0.40], [0, 1]);
-
-  // Sunset golden-hour horizon glow that blooms behind the skyline as the sun approaches it
-  const sunsetGlowTransform = useTransform(scrollYProgress, [0.10, 0.24, 0.38], [0, 0.85, 0]);
-
-  // Sun motion trajectory:
-  // Starts high left-of-center and arcs down towards DTLA skyline near center-right
-  const sunX = useTransform(scrollYProgress, [0.0, 0.16, 0.36], ["0vw", "7vw", "16vw"]);
-  const sunY = useTransform(scrollYProgress, [0.0, 0.16, 0.36], ["0vh", "12vh", "32vh"]);
-  const sunScale = useTransform(scrollYProgress, [0.0, 0.18, 0.36], [1.0, 0.7, 0.35]);
-
-  // Sun smoothly dissolves as it sinks into the skyline silhouette
-  const sunOpacityTransform = useTransform(scrollYProgress, [0.0, 0.22, 0.36], [1, 1, 0]);
-
-  // Derived style opacities respecting latched night state (stays night once turned)
-  const dayOpacity = hasTurnedNight ? 0 : dayOpacityTransform;
-  const nightOpacity = hasTurnedNight ? 1 : nightOpacityTransform;
-  const sunOpacity = hasTurnedNight ? 0 : sunOpacityTransform;
-  const sunsetGlowOpacity = hasTurnedNight ? 0 : sunsetGlowTransform;
+  // No pinning: the sun sets while the hero itself scrolls out of view.
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const dusk = useTransform(scrollYProgress, [0.05, 0.45], [0, 0.42]);
+  const night = useTransform(scrollYProgress, [0.3, 0.7], [0, 0.6]);
+  const stars = useTransform(scrollYProgress, [0.4, 0.75], [0, 1]);
 
   return (
-    <section ref={sectionRef} id="zone-hero" className="relative h-[200vh] w-full bg-slate-950">
-      {/* Sticky Pinned Viewport Container */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Background Image Layer 1: Daytime Hills */}
-        <motion.div className="absolute inset-0 z-0" style={{ opacity: dayOpacity }}>
-          <Image
-            src={DAY_BG}
-            alt="Daytime Hollywood Hills Background"
-            fill
-            className="object-cover object-center"
-            priority
-          />
-          {/* Subtle bottom edge transition only (preserves bright natural sky) */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/50" />
-        </motion.div>
+    <section ref={sectionRef} id="top" aria-labelledby="hero-title" className="relative isolate flex min-h-[100svh] overflow-hidden bg-night">
+      <Image
+        src={DAY_BG}
+        alt="Illustration of the Hollywood Hills at golden hour: dry grass, the Griffith Observatory and downtown Los Angeles in the haze"
+        fill
+        priority
+        quality={SCENE_QUALITY}
+        sizes={SCENE_SIZES}
+        className="-z-20 object-cover object-[72%_60%] md:object-[50%_60%]"
+      />
 
-        {/* Background Image Layer 2: Nighttime Hills (contains moon) */}
-        <motion.div className="absolute inset-0 z-0" style={{ opacity: nightOpacity }}>
-          <Image
-            src={NIGHT_BG}
-            alt="Nighttime Hollywood Hills Background"
-            fill
-            className="object-cover object-center"
-          />
-          {/* Natural night atmosphere gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/70" />
-        </motion.div>
-
-        {/* Golden Hour Sunset Horizon Atmospheric Glow */}
-        <motion.div
-          className="absolute inset-0 z-[2] pointer-events-none"
-          style={{ opacity: sunsetGlowOpacity }}
-        >
-          <div className="absolute top-[20vh] sm:top-[22vh] left-1/2 -translate-x-1/2 w-[90vw] max-w-5xl h-[26vh] bg-gradient-to-t from-amber-500/40 via-orange-400/25 to-transparent blur-3xl rounded-full" />
-        </motion.div>
-
-        {/* Setting Sun (Arcs naturally towards city skyline and dissolves behind rooftops) */}
-        <div
-          className="absolute inset-0 z-[5] pointer-events-none overflow-hidden"
-          style={{
-            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 25vh, rgba(0,0,0,0.6) 30vh, transparent 35vh)",
-            maskImage: "linear-gradient(to bottom, black 0%, black 25vh, rgba(0,0,0,0.6) 30vh, transparent 35vh)",
-          }}
-        >
-          <motion.div
-            className="absolute top-16 left-1/3 flex items-center justify-center"
-            style={{
-              x: sunX,
-              y: sunY,
-              opacity: sunOpacity,
-              scale: sunScale,
-            }}
-          >
-            {/* Radiant Sunset Outer Glow Layers */}
-            <div className="absolute w-44 h-44 rounded-full bg-amber-400/35 blur-2xl" />
-            <div className="absolute w-32 h-32 rounded-full bg-orange-500/40 blur-xl" />
-            {/* Core Vibrant SoCal Sun */}
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 via-[#FBFA74] to-yellow-100 shadow-[0_0_55px_rgba(251,250,116,0.9)] border-2 border-amber-200/80" />
+      {!reduceMotion && (
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+          <motion.div className="absolute inset-0 mix-blend-multiply bg-[linear-gradient(180deg,#3D3F8F_0%,#6B4F8A_40%,#C98A3A_75%,#D9A24A_100%)]" style={{ opacity: dusk }} />
+          <motion.div className="absolute inset-0 mix-blend-multiply bg-[linear-gradient(180deg,#1A2350_0%,#2A3566_45%,#4A4A5A_100%)]" style={{ opacity: night }} />
+          <motion.div className="absolute inset-0" style={{ opacity: stars }}>
+            {STARS.map(([x, y, r], i) => (
+              <span
+                key={i}
+                className="absolute rounded-full bg-white"
+                style={{ left: `${x}%`, top: `${y}%`, width: r, height: r, opacity: 0.6 + (i % 3) * 0.15 }}
+              />
+            ))}
           </motion.div>
         </div>
+      )}
 
-        {/* HackCC Sign & Date Sign Image Layer - Centered consistently on hill across all screen sizes */}
-        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4 sm:px-8">
-          <div className="w-full max-w-2xl sm:max-w-4xl md:max-w-4xl [transform:rotate(-1.4deg)_skewY(-0.8deg)] drop-shadow-[0_16px_32px_rgba(0,0,0,0.7)] flex flex-col items-center">
-            {/* Main HackCC 2026 Sign */}
-            <div className="w-full">
-              <Image
-                src={HACKCC_SIGN}
-                alt="HackCC Hollywood Sign"
-                width={2560}
-                height={1440}
-                className="w-full h-auto object-contain mx-auto"
-                priority
-              />
-            </div>
+      {/* Local backing: darker behind the copy on the left and along the hills, the sky and observatory stay bright */}
+      <div aria-hidden className="backing-to-edge pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgb(15_17_20/0.82)_0%,rgb(15_17_20/0.55)_38%,rgb(15_17_20/0)_62%)] max-md:bg-[linear-gradient(0deg,rgb(15_17_20/0.95)_0%,rgb(15_17_20/0.7)_45%,rgb(15_17_20/0.15)_75%,rgb(15_17_20/0)_100%)]" />
 
-            {/* Date Sign (November 14-15) directly underneath */}
-            <div className="w-3/4 sm:w-[70%] -mt-[31%] sm:-mt-[31%]">
-              <Image
-                src={DATE_SIGN}
-                alt="HackCC Event Dates: November 14-15"
-                width={2560}
-                height={1440}
-                className="w-full h-auto object-contain mx-auto"
-                priority
-              />
+      <div className="mx-auto flex w-full max-w-page items-end px-5 pb-24 pt-28 md:items-center md:px-8 md:pb-40">
+        <div className="max-w-[40rem]">
+          <p className="rise-in font-serif text-xl italic text-action md:text-2xl" style={{ "--i": 0 } as React.CSSProperties}>
+            {EVENT.tagline}
+          </p>
+          <h1
+            id="hero-title"
+            className="rise-in mt-2 font-heading text-[clamp(3.5rem,11vw,7rem)] leading-[0.95] text-cream"
+            style={{ "--i": 1 } as React.CSSProperties}
+          >
+            HackCC <span className="text-action">2026</span>
+          </h1>
+
+          <p className="rise-in mt-5 max-w-[34rem] text-lg leading-relaxed text-cream md:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
+            A free, one-day hackathon for California community college students. Find a team, build something, and demo
+            it by the end of the day.
+          </p>
+
+          <dl
+            className="rise-in mt-7 grid grid-cols-1 gap-x-8 gap-y-4 border-y border-line py-5 sm:grid-cols-[auto_auto_auto]"
+            style={{ "--i": 3 } as React.CSSProperties}
+          >
+            <div>
+              <dt className="text-[13px] font-bold uppercase tracking-[0.14em] text-mist">When</dt>
+              <dd className="mt-1 text-lg font-bold text-cream">{EVENT.dateLabel}</dd>
+              <dd className="text-sm text-mist">{EVENT.dateStatus}</dd>
             </div>
+            <div>
+              <dt className="text-[13px] font-bold uppercase tracking-[0.14em] text-mist">Where</dt>
+              <dd className="mt-1 text-lg font-bold text-cream sm:whitespace-nowrap">{EVENT.venue.name}</dd>
+              <dd className="text-sm text-mist">{EVENT.venue.city}</dd>
+            </div>
+            <div>
+              <dt className="text-[13px] font-bold uppercase tracking-[0.14em] text-mist">Who</dt>
+              <dd className="mt-1 text-lg font-bold text-cream">Free · 18+</dd>
+              <dd className="text-sm text-mist">CA community college students</dd>
+            </div>
+          </dl>
+
+          <div className="rise-in mt-7 flex flex-wrap items-center gap-x-5 gap-y-3" style={{ "--i": 4 } as React.CSSProperties}>
+            {status.canApply && status.href ? (
+              <Button href={status.href} size="lg" arrow>
+                {status.actionLabel}
+              </Button>
+            ) : (
+              <p className="text-base font-bold text-cream">{status.actionLabel}.</p>
+            )}
+            <Button href={EVENT.social.discord} variant="tertiary">
+              Join the Discord
+            </Button>
           </div>
-        </div>
 
-        {/* Bottom Gradient Edge Transition: Blends smoothly into dark slate */}
-        <div className="absolute inset-x-0 bottom-0 h-48 sm:h-72 bg-gradient-to-t from-slate-950 via-slate-950/80 via-30% to-transparent z-10 pointer-events-none" />
+          <p className="rise-in mt-8 flex flex-wrap items-center gap-3 text-sm text-mist" style={{ "--i": 5 } as React.CSSProperties}>
+            <HighwaySign>One venue · Costa Mesa</HighwaySign>
+            <span>The event is one day at {EVENT.venue.name}. Scroll on for the drive down the coast.</span>
+          </p>
+        </div>
       </div>
     </section>
   );

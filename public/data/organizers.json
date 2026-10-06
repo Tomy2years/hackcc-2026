@@ -5,7 +5,7 @@
     "role": "Website Lead",
     "categories": ["leadership", "website"],
     "college": "Irvine Valley College",
-    "image": "/assets/headshots/tom-perel-headshot.png",
+    "image": "/assets/headshots/tom-perel-portrait.jpg",
     "linkedin": "https://www.linkedin.com/in/tomperel/",
     "objectPosition": "center center",
     "imageScale": "scale-100"
@@ -16,7 +16,7 @@
     "role": "Logistics Team",
     "categories": ["logistics"],
     "college": "Orange Coast College",
-    "image": "/assets/headshots/hillary-nguyen-headshot.jpg",
+    "image": "/assets/headshots/hillary-nguyen-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/hillary-nguyen-180552366/",
     "objectPosition": "center 22%",
     "imageScale": "scale-115"
@@ -27,7 +27,7 @@
     "role": "Sponsorships Lead",
     "categories": ["leadership", "sponsorships"],
     "college": "Irvine Valley College",
-    "image": "/assets/headshots/kareem-tadros-headshot.png",
+    "image": "/assets/headshots/kareem-tadros-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/kftadros/",
     "objectPosition": "center 18%",
     "imageScale": "scale-100"
@@ -38,7 +38,7 @@
     "role": "Website Team",
     "categories": ["website"],
     "college": "Santiago Canyon College",
-    "image": "/assets/headshots/jacob-aquino-headshot.jpeg",
+    "image": "/assets/headshots/jacob-aquino-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/jacobaquino/",
     "objectPosition": "center center",
     "imageScale": "scale-100"
@@ -49,7 +49,7 @@
     "role": "Sponsorships Team",
     "categories": ["sponsorships"],
     "college": "Irvine Valley College",
-    "image": "/assets/headshots/anjani-shaw-headshot.png",
+    "image": "/assets/headshots/anjani-shaw-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/anjani-shaw-523033309/",
     "objectPosition": "center center",
     "imageScale": "scale-100"
@@ -60,7 +60,7 @@
     "role": "Website Team",
     "categories": ["website"],
     "college": "Orange Coast College",
-    "image": "/assets/headshots/yuval-perel-headshot.png",
+    "image": "/assets/headshots/yuval-perel-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/yuval-perel-a26b083a9/",
     "objectPosition": "center 25%",
     "imageScale": "scale-110"
@@ -71,7 +71,7 @@
     "role": "Website Team",
     "categories": ["website"],
     "college": "El Camino College",
-    "image": "/assets/headshots/dasha-binskaia-headshot.png",
+    "image": "/assets/headshots/dasha-binskaia-portrait.jpg",
     "linkedin": "https://www.linkedin.com/in/dasha-binskaia-8313b5388/",
     "objectPosition": "center center",
     "imageScale": "scale-100"
@@ -82,7 +82,7 @@
     "role": "Website Team",
     "categories": ["website"],
     "college": "El Camino College",
-    "image": "/assets/headshots/jessie-joyce-headshot.jpeg",
+    "image": "/assets/headshots/jessie-joyce-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/jessy-omoroghomwan-6b552b257/",
     "objectPosition": "center 48%",
     "imageScale": "scale-135"
@@ -104,7 +104,7 @@
     "role": "Engineering Lead",
     "categories": ["leadership", "engineering"],
     "college": "Diablo Valley College",
-    "image": "/assets/headshots/ethan-wu-headshot.jpeg",
+    "image": "/assets/headshots/ethan-wu-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/ethankwu",
     "objectPosition": "center 20%",
     "imageScale": "scale-100"
@@ -115,7 +115,7 @@
     "role": "Website Team",
     "categories": ["website"],
     "college": "Cal State Long Beach",
-    "image": "/assets/headshots/miles-li-headshot.png",
+    "image": "/assets/headshots/miles-li-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/miles-li-399894285/",
     "objectPosition": "center 25%",
     "imageScale": "scale-105"
@@ -126,7 +126,7 @@
     "role": "Website Team",
     "categories": ["website"],
     "college": "Irvine Valley College",
-    "image": "/assets/headshots/kaden-lo-headshot.JPG",
+    "image": "/assets/headshots/kaden-lo-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/kaden-lo/",
     "objectPosition": "center 20%",
     "imageScale": "scale-100"
@@ -137,7 +137,7 @@
     "role": "Website Team",
     "categories": ["website"],
     "college": "De Anza College",
-    "image": "/assets/headshots/rohan-gopalan-headshot.jpg",
+    "image": "/assets/headshots/rohan-gopalan-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/rohan-gopalan-633307422/",
     "objectPosition": "center 20%",
     "imageScale": "scale-100"
@@ -148,7 +148,7 @@
     "role": "Engineering Team",
     "categories": ["engineering"],
     "college": "Irvine Valley College",
-    "image": "/assets/headshots/liam-najjar-headshot.jpeg",
+    "image": "/assets/headshots/liam-najjar-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/liam-najjar-aa20102a1/",
     "objectPosition": "center center",
     "imageScale": "scale-100"
@@ -159,7 +159,7 @@
     "role": "Sponsorships Team",
     "categories": ["sponsorships"],
     "college": "Irvine Valley College",
-    "image": "/assets/headshots/evelyn-cao-headshot.jpeg",
+    "image": "/assets/headshots/evelyn-cao-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/evelyn-cao-a9733143b/",
     "objectPosition": "center 20%",
     "imageScale": "scale-100"
@@ -170,7 +170,7 @@
     "role": "Marketing Lead",
     "categories": ["marketing", "leadership"],
     "college": "Foothill College",
-    "image": "/assets/headshots/grace-xu-headshot.jpg",
+    "image": "/assets/headshots/grace-xu-studio.jpg",
     "linkedin": "",
     "objectPosition": "center 20%",
     "imageScale": "scale-100"
@@ -181,7 +181,7 @@
     "role": "Marketing Team",
     "categories": ["marketing"],
     "college": "Orange Coast College",
-    "image": "/assets/headshots/jay-de-guzman-headshot.jpg",
+    "image": "/assets/headshots/jay-de-guzman-studio.jpg",
     "linkedin": "https://www.linkedin.com/in/jay-de-guzman-58a77926a/",
     "objectPosition": "center 20%",
     "imageScale": "scale-100"

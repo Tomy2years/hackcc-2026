@@ -1,32 +1,69 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   HackCC 2026 design tokens, sampled from the road-trip artwork.
+   Contrast (WCAG 2.1): cream/night 17.9 · cream/surface 16.3 · mist/surface 10.5 ·
+   night/sunflower 13.4 · line-strong/surface 4.7 (UI 3:1).
+   Full rules: .agents/skills/frontend-guidelines/SKILL.md and /design-system
+   ========================================================================== */
 @theme {
+  /* Page content width. Grows on large screens so the copy uses the art instead of a wide empty margin. */
+  --container-page: 1200px;
+  /* Surfaces */
+  --color-night: #0F1114;        /* night asphalt page background */
+  --color-night-deep: #0A0B0D;   /* footer */
+  --color-surface: #191C20;      /* solid panels for forms, FAQ, schedules */
+  --color-surface-raised: #23272C;
+
+  /* Text */
+  --color-cream: #FFF8EB;        /* primary text */
+  --color-mist: #C9CCD0;         /* secondary text on charcoal */
+
+  /* Actions: sunflower for the main action and key emphasis only */
+  --color-action: #FFD044;
+  --color-action-hover: #F2BD28;
+
+  /* Lines */
+  --color-line: rgb(255 248 235 / 0.16);
+  --color-line-strong: #82878E;
+
+  /* Feedback (kept distinct from the decorative palette) */
+  --color-error: #FF8A80;
+  --color-error-bg: #3A1A1F;
+  --color-success: #7DDBA8;
+  --color-success-bg: #12302A;
+
+  /* Paper for photo prints and postcards */
+  --color-paper: #F2F0EB;        /* neutral warm off-white photo frames */
+  --color-ink: #1C1917;
+
+  /* Type. Loaded in src/app/layout.tsx via next/font. */
+  --font-sans: var(--font-montserrat), "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-bagel-fat-one), "Bagel Fat One", cursive;
+  --font-serif: var(--font-fraunces-var), "Fraunces", Georgia, serif;
+
+  /* ------------------------------------------------------------------------
+     LEGACY: used only by the archived Spring 2026 site under src/archive/2026
+     (served at /2026). Do not use in new code. Delete with the archive.
+     ------------------------------------------------------------------------ */
   --color-royalpurple: #2D18A8;
   --color-lightpurple: #6950D5;
-  --color-warmpink: #A649E2;
   --color-navyblue: #021442;
-  --color-dullpurple: #7F3ED0;
   --color-hoverpurple: #4C27A0;
   --color-richpurple: #251884;
   --color-vibrantyellow: #FBFA74;
   --color-activeyellow: #e3e122;
-  --color-deepsky: #371EAE;
   --color-bgpurple: #a348e2;
   --color-glass: rgba(46, 24, 138, 0.50);
   --color-glass2: rgba(46, 24, 138, 0.45);
   --color-graytext: #3C4146;
-
-  --font-bagel: var(--font-bagel), "Bagel Fat One", cursive;
   --font-mont: var(--font-montserrat-alternates), "Montserrat Alternates", sans-serif;
-  --font-geist: var(--font-geist-sans), sans-serif;
-  --font-fraunces: var(--font-fraunces), serif;
+  --font-bagel: var(--font-bagel-fat-one), "Bagel Fat One", cursive;
 
   --animate-bobbing: bob 8s linear infinite;
   --animate-swaying: sway 8s linear infinite;
-  --animate-inverseswaying: inverseSway 8s linear infinite;
   --animate-moveSpriteSheet: movingSprite steps(5) 1s infinite;
   --animate-marqueeEffect: marquee linear 15s infinite;
-  --animate-cloudMovementEffect: cloudMovement linear 5s infinite;
 
   @keyframes bob {
     0%, 100% { transform: translateY(6px); }
@@ -36,10 +73,6 @@
     0%, 100% { transform: translateX(12px); }
     50% { transform: translateX(-12px); }
   }
-  @keyframes inverseSway {
-    0%, 100% { transform: translateX(-12px); }
-    50% { transform: translateX(12px); }
-  }
   @keyframes movingSprite {
     0% { transform: translateX(0px); }
     100% { transform: translateX(-100%); }
@@ -48,56 +81,108 @@
     0% { transform: translateX(0); }
     100% { transform: translateX(calc(-100vw - 1200px)); }
   }
-  @keyframes cloudMovement {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(100%); }
+}
+
+/* Entrance for hero copy: CSS-only, so the text is visible even if JavaScript fails. */
+/* Edges where a scene meets its neighbour. Short, on a smootherstep curve (flat at both ends, so no visible
+   corner at the seam or where the fade ends), opaque only at the seam itself, in a colour
+   sampled from the artwork either side (--edge, see components/roadtrip/tones.ts). */
+.edge-fade-top {
+  background: linear-gradient(180deg, var(--edge) 0%, color-mix(in srgb, var(--edge) 99%, transparent) 10%, color-mix(in srgb, var(--edge) 94%, transparent) 20%, color-mix(in srgb, var(--edge) 84%, transparent) 30%, color-mix(in srgb, var(--edge) 68%, transparent) 40%, color-mix(in srgb, var(--edge) 50%, transparent) 50%, color-mix(in srgb, var(--edge) 32%, transparent) 60%, color-mix(in srgb, var(--edge) 16%, transparent) 70%, color-mix(in srgb, var(--edge) 6%, transparent) 80%, color-mix(in srgb, var(--edge) 1%, transparent) 90%, transparent 100%);
+}
+.edge-fade-bottom {
+  background: linear-gradient(0deg, var(--edge) 0%, color-mix(in srgb, var(--edge) 99%, transparent) 10%, color-mix(in srgb, var(--edge) 94%, transparent) 20%, color-mix(in srgb, var(--edge) 84%, transparent) 30%, color-mix(in srgb, var(--edge) 68%, transparent) 40%, color-mix(in srgb, var(--edge) 50%, transparent) 50%, color-mix(in srgb, var(--edge) 32%, transparent) 60%, color-mix(in srgb, var(--edge) 16%, transparent) 70%, color-mix(in srgb, var(--edge) 6%, transparent) 80%, color-mix(in srgb, var(--edge) 1%, transparent) 90%, transparent 100%);
+}
+/* Text backings ease in below a scene's top edge so they never draw their own line at a seam. */
+.backing-from-edge {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 140px);
+}
+/* Also ease out at the bottom, only where this painting crossfades into the next one. */
+.backing-from-edge.backing-open-bottom {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px, #000 calc(100% - 120px), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 140px, #000 calc(100% - 120px), transparent 100%);
+}
+/* Same, bottom edge only: for the hero, whose top sits under the header rather than another scene. */
+.backing-to-edge {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 120px), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 120px), transparent 100%);
+}
+
+/* Event photos: a warm print grade that tames the venue's purple lighting so the photos sit with the art. */
+.print-grade {
+  filter: sepia(0.38) saturate(0.62) contrast(1.05);
+}
+
+@media (min-width: 1600px) {
+  :root { --container-page: 1440px; }
+}
+@media (min-width: 1920px) {
+  :root { --container-page: 1600px; }
+}
+
+/* Crossfade between two paintings: the lower scene overlaps the one above by --blend and fades in
+   from transparent, so the art meets art with no dark band. Used where no content sits between. */
+.blend-above {
+  --blend: 4rem;
+  margin-top: calc(-1 * var(--blend));
+  /* Above the previous scene's content layer, or that content would hide the crossfade */
+  z-index: 30;
+}
+@media (min-width: 768px) {
+  .blend-above { --blend: 8rem; }
+}
+.blend-above .blend-mask {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, rgb(0 0 0 / 0.5) calc(var(--blend) * 0.5), #000 var(--blend));
+  mask-image: linear-gradient(180deg, transparent 0, rgb(0 0 0 / 0.5) calc(var(--blend) * 0.5), #000 var(--blend));
+}
+.blend-above .blend-offset {
+  margin-top: var(--blend);
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.rise-in {
+  animation: rise-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 80ms + 100ms);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Anchor targets land below the sticky header */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-night);
+    color: var(--color-cream);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-action);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --primary: 240 5.9% 10%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 215 5% 44%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 240 10% 3.9%;
-  --radius: 0.5rem;
-}
-
-body {
-  font-family: var(--font-montserrat-alternates), Arial, Helvetica, sans-serif;
-}
-
-.map-fade-mask {
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 25%,
-    black 75%,
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 25%,
-    black 75%,
-    transparent 100%
-  );
-}
-
+/* Legacy helpers for the archived carousel (src/archive/2026). */
 .pause {
   animation-play-state: paused;
 }
@@ -119,230 +204,3 @@ body {
     flex: 0 0 265px;
   }
 }
-
-/* ==========================================================================
-   HACKCC 2026 DESIGN SYSTEM UTILITIES & STARTER CLASSES FOR BEGINNERS
-   ========================================================================== */
-
-/* Typography Helpers */
-.font-heading {
-  font-family: var(--font-bagel), "Bagel Fat One", cursive, sans-serif;
-}
-
-.font-body {
-  font-family: var(--font-montserrat-alternates), "Montserrat Alternates", sans-serif;
-}
-
-.cartoony-title {
-  font-family: var(--font-bagel), "Bagel Fat One", cursive, sans-serif;
-  color: #ffffff;
-  text-shadow: 0 4px 0 #2D18A8, 0 8px 24px rgba(2, 20, 66, 0.7);
-  letter-spacing: 0.02em;
-}
-
-.cartoony-subtitle {
-  font-family: var(--font-bagel), "Bagel Fat One", cursive, sans-serif;
-  color: #FBFA74;
-  text-shadow: 0 3px 0 #021442, 0 6px 16px rgba(2, 20, 66, 0.6);
-  letter-spacing: 0.01em;
-}
-
-/* Minimalist & Clean Hybrid Typography Options */
-.minimal-title {
-  font-family: var(--font-geist), var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
-  letter-spacing: -0.03em;
-  font-weight: 800;
-  color: #ffffff;
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65);
-}
-
-.clean-bagel {
-  font-family: var(--font-bagel), "Bagel Fat One", cursive, sans-serif;
-  color: #ffffff;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
-  letter-spacing: 0.01em;
-}
-
-.glass-obsidian {
-  background-color: rgba(15, 23, 42, 0.70);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 1.25rem;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-}
-
-/* Background Dimming Scrim Utilities for High Contrast */
-.scrim-daytime {
-  background: linear-gradient(
-    180deg,
-    rgba(2, 20, 66, 0.50) 0%,
-    rgba(2, 20, 66, 0.35) 45%,
-    rgba(2, 20, 66, 0.75) 100%
-  );
-}
-
-.scrim-dark {
-  background-color: rgba(2, 20, 66, 0.45);
-}
-
-.scrim-vignette {
-  background: radial-gradient(
-    circle at center,
-    rgba(2, 20, 66, 0.25) 0%,
-    rgba(2, 20, 66, 0.65) 100%
-  );
-}
-
-/* Card & Container Utilities */
-.card-roadtrip {
-  background-color: rgba(46, 24, 138, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 2px solid rgba(251, 250, 116, 0.35);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 10px 30px rgba(2, 20, 66, 0.4);
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.card-roadtrip:hover {
-  transform: translateY(-4px);
-  border-color: rgba(251, 250, 116, 0.75);
-  box-shadow: 0 16px 40px rgba(2, 20, 66, 0.55);
-}
-
-.glass-panel {
-  background-color: rgba(2, 20, 66, 0.60);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 1rem;
-}
-
-.sunset-card {
-  background: linear-gradient(135deg, rgba(166, 73, 226, 0.45) 0%, rgba(45, 24, 168, 0.65) 100%);
-  backdrop-filter: blur(12px);
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 12px 32px rgba(2, 20, 66, 0.45);
-}
-
-/* Button Classes */
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: #FBFA74;
-  color: #021442;
-  font-family: var(--font-bagel), "Bagel Fat One", cursive, sans-serif;
-  font-size: 1.125rem;
-  font-weight: 700;
-  padding: 0.75rem 1.75rem;
-  border-radius: 9999px;
-  box-shadow: 0 4px 0 #d0cf24, 0 8px 20px rgba(251, 250, 116, 0.25);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px) scale(1.02);
-  background-color: #ffffff;
-  box-shadow: 0 6px 0 #d0cf24, 0 12px 24px rgba(251, 250, 116, 0.4);
-}
-
-.btn-primary:active {
-  transform: translateY(2px) scale(0.98);
-  box-shadow: 0 2px 0 #d0cf24, 0 4px 10px rgba(251, 250, 116, 0.2);
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: rgba(45, 24, 168, 0.6);
-  color: #ffffff;
-  font-family: var(--font-montserrat-alternates), "Montserrat Alternates", sans-serif;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.btn-secondary:hover {
-  background-color: rgba(105, 80, 213, 0.8);
-  border-color: rgba(255, 255, 255, 0.7);
-  transform: translateY(-2px);
-}
-
-.btn-accent {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: #A649E2;
-  color: #ffffff;
-  font-family: var(--font-bagel), "Bagel Fat One", cursive, sans-serif;
-  font-size: 1.125rem;
-  padding: 0.75rem 1.75rem;
-  border-radius: 9999px;
-  box-shadow: 0 4px 0 #7F3ED0, 0 8px 20px rgba(166, 73, 226, 0.3);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.btn-accent:hover {
-  transform: translateY(-2px) scale(1.02);
-  background-color: #b85cf4;
-  box-shadow: 0 6px 0 #7F3ED0, 0 12px 24px rgba(166, 73, 226, 0.5);
-}
-
-/* Badges & Tags */
-.badge-vibrant {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.875rem;
-  border-radius: 9999px;
-  background-color: #FBFA74;
-  color: #021442;
-  font-weight: 700;
-  font-size: 0.875rem;
-  font-family: var(--font-montserrat-alternates), sans-serif;
-}
-
-.badge-glass {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.875rem;
-  border-radius: 9999px;
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(6px);
-  font-size: 0.875rem;
-}
-
-/* Animations & Micro-interactions */
-.hover-pop {
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.hover-pop:hover {
-  transform: scale(1.05);
-}
-
-.hover-float {
-  transition: transform 0.3s ease;
-}
-.hover-float:hover {
-  transform: translateY(-6px);
-}
-

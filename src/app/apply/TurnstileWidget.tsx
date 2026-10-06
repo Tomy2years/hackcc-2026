@@ -52,7 +52,7 @@ export function TurnstileWidget({ onToken }: TurnstileWidgetProps) {
 
   if (!SITE_KEY) {
     return (
-      <p role="alert" className="text-sm text-rose-300 font-semibold">
+      <p role="alert" className="rounded-lg border border-error bg-error-bg px-4 py-3 text-[15px] font-medium text-error">
         The security check isn&apos;t available right now. Please try again later or email team@hackcc.net.
       </p>
     );
@@ -60,7 +60,7 @@ export function TurnstileWidget({ onToken }: TurnstileWidgetProps) {
 
   if (scriptFailed) {
     return (
-      <p role="alert" className="text-sm text-rose-300 font-semibold">
+      <p role="alert" className="rounded-lg border border-error bg-error-bg px-4 py-3 text-[15px] font-medium text-error">
         The security check couldn&apos;t load. Please disable ad or script blockers for this page, then reload.
       </p>
     );

@@ -14,8 +14,9 @@ export default function Zone5FAQQuotes() {
           alt="PCH San Onofre Double Domes Background"
           fill
           className="object-cover object-center"
-          priority
         />
+        {/* Daytime Contrast Scrim Layer (Darkens bright sky for text legibility) */}
+        <div className="absolute inset-0 bg-slate-950/45" />
       </div>
 
       {/* Top & Bottom Gradient Edge Transitions */}

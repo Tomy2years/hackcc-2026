@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Template with no secrets, safe to commit
+!.env.example
+
+# Audit agents working state (manifests, findings, reports)
+.agent-audit/
+
+# Cloud credential files (service-account keys etc.) must never be committed
+*.key
+*.p12
+*.pfx
+*service-account*.json
+*service_account*.json
+*-credentials*.json
+hackcc-registration-*.json

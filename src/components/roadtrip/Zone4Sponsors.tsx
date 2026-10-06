@@ -14,8 +14,9 @@ export default function Zone4Sponsors() {
           alt="Orange County and Anaheim Night Background"
           fill
           className="object-cover object-center"
-          priority
         />
+        {/* Contrast Scrim Layer */}
+        <div className="absolute inset-0 bg-slate-950/40" />
       </div>
 
       {/* Top & Bottom Gradient Edge Transitions */}

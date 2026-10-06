@@ -29,9 +29,14 @@ export default function DesignSystemPage() {
                 Welcome to the HackCC frontend style guide! Use these pre-built components and CSS utilities to ensure all features share the exact same SoCal Road Trip vibe.
               </p>
             </div>
-            <Link href="/" className="btn-secondary">
-              ← Back to Main Site
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/compare" className="btn-primary text-sm py-2 px-4">
+                ⚡ Side-by-Side Style Comparison
+              </Link>
+              <Link href="/" className="btn-secondary text-sm py-2 px-4">
+                ← Back to Main Site
+              </Link>
+            </div>
           </div>
         </header>
 
@@ -159,6 +164,49 @@ export default function DesignSystemPage() {
             <Badge variant="vibrant">October 24-26, 2026</Badge>
             <Badge variant="glass">Glass Badge</Badge>
             <Badge variant="glass">Zone 1: LA Hills</Badge>
+          </div>
+        </section>
+
+        {/* Section 6: Background Contrast & Readability Scrims */}
+        <section className="space-y-6">
+          <h2 className="text-2xl md:text-3xl font-heading text-[#FBFA74]">
+            6. Background Contrast & Scrim Overlays
+          </h2>
+          <p className="text-white/80">
+            Because HackCC features full-bleed photographic and illustrated road trip scenery, background dimming scrims and container backdrops are mandatory to keep text legible on bright daytime skies.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="relative rounded-2xl overflow-hidden border border-white/20 p-6 min-h-[220px] flex flex-col justify-between bg-gradient-to-tr from-sky-400 via-amber-200 to-yellow-100 text-slate-900">
+              <span className="text-xs font-bold uppercase tracking-wider text-rose-700 bg-white/80 px-2 py-0.5 rounded self-start">
+                ❌ Un-scrimmed Bright Sky (Poor Contrast)
+              </span>
+              <p className="text-white font-medium text-lg drop-shadow">
+                Naked white text on bright daylight sky is washed out and difficult to read.
+              </p>
+              <p className="text-xs text-slate-800 font-mono">
+                Avoid: Raw text directly placed over daytime backgrounds
+              </p>
+            </div>
+
+            <div className="relative rounded-2xl overflow-hidden border border-white/20 p-6 min-h-[220px] flex flex-col justify-between bg-gradient-to-tr from-sky-400 via-amber-200 to-yellow-100">
+              {/* Scrim Overlay */}
+              <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-[2px]" />
+              <div className="relative z-10 space-y-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded self-start">
+                  ✓ With Scrim Overlay & Card (Crystal Clear)
+                </span>
+                <p className="cartoony-title text-2xl">
+                  HackCC 2026
+                </p>
+                <p className="font-body text-slate-100 text-sm">
+                  With a 45% dark scrim layer and cartoony text-shadow, titles and body text remain razor-sharp.
+                </p>
+              </div>
+              <p className="relative z-10 text-xs text-yellow-200 font-mono">
+                Mandatory: className=&quot;absolute inset-0 bg-slate-950/45&quot;
+              </p>
+            </div>
           </div>
         </section>
       </div>

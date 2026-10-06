@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Bagel_Fat_One, Montserrat_Alternates } from "next/font/google";
+import { Geist, Geist_Mono, Bagel_Fat_One, Montserrat_Alternates, Fraunces } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,6 +24,11 @@ const montserratFont = Montserrat_Alternates({
   subsets: ["latin"],
 });
 
+const frauncesFont = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+});
+
 export const metadata: Metadata = {
   title: "HackCC",
   description: "HackCC Official Website",
@@ -33,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bagelFont.variable} ${montserratFont.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bagelFont.variable} ${montserratFont.variable} ${frauncesFont.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

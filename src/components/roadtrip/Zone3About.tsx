@@ -14,8 +14,9 @@ export default function Zone3About() {
           alt="Santa Monica Pier Nighttime Background"
           fill
           className="object-cover object-center"
-          priority
         />
+        {/* Contrast Scrim Layer */}
+        <div className="absolute inset-0 bg-slate-950/40" />
       </div>
 
       {/* Top & Bottom Gradient Edge Transitions */}

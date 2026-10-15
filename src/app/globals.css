@@ -77,6 +77,10 @@
   --radius: 0.5rem;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-montserrat-alternates), Arial, Helvetica, sans-serif;
 }

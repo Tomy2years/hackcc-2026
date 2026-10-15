@@ -7,7 +7,6 @@ import About from "@2026/features/about/about";
 import Collage from "@2026/features/collage/Collage";
 import Faq from "@2026/features/faq/Faq";
 import VenueMap from "@2026/features/home-page/components/venue-map";
-import Link from "next/link";
 
 export default function Archive2026Page() {
   return (

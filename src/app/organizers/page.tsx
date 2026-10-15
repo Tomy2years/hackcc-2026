@@ -19,7 +19,7 @@ function LinkedInIcon({ className }: { className?: string }) {
 }
 
 // Top-level background & headshot static references
-import organizersData from "../../../public/data/organizers.json";
+import organizersData from "@/data/organizers.json";
 import hackccIcon from "../../../public/images/hackcc-icon.png";
 
 const SCENIC_BG = "/assets/roadtrip/organizers/coastal-overlook.jpeg";

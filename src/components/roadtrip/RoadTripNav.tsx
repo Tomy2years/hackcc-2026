@@ -8,25 +8,7 @@ import { ChevronRight } from "lucide-react";
 
 export default function RoadTripNav() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDarkScene, setIsDarkScene] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Track scroll position to transition menu background from daytime/light to dark scenes
-  useEffect(() => {
-    const handleScroll = () => {
-      // In Zone1Hero, night mode latches when scroll reaches 0.38 * window.innerHeight
-      // Once night-time is reached, it stays night unless page is reloaded.
-      const nightThreshold = window.innerHeight * 0.38;
-
-      if (window.scrollY >= nightThreshold) {
-        setIsDarkScene(true);
-      }
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Close menu on Escape key press or click outside
   useEffect(() => {
@@ -121,18 +103,10 @@ export default function RoadTripNav() {
                   stiffness: 300,
                   duration: 0.25,
                 }}
-                className={`absolute right-0 top-full mt-2 w-64 sm:w-72 rounded-2xl backdrop-blur-xl p-3.5 shadow-2xl z-50 pointer-events-auto space-y-2.5 transition-colors duration-300 ${
-                  isDarkScene
-                    ? "bg-slate-900/80 border border-white/20 shadow-black/60"
-                    : "bg-slate-200/85 border border-white/60 shadow-slate-900/20"
-                }`}
+                className="absolute right-0 top-full mt-2 w-64 sm:w-72 rounded-2xl backdrop-blur-xl p-3.5 shadow-2xl z-50 pointer-events-auto space-y-2.5 bg-slate-900/90 border border-white/20 shadow-black/60"
               >
                 {/* Header: Bigger Borderless HackCC Emblem on left & Bold 2026 ROAD TRIP title aligned to right */}
-                <div
-                  className={`flex items-center justify-between gap-3 pb-2.5 border-b transition-colors duration-300 ${
-                    isDarkScene ? "border-white/15" : "border-slate-300/70"
-                  }`}
-                >
+                <div className="flex items-center justify-between gap-3 pb-2.5 border-b border-white/15">
                   <div className="w-11 h-11 flex items-center justify-center shrink-0">
                     <Image
                       src="/images/hackcc-icon.png"
@@ -143,11 +117,7 @@ export default function RoadTripNav() {
                     />
                   </div>
                   <div className="flex flex-col justify-center text-right ml-auto">
-                    <span
-                      className={`text-xs sm:text-[13px] font-black tracking-wider uppercase font-[var(--font-mont)] transition-colors duration-300 ${
-                        isDarkScene ? "text-amber-400" : "text-amber-700"
-                      }`}
-                    >
+                    <span className="text-xs sm:text-[13px] font-black tracking-wider uppercase font-[var(--font-mont)] text-amber-400">
                       2026 ROAD TRIP
                     </span>
                   </div>
@@ -158,63 +128,35 @@ export default function RoadTripNav() {
                   <Link
                     href="/organizers"
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center justify-between p-2 rounded-xl transition-all duration-150 group ${
-                      isDarkScene ? "hover:bg-white/10" : "hover:bg-slate-300/50"
-                    }`}
+                    className="flex items-center justify-between p-2 rounded-xl transition-all duration-150 group hover:bg-white/10"
                   >
                     <div className="flex items-center gap-2.5">
                       {/* Green Caltrans Highway Road Sign */}
                       <span className="shrink-0 bg-[#15803D] text-white border border-white font-mono font-black text-xs px-2 py-0.5 rounded shadow-sm group-hover:scale-105 transition-transform">
                         1
                       </span>
-                      <span
-                        className={`font-bold text-sm transition-colors font-[var(--font-mont)] ${
-                          isDarkScene
-                            ? "text-white group-hover:text-amber-300"
-                            : "text-slate-800 group-hover:text-amber-700"
-                        }`}
-                      >
+                      <span className="font-bold text-sm transition-colors font-[var(--font-mont)] text-white group-hover:text-amber-300">
                         Organizers
                       </span>
                     </div>
-                    <ChevronRight
-                      className={`w-3.5 h-3.5 transition-all group-hover:translate-x-0.5 ${
-                        isDarkScene
-                          ? "text-slate-400 group-hover:text-amber-300"
-                          : "text-slate-500 group-hover:text-amber-700"
-                      }`}
-                    />
+                    <ChevronRight className="w-3.5 h-3.5 transition-all text-slate-400 group-hover:translate-x-0.5 group-hover:text-amber-300" />
                   </Link>
 
                   <Link
                     href="/2026"
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center justify-between p-2 rounded-xl transition-all duration-150 group ${
-                      isDarkScene ? "hover:bg-white/10" : "hover:bg-slate-300/50"
-                    }`}
+                    className="flex items-center justify-between p-2 rounded-xl transition-all duration-150 group hover:bg-white/10"
                   >
                     <div className="flex items-center gap-2.5">
                       {/* Green Caltrans Highway Road Sign */}
                       <span className="shrink-0 bg-[#15803D] text-white border border-white font-mono font-black text-xs px-2 py-0.5 rounded shadow-sm group-hover:scale-105 transition-transform">
                         2
                       </span>
-                      <span
-                        className={`font-bold text-sm transition-colors font-[var(--font-mont)] ${
-                          isDarkScene
-                            ? "text-white group-hover:text-amber-300"
-                            : "text-slate-800 group-hover:text-amber-700"
-                        }`}
-                      >
+                      <span className="font-bold text-sm transition-colors font-[var(--font-mont)] text-white group-hover:text-amber-300">
                         Archive
                       </span>
                     </div>
-                    <ChevronRight
-                      className={`w-3.5 h-3.5 transition-all group-hover:translate-x-0.5 ${
-                        isDarkScene
-                          ? "text-slate-400 group-hover:text-amber-300"
-                          : "text-slate-500 group-hover:text-amber-700"
-                      }`}
-                    />
+                    <ChevronRight className="w-3.5 h-3.5 transition-all text-slate-400 group-hover:translate-x-0.5 group-hover:text-amber-300" />
                   </Link>
                 </div>
               </motion.div>

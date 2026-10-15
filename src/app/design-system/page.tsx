@@ -66,7 +66,7 @@ export default function DesignSystemPage() {
               <p className="cartoony-title text-3xl mb-2">Cartoony Title (.cartoony-title)</p>
               <p className="font-heading text-xl text-[#FBFA74]">Section Subtitle (.font-heading)</p>
               <code className="block mt-4 bg-black/40 p-3 rounded text-xs text-yellow-200">
-                className="cartoony-title text-3xl"
+                {'className="cartoony-title text-3xl"'}
               </code>
             </Card>
             <Card variant="glass" hoverEffect={false}>
@@ -78,7 +78,7 @@ export default function DesignSystemPage() {
                 Subtext / Helper text (.font-body font-semibold)
               </p>
               <code className="block mt-4 bg-black/40 p-3 rounded text-xs text-yellow-200">
-                className="font-body text-base text-white/90"
+                {'className="font-body text-base text-white/90"'}
               </code>
             </Card>
           </div>
@@ -90,7 +90,7 @@ export default function DesignSystemPage() {
             3. Buttons & Interactive Links
           </h2>
           <p className="text-white/80">
-            Always use real destination paths (e.g. <code className="bg-black/40 px-2 py-0.5 rounded">href="/2026"</code> or <code className="bg-black/40 px-2 py-0.5 rounded">href="https://discord.gg/..."</code>). Avoid placeholder <code className="bg-black/40 px-2 py-0.5 rounded">#</code> links!
+            Always use real destination paths (e.g. <code className="bg-black/40 px-2 py-0.5 rounded">{'href="/2026"'}</code> or <code className="bg-black/40 px-2 py-0.5 rounded">{'href="https://discord.gg/..."'}</code>). Avoid placeholder <code className="bg-black/40 px-2 py-0.5 rounded">#</code> links!
           </p>
 
           <div className="flex flex-wrap items-center gap-6 p-6 bg-white/5 rounded-2xl border border-white/10">

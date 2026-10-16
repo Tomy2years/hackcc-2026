@@ -5,7 +5,6 @@ import Link from "next/link";
 export default function Zone5FooterCTA() {
   return (
     <section
-      id="zone-apply"
       className="relative min-h-screen sm:h-screen w-full flex items-center justify-center px-4 sm:px-6 lg:px-8"
     >
 

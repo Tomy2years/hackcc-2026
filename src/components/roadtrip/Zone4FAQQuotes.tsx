@@ -21,8 +21,7 @@ export default function Zone4FAQQuotes() {
 
   return (
     <section
-      id="zone-faq"
-      className="relative min-h-screen py-20 sm:py-24 lg:py-0 lg:h-screen w-full flex items-center justify-center scroll-mt-16 sm:scroll-mt-20"
+      className="relative min-h-screen py-20 sm:py-24 lg:py-0 w-full flex items-center justify-center"
     >
       {/* Full-Screen Background Image Layer */}
       <div className="absolute inset-0 z-0 overflow-hidden">

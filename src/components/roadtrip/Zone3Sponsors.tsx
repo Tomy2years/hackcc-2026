@@ -34,8 +34,7 @@ const sponsors = [
 export default function Zone3Sponsors() {
   return (
     <section
-      id="zone-sponsors"
-      className="relative min-h-screen py-20 sm:py-24 lg:py-0 lg:h-screen w-full overflow-hidden flex items-center justify-center scroll-mt-20"
+      className="relative min-h-screen py-20 sm:py-24 lg:py-0 w-full overflow-hidden flex items-center justify-center"
     >
       {/* Full-Screen Background Image Layer */}
       <div className="absolute inset-0 z-0">

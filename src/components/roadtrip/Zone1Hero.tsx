@@ -36,7 +36,7 @@ export default function Zone1Hero() {
   const sunOpacity = useTransform(scrollYProgress, [0, 0.30, 0.45, 1.0], [0, 0, 1, 1]);
 
   return (
-    <section ref={sectionRef} id="zone-hero" className="relative h-[200vh] w-full bg-slate-950">
+    <section ref={sectionRef} className="relative h-[200vh] w-full bg-slate-950">
       {/* Sticky Pinned Viewport Container: stays pinned while sun rises all the way up */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
       {/* Background Image Layer 1: Nighttime Hills (Initial night state at top of page) */}

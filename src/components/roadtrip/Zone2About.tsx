@@ -28,7 +28,7 @@ const pillars = [
 
 export default function Zone2About() {
   return (
-    <section id="zone-about" className="relative min-h-screen py-16 sm:py-20 lg:py-0 lg:h-screen w-full overflow-hidden flex items-center justify-center">
+    <section className="relative min-h-screen py-16 sm:py-20 lg:py-0 w-full overflow-hidden flex items-center justify-center">
       {/* Full-Screen Background Image Layer */}
       <div className="absolute inset-0 z-0">
         <Image

@@ -10,7 +10,7 @@ const LOLLIPOP_MASCOT = "/assets/mascots/lollipop-mascot.png";
 import { FAQS } from "@/data/faq";
 
 export default function Zone4FAQQuotes() {
-  const [openId, setOpenId] = useState<string | null>("apply");
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const toggle = (id: string) => {
     setOpenId((prev) => (prev === id ? null : id));
@@ -24,16 +24,17 @@ export default function Zone4FAQQuotes() {
       className="relative min-h-screen py-20 sm:py-24 lg:py-0 w-full flex items-center justify-center"
     >
       {/* Full-Screen Background Image Layer */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
         <Image
           src={DOUBLE_DOME_BG}
           alt="California Coastal Cove Daytime Background"
           fill
-          className="object-cover object-center"
+          className="object-cover object-center pointer-events-none select-none"
           priority
+          draggable={false}
         />
         {/* Natural Coastal Scrim Layer */}
-        <div className="absolute inset-0 bg-slate-950/25" />
+        <div className="absolute inset-0 bg-slate-950/25 pointer-events-none" />
       </div>
 
       {/* Main Container */}
@@ -83,8 +84,9 @@ export default function Zone4FAQQuotes() {
                         src={LOLLIPOP_MASCOT}
                         alt="HackCC Mascot"
                         fill
-                        className="object-contain p-0.5 sm:p-1"
+                        className="object-contain p-0.5 sm:p-1 pointer-events-none select-none"
                         priority
+                        draggable={false}
                       />
                     </div>
                     <div className="mt-0.5 sm:mt-1 text-center font-serif italic text-[9px] sm:text-[11px] font-semibold text-slate-700 leading-tight">

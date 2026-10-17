@@ -41,7 +41,7 @@ export default function Zone5FooterCTA() {
 
             {/* Partner Action: California Road Trip Green */}
             <Link
-              href="/sponsor"
+              href="/sponsors"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 border border-emerald-400/50 hover:border-emerald-300 text-white font-bold text-base sm:text-lg px-8 sm:px-9 py-4 sm:py-4.5 rounded-full backdrop-blur-md shadow-xl shadow-emerald-950/50 transition-all transform hover:scale-105 active:scale-95 cursor-pointer order-3 sm:order-3"
             >
               <span>Sponsor Us</span>

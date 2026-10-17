@@ -30,16 +30,17 @@ export default function Zone2About() {
   return (
     <section className="relative min-h-screen py-16 sm:py-20 lg:py-0 w-full overflow-hidden flex items-center justify-center">
       {/* Full-Screen Background Image Layer */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <Image
           src={INGLEWOOD_DAY_BG}
           alt="Inglewood Daytime Skyline Background"
           fill
-          className="object-cover object-center"
+          className="object-cover object-center pointer-events-none select-none"
           priority
+          draggable={false}
         />
         {/* Daytime Contrast Scrim Layer: Natural atmospheric gradient preserving daytime sky while boosting contrast over lower cityscape */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/25 via-slate-950/45 to-slate-950/75" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/25 via-slate-950/45 to-slate-950/75 pointer-events-none" />
       </div>
 
       {/* Unboxed Main Content Container */}

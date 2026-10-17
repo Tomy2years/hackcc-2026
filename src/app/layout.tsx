@@ -32,6 +32,13 @@ const frauncesFont = Fraunces({
 export const metadata: Metadata = {
   title: "HackCC",
   description: "HackCC Official Website",
+  icons: {
+    icon: [
+      { url: "/images/hackcc-icon.png", type: "image/png" },
+    ],
+    shortcut: "/images/hackcc-icon.png",
+    apple: "/images/hackcc-icon.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

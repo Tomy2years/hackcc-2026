@@ -85,6 +85,17 @@ body {
   font-family: var(--font-montserrat-alternates), Arial, Helvetica, sans-serif;
 }
 
+/* Universal anti-drag rule: images and media should never be draggable */
+img,
+svg,
+video {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
 .map-fade-mask {
   mask-image: linear-gradient(
     to bottom,

@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import RoadTransitionComparison from "@/components/roadtrip/transitions/RoadTransitionComparison";
+import { GENERAL_EMAIL } from "@/data/contact";
 
 // Real scenic assets across the roadtrip
 const SCENES = [
@@ -54,7 +56,7 @@ const SCENES = [
 
 
 type FontOption = "bagel" | "sans" | "fraunces";
-type ComparisonMode = "faq-designs" | "footer-designs" | "layout-artifacts" | "typography";
+type ComparisonMode = "road-transitions" | "faq-designs" | "footer-designs" | "layout-artifacts" | "typography";
 type FooterOption = "seamless" | "stamp" | "freeway-board";
 type FAQOption = "postcard" | "boardwalk" | "highway-sign" | "rockside";
 type AirmailBorderOption =
@@ -125,10 +127,10 @@ const COMPARE_FAQS = [
 
 export default function CompareDesignPage() {
   const [selectedSceneIndex, setSelectedSceneIndex] = useState(3); // Default to Zone 4 (Double Dome FAQ)
-  const [activeTab, setActiveTab] = useState<ComparisonMode>("faq-designs");
+  const [activeTab, setActiveTab] = useState<ComparisonMode>("road-transitions");
   const [faqOption, setFaqOption] = useState<FAQOption>("postcard");
   const [airmailBorder, setAirmailBorder] = useState<AirmailBorderOption>("warm-rose-tan");
-  const [openFAQId, setOpenFAQId] = useState<string | null>("apply");
+  const [openFAQId, setOpenFAQId] = useState<string | null>(null);
   const [activeFont, setActiveFont] = useState<FontOption>("bagel");
   const [footerStyle, setFooterStyle] = useState<FooterOption>("seamless");
   const [viewMode, setViewMode] = useState<"side-by-side" | "single">("side-by-side");
@@ -155,6 +157,15 @@ export default function CompareDesignPage() {
             <span className="text-white/20">|</span>
             {/* Primary Mode Tabs */}
             <div className="flex bg-slate-900 p-1 rounded-lg border border-white/10 text-xs font-semibold">
+              <button
+                onClick={() => setActiveTab("road-transitions")}
+                className={`px-3 py-1.5 rounded transition-all cursor-pointer ${activeTab === "road-transitions"
+                    ? "bg-amber-400 text-slate-950 shadow font-bold"
+                    : "text-slate-300 hover:text-white"
+                  }`}
+              >
+                🛣️ Road Transitions (4 Directions)
+              </button>
               <button
                 onClick={() => {
                   setActiveTab("faq-designs");
@@ -198,20 +209,22 @@ export default function CompareDesignPage() {
           </div>
 
           {/* Scene Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400 hidden sm:inline">Scene:</span>
-            <select
-              value={selectedSceneIndex}
-              onChange={(e) => setSelectedSceneIndex(Number(e.target.value))}
-              className="bg-slate-900 border border-white/15 rounded-lg px-3 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-            >
-              {SCENES.map((scene, idx) => (
-                <option key={scene.id} value={idx}>
-                  {scene.name} ({scene.type})
-                </option>
-              ))}
-            </select>
-          </div>
+          {activeTab !== "road-transitions" && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400 hidden sm:inline">Scene:</span>
+              <select
+                value={selectedSceneIndex}
+                onChange={(e) => setSelectedSceneIndex(Number(e.target.value))}
+                className="bg-slate-900 border border-white/15 rounded-lg px-3 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+              >
+                {SCENES.map((scene, idx) => (
+                  <option key={scene.id} value={idx}>
+                    {scene.name} ({scene.type})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Secondary Controls (Dependent on Active Tab) */}
           {activeTab === "faq-designs" ? (
@@ -475,20 +488,26 @@ export default function CompareDesignPage() {
           )}
 
           {/* Full-Screen Scenic Background Layer */}
-          <div className="absolute inset-0 z-0">
-            <Image
-              src={currentScene.image}
-              alt={currentScene.name}
-              fill
-              className="object-cover object-center"
-              priority
-            />
-            {/* Natural background without artificial dark scrim */}
-            {currentScene.scrim ? <div className={`absolute inset-0 ${currentScene.scrim}`} /> : null}
-          </div>
+          {activeTab !== "road-transitions" && (
+            <div className="absolute inset-0 z-0">
+              <Image
+                src={currentScene.image}
+                alt={currentScene.name}
+                fill
+                className="object-cover object-center"
+                priority
+              />
+              {/* Natural background without artificial dark scrim */}
+              {currentScene.scrim ? <div className={`absolute inset-0 ${currentScene.scrim}`} /> : null}
+            </div>
+          )}
 
-          {/* Zone 1 Sign Only Scene */}
-          {currentScene.isSignOnly ? (
+          {/* Road Transitions Comparison Tab */}
+          {activeTab === "road-transitions" ? (
+            <div className="relative z-10 w-full py-4">
+              <RoadTransitionComparison />
+            </div>
+          ) : currentScene.isSignOnly ? (
             <div className="relative z-10 flex flex-col items-center justify-center p-6 text-center space-y-6">
               <div className="w-full max-w-2xl sm:max-w-4xl md:max-w-4xl [transform:rotate(-1.4deg)_skewY(-0.8deg)] drop-shadow-[0_16px_32px_rgba(0,0,0,0.7)] flex flex-col items-center">
                 {currentScene.signImage && (
@@ -1352,11 +1371,11 @@ export default function CompareDesignPage() {
                           Roadtrip Stops
                         </h4>
                         <ul className="space-y-2 text-sm text-slate-300">
-                          <li><a href="#zone-hero" className="hover:text-amber-300 transition-colors">01 / Hollywood Hills</a></li>
-                          <li><a href="#zone-about" className="hover:text-amber-300 transition-colors">02 / Inglewood Skyline (About)</a></li>
-                          <li><a href="#zone-sponsors" className="hover:text-amber-300 transition-colors">03 / Santa Monica Pier (Sponsors)</a></li>
-                          <li><a href="#zone-faq" className="hover:text-amber-300 transition-colors">04 / PCH Coast (FAQ)</a></li>
-                          <li><a href="#zone-apply" className="hover:text-amber-300 transition-colors">05 / San Diego Beach (Apply)</a></li>
+                          <li><a href="/zone-hero" className="hover:text-amber-300 transition-colors">01 / Hollywood Hills</a></li>
+                          <li><a href="/zone-about" className="hover:text-amber-300 transition-colors">02 / Inglewood Skyline (About)</a></li>
+                          <li><a href="/sponsors" className="hover:text-amber-300 transition-colors">03 / Santa Monica Pier (Sponsors)</a></li>
+                          <li><a href="/zone-faq" className="hover:text-amber-300 transition-colors">04 / PCH Coast (FAQ)</a></li>
+                          <li><a href="/zone-apply" className="hover:text-amber-300 transition-colors">05 / San Diego Beach (Apply)</a></li>
                         </ul>
                       </div>
 
@@ -1386,10 +1405,10 @@ export default function CompareDesignPage() {
                           Questions about partnerships, tracks, or volunteering?
                         </p>
                         <a
-                          href="mailto:team@hackcc.net"
+                          href={`mailto:${GENERAL_EMAIL}`}
                           className="inline-block text-sm font-mono text-white underline underline-offset-4 decoration-amber-400 hover:text-amber-300 transition-colors"
                         >
-                          team@hackcc.net
+                          {GENERAL_EMAIL}
                         </a>
                         <div className="pt-2 text-xs text-slate-400">
                           📍 Southern California, USA
@@ -1403,7 +1422,7 @@ export default function CompareDesignPage() {
                       <div className="flex items-center gap-3">
                         <span className="font-mono text-amber-300">SUNSET HORIZON</span>
                         <span>•</span>
-                        <a href="#zone-hero" className="hover:text-white transition-colors">Back to top ↑</a>
+                        <a href="/zone-hero" className="hover:text-white transition-colors">Back to top ↑</a>
                       </div>
                     </div>
                   </div>
@@ -1448,11 +1467,11 @@ export default function CompareDesignPage() {
                           Event Navigation
                         </h4>
                         <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-200">
-                          <a href="#zone-about" className="hover:text-amber-300">About</a>
-                          <a href="#zone-details" className="hover:text-amber-300">Tracks</a>
-                          <a href="#zone-sponsors" className="hover:text-amber-300">Sponsors</a>
-                          <a href="#zone-faq" className="hover:text-amber-300">FAQ</a>
-                          <a href="#zone-apply" className="hover:text-amber-300">Register</a>
+                          <a href="/zone-about" className="hover:text-amber-300">About</a>
+                          <a href="/zone-about" className="hover:text-amber-300">Tracks</a>
+                          <a href="/sponsors" className="hover:text-amber-300">Sponsors</a>
+                          <a href="/zone-faq" className="hover:text-amber-300">FAQ</a>
+                          <a href="/zone-apply" className="hover:text-amber-300">Register</a>
                         </div>
                       </div>
 
@@ -1493,10 +1512,10 @@ export default function CompareDesignPage() {
                           Direct Contact
                         </h4>
                         <a
-                          href="mailto:contact@hackcc.net"
+                          href={`mailto:${GENERAL_EMAIL}`}
                           className="font-mono text-sm text-white hover:text-amber-300 transition-colors"
                         >
-                          contact@hackcc.net
+                          {GENERAL_EMAIL}
                         </a>
                       </div>
                     </div>
@@ -1504,7 +1523,7 @@ export default function CompareDesignPage() {
                     {/* Bottom Sub-bar */}
                     <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
                       <span>&copy; 2026 HackCC • Designed with pride in California</span>
-                      <a href="#zone-hero" className="hover:text-white font-mono">BACK TO TOP ↑</a>
+                      <a href="/zone-hero" className="hover:text-white font-mono">BACK TO TOP ↑</a>
                     </div>
                   </div>
                 </div>
@@ -1545,9 +1564,9 @@ export default function CompareDesignPage() {
                         <span className="font-mono text-xs text-emerald-400 font-bold">MILE 02</span>
                         <h4 className="font-heading text-xl text-white mt-1 mb-2">Quick Stops</h4>
                         <div className="space-y-1 text-xs text-slate-300">
-                          <div><a href="#zone-about" className="hover:text-amber-300">About the Event</a></div>
-                          <div><a href="#zone-details" className="hover:text-amber-300">Tracks &amp; Prizes</a></div>
-                          <div><a href="#zone-sponsors" className="hover:text-amber-300">Sponsor Highway</a></div>
+                          <div><a href="/zone-about" className="hover:text-amber-300">About the Event</a></div>
+                          <div><a href="/zone-about" className="hover:text-amber-300">Tracks &amp; Prizes</a></div>
+                          <div><a href="/sponsors" className="hover:text-amber-300">Sponsor Highway</a></div>
                         </div>
                       </div>
 
@@ -1584,14 +1603,14 @@ export default function CompareDesignPage() {
                             <FontAwesomeIcon icon={faInstagram} className="w-5 h-5" />
                           </a>
                         </div>
-                        <span className="text-[11px] font-mono text-slate-400">dispatch@hackcc.net</span>
+                        <span className="text-[11px] font-mono text-slate-400">{GENERAL_EMAIL}</span>
                       </div>
                     </div>
 
                     {/* Bottom Sub-bar */}
                     <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-mono">
                       <span>CALTRANS ROUTE 2026 • ALL RIGHTS RESERVED</span>
-                      <a href="#zone-hero" className="hover:text-amber-300">MILEPOST 0 (TOP) ↑</a>
+                      <a href="/zone-hero" className="hover:text-amber-300">MILEPOST 0 (TOP) ↑</a>
                     </div>
                   </div>
                 </div>

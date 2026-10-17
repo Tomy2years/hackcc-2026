@@ -8,10 +8,14 @@ import Zone5FooterCTA from "@/components/roadtrip/Zone5FooterCTA";
 import RoadBridge from "@/components/roadtrip/RoadBridge";
 import RoadTripStop from "@/components/roadtrip/RoadTripStop";
 import RoadTripFooter from "@/components/roadtrip/RoadTripFooter";
+import ZoneRouteListener from "@/components/roadtrip/ZoneRouteListener";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950">
+      {/* Route Listener for clean hashless /zone-* URLs */}
+      <ZoneRouteListener />
+
       {/* Navigation Header */}
       <RoadTripNav />
 
@@ -87,16 +91,17 @@ export default function Home() {
       <RoadTripStop id="zone-apply">
         <div className="relative w-full overflow-hidden bg-slate-950">
           {/* Full Continuous Artwork Layer */}
-          <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 z-0 pointer-events-none select-none">
             <Image
               src="/assets/roadtrip/zone6-cta-footer/San-Diego-Beach.jpg"
               alt="San Diego Beach & Coastal Dunes Panorama"
               fill
-              className="object-cover object-top"
+              className="object-cover object-top pointer-events-none select-none"
               priority
+              draggable={false}
             />
             {/* Ambient Scenic Scrim: keeps scenic California colors vibrant */}
-            <div className="absolute inset-0 bg-slate-950/20" />
+            <div className="absolute inset-0 bg-slate-950/20 pointer-events-none" />
           </div>
 
           {/* Zone 5: Get Involved & Apply CTA (SoCal Beach - Daytime) */}

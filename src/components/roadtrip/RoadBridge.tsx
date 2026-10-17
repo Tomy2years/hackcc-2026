@@ -8,46 +8,36 @@ const SEAL_CAR_RIGHT = "/assets/roadtrip/seal-car-right.png";
 const SEAL_CAR_LEFT = "/assets/roadtrip/seal-car-left.png";
 
 /*
- * TRANSITION GEOMETRY (all values in vh so everything scales with the viewport)
+ * TRANSITION GEOMETRY (values in vh scaling with viewport)
  *
- * A single two-lane highway (the one the seal drives on) runs through a calm,
- * dry-grass California roadside. The whole strip is intentionally TALLER than the
- * viewport: its solid core (between the deepest dip of the top wave and the highest
- * crest of the bottom wave) is > 100vh, so while it travels up the screen the scene
- * above and the scene below are never visible at the same time.
+ * A clean, stylized California highway bordered by a single sleek cartoon rolling hill.
+ * Palette matched directly to the trees in the Hollywood Hills daytime scene (Zone 1):
+ *   - Sunlit foliage crest highlight: #a8ad28 / #b8bd32 (sunlit chartreuse tree crown rim)
+ *   - Tree canopy body: #465824 / #6e8224 (rich olive-forest chaparral green)
+ *   - Deep shaded base: #2e3c17 to #1a240e (shadowed forest base)
+ *   - Clean cartoon outline: #121b0c
  *
- *   0    ─ 8vh    wavy leading edge (roadside grass)
- *   8    ─ 32.5vh roadside grass
- *   32.5 ─ 92.5vh the road: shoulder · lane · double yellow · lane · shoulder
- *   92.5 ─ 117vh  roadside grass
- *   117  ─ 125vh  wavy trailing edge
- *
- * The road sits dead-centre, so at the moment the strip fully covers the screen the
- * road (and the car) are in the middle of the viewport.
+ *   0    ─ 16vh   Top cartoon hill (slender single rolling wave)
+ *   16   ─ 92vh   The highway: shoulder · lane · double yellow · lane · shoulder
+ *   92   ─ 108vh  Bottom cartoon hill (mirrored rolling verge)
  */
-export const ROAD_HEIGHT_VH = 125;
-/** Depth of each wavy edge. The next stop tucks this far underneath the strip. */
-export const ROAD_EDGE_VH = 8;
+export const ROAD_HEIGHT_VH = 108;
+/** Depth of the wavy trailing verge. The next stop tucks this far underneath. */
+export const ROAD_EDGE_VH = 6;
 
-const SHOULDER_VH = 4;
-const LANE_VH = 26;
-const DECK_VH = SHOULDER_VH * 2 + LANE_VH * 2; // 60
-const DECK_TOP_VH = (ROAD_HEIGHT_VH - DECK_VH) / 2; // 32.5
-const DECK_BOTTOM_VH = DECK_TOP_VH + DECK_VH; // 92.5
-const LANES_TOP_VH = DECK_TOP_VH + SHOULDER_VH; // 36.5
-const LANES_BOTTOM_VH = DECK_BOTTOM_VH - SHOULDER_VH; // 88.5
-const CENTER_VH = LANES_TOP_VH + LANE_VH; // 62.5
+const HILL_VH = 16;
+const SHOULDER_VH = 3.5;
+const DECK_VH = ROAD_HEIGHT_VH - HILL_VH * 2; // 76vh
+const DECK_TOP_VH = HILL_VH; // 16vh
+const DECK_BOTTOM_VH = ROAD_HEIGHT_VH - HILL_VH; // 92vh
+const LANES_TOP_VH = DECK_TOP_VH + SHOULDER_VH; // 19.5vh
+const LANES_BOTTOM_VH = DECK_BOTTOM_VH - SHOULDER_VH; // 88.5vh
+const LANE_VH = (LANES_BOTTOM_VH - LANES_TOP_VH) / 2; // 34.5vh
+const CENTER_VH = LANES_TOP_VH + LANE_VH; // 54vh
 
-const GRASS_EDGE = "#c49a52";
-const GRASS_ROADSIDE = "#9a7439";
-
-// Fine grain (inline SVG noise) so asphalt and grass read as real surfaces, not flat fills.
+// Fine asphalt grain (inline SVG noise)
 const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
-
-// Wavy edge silhouette (viewBox 0 0 1440 100). Wave stays within the top ~56% of the edge strip.
-const WAVE_EDGE = "M0,40 C180,8 360,10 540,30 S900,58 1080,30 S1350,4 1440,22";
-const WAVE_SHAPE = `${WAVE_EDGE} L1440,100 L0,100 Z`;
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
 interface RoadBridgeProps {
   routeNumber: string;
@@ -58,26 +48,127 @@ interface RoadBridgeProps {
   hasCone?: boolean;
 }
 
-/** Wavy grass edge that leads (top) or trails (bottom) the transition strip. */
-function WaveEdge({ position, mirrored }: { position: "top" | "bottom"; mirrored: boolean }) {
-  const isTop = position === "top";
-
+/** Top single cartoon rolling hill matching Hollywood Hills daytime tree colors */
+function TopCartoonHill({ mirrored }: { mirrored: boolean }) {
   return (
     <div
-      className={`absolute inset-x-0 ${isTop ? "top-0" : "bottom-0"}`}
-      style={{ height: `${ROAD_EDGE_VH}vh` }}
+      className={`absolute inset-x-0 top-0 overflow-hidden pointer-events-none drop-shadow-[0_-10px_20px_rgba(0,0,0,0.4)] ${
+        mirrored ? "-scale-x-100" : ""
+      }`}
+      style={{ height: `${HILL_VH}vh` }}
     >
-      {/* Shadow is cast "outward" (up on the top edge); the vertical flip makes the bottom edge cast it downward. */}
       <svg
-        viewBox="0 0 1440 100"
+        viewBox="0 0 1440 160"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={`absolute inset-0 h-full w-full drop-shadow-[0_-14px_28px_rgba(0,0,0,0.45)] ${
-          isTop ? "" : "-scale-y-100"
-        } ${mirrored ? "-scale-x-100" : ""}`}
+        className="w-full h-full block"
       >
-        <path d={WAVE_SHAPE} fill={GRASS_EDGE} />
-        <path d={WAVE_EDGE} fill="none" stroke="#5c4526" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+        <defs>
+          {/* Hollywood Hills daytime tree foliage gradient */}
+          <linearGradient id="top-hill-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#a8ad28" />
+            <stop offset="18%" stopColor="#6e8224" />
+            <stop offset="45%" stopColor="#465824" />
+            <stop offset="78%" stopColor="#2e3c17" />
+            <stop offset="100%" stopColor="#1a240e" />
+          </linearGradient>
+
+          {/* Road verge turf curb */}
+          <linearGradient id="top-curb-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1a240e" />
+            <stop offset="50%" stopColor="#242116" />
+            <stop offset="100%" stopColor="#14120a" />
+          </linearGradient>
+        </defs>
+
+        {/* Single clean cartoon rolling hill body */}
+        <path
+          d="M0,38 C220,12 440,16 660,38 C880,60 1100,20 1280,12 C1360,8 1410,16 1440,22 L1440,160 L0,160 Z"
+          fill="url(#top-hill-gradient)"
+        />
+
+        {/* Sunlit crest highlight ribbon (tree canopy sunlit rim) */}
+        <path
+          d="M0,38 C220,12 440,16 660,38 C880,60 1100,20 1280,12 C1360,8 1410,16 1440,22 L1440,32 C1410,26 1360,18 1280,22 C1100,30 880,70 660,48 C440,26 220,22 0,48 Z"
+          fill="#b8bd32"
+          opacity="0.65"
+        />
+
+        {/* Crisp cartoon outline along the crest */}
+        <path
+          d="M0,38 C220,12 440,16 660,38 C880,60 1100,20 1280,12 C1360,8 1410,16 1440,22"
+          fill="none"
+          stroke="#121b0c"
+          strokeWidth="2"
+          vectorEffect="non-scaling-stroke"
+        />
+
+        {/* Roadside curb line where hill meets asphalt */}
+        <rect x="0" y="153" width="1440" height="7" fill="url(#top-curb-gradient)" />
+        <line x1="0" y1="153" x2="1440" y2="153" stroke="#121b0c" strokeWidth="1.5" />
+      </svg>
+    </div>
+  );
+}
+
+/** Bottom single cartoon rolling hill matching Hollywood Hills daytime tree colors */
+function BottomCartoonHill({ mirrored }: { mirrored: boolean }) {
+  return (
+    <div
+      className={`absolute inset-x-0 bottom-0 overflow-hidden pointer-events-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)] ${
+        mirrored ? "-scale-x-100" : ""
+      }`}
+      style={{ height: `${HILL_VH}vh` }}
+    >
+      <svg
+        viewBox="0 0 1440 160"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full block"
+      >
+        <defs>
+          {/* Hollywood Hills daytime tree foliage gradient */}
+          <linearGradient id="bottom-hill-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1a240e" />
+            <stop offset="22%" stopColor="#2e3c17" />
+            <stop offset="55%" stopColor="#465824" />
+            <stop offset="82%" stopColor="#6e8224" />
+            <stop offset="100%" stopColor="#a8ad28" />
+          </linearGradient>
+
+          {/* Road verge turf curb */}
+          <linearGradient id="bottom-curb-gradient" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stopColor="#1a240e" />
+            <stop offset="50%" stopColor="#242116" />
+            <stop offset="100%" stopColor="#14120a" />
+          </linearGradient>
+        </defs>
+
+        {/* Roadside curb line where hill meets asphalt */}
+        <rect x="0" y="0" width="1440" height="7" fill="url(#bottom-curb-gradient)" />
+        <line x1="0" y1="7" x2="1440" y2="7" stroke="#121b0c" strokeWidth="1.5" />
+
+        {/* Single clean cartoon rolling hill body */}
+        <path
+          d="M0,0 L1440,0 L1440,138 C1410,144 1360,152 1280,148 C1100,140 880,100 660,122 C440,144 220,148 0,122 Z"
+          fill="url(#bottom-hill-gradient)"
+        />
+
+        {/* Sunlit crest highlight ribbon */}
+        <path
+          d="M0,122 C220,148 440,144 660,122 C880,100 1100,140 1280,148 C1360,152 1410,144 1440,138 L1440,128 C1410,134 1360,142 1280,138 C1100,130 880,90 660,112 C440,134 220,138 0,112 Z"
+          fill="#b8bd32"
+          opacity="0.65"
+        />
+
+        {/* Crisp cartoon outline along the crest */}
+        <path
+          d="M0,122 C220,148 440,144 660,122 C880,100 1100,140 1280,148 C1360,152 1410,144 1440,138"
+          fill="none"
+          stroke="#121b0c"
+          strokeWidth="2"
+          vectorEffect="non-scaling-stroke"
+        />
       </svg>
     </div>
   );
@@ -103,17 +194,17 @@ export default function RoadBridge({
 
   const travelVh = 100 + ROAD_HEIGHT_VH;
 
-  // US traffic drives on the right: eastbound (→) takes the lower lane, westbound (←) the upper lane.
+  // US traffic drives on the right: eastbound (→) takes lower lane, westbound (←) upper lane
   const laneTopVh = isRight ? CENTER_VH : LANES_TOP_VH;
   const laneCenterVh = laneTopVh + LANE_VH / 2;
 
-  // Scroll window during which the car's lane is on screen, so the whole drive is always visible.
+  // Scroll window during which the car's lane is on screen
   const driveStart = laneCenterVh / travelVh + 0.02;
   const driveEnd = (100 + laneCenterVh) / travelVh - 0.02;
   const driveMid1 = driveStart + (driveEnd - driveStart) * 0.33;
   const driveMid2 = driveStart + (driveEnd - driveStart) * 0.66;
 
-  // Car crosses from fully off one side of the screen to fully off the other.
+  // Car crosses from fully off one side of the screen to fully off the other
   const carLeft = useTransform(scrollYProgress, [driveStart, driveEnd], isRight ? ["0%", "100%"] : ["100%", "0%"]);
   const carX = useTransform(scrollYProgress, [driveStart, driveEnd], isRight ? ["-100%", "0%"] : ["0%", "-100%"]);
   const carY = useTransform(
@@ -127,7 +218,7 @@ export default function RoadBridge({
     isRight ? [-1, 1.2, -0.8, 0.4] : [1, -1.2, 0.8, -0.4]
   );
 
-  // The exit sign springs up off the roadside just as it scrolls into view.
+  // Caltrans exit sign springs up as it scrolls into view
   const signEnters = DECK_TOP_VH / travelVh;
   const signRaw = useTransform(scrollYProgress, [signEnters - 0.07, signEnters], [0.35, 1]);
   const signScale = useSpring(signRaw, { stiffness: 320, damping: 16, mass: 0.6 });
@@ -136,33 +227,24 @@ export default function RoadBridge({
     <div
       ref={roadRef}
       aria-hidden="true"
-      className="relative z-10 w-full overflow-x-clip select-none"
+      className="relative z-10 w-full overflow-x-clip select-none pointer-events-none"
       style={{ height: `${ROAD_HEIGHT_VH}vh` }}
     >
-      {/* Calm dry-grass roadside: lighter at the edges, deeper near the road */}
-      <div
-        className="absolute inset-x-0"
-        style={{
-          top: `${ROAD_EDGE_VH - 0.5}vh`,
-          bottom: `${ROAD_EDGE_VH - 0.5}vh`,
-          background: `linear-gradient(180deg, ${GRASS_EDGE} 0%, ${GRASS_ROADSIDE} 22%, ${GRASS_ROADSIDE} 78%, ${GRASS_EDGE} 100%)`,
-        }}
-      >
-        <div className="absolute inset-0 opacity-25 mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
-      </div>
+      {/* Top Single Cartoon Rolling Hill */}
+      <TopCartoonHill mirrored={!isRight} />
 
-      <WaveEdge position="top" mirrored={!isRight} />
-      <WaveEdge position="bottom" mirrored={isRight} />
+      {/* Bottom Single Cartoon Rolling Hill */}
+      <BottomCartoonHill mirrored={isRight} />
 
-      {/* The road */}
+      {/* The Highway Road Surface */}
       <div
-        className="absolute inset-x-0 bg-gradient-to-b from-[#2c3039] via-[#23262e] to-[#1c1f26] border-y-[6px] border-[#5b4a36] shadow-[0_0_36px_rgba(0,0,0,0.4)]"
+        className="absolute inset-x-0 bg-gradient-to-b from-[#2c3039] via-[#23262e] to-[#1c1f26] border-y-[5px] border-[#1e2319] shadow-[0_0_36px_rgba(0,0,0,0.5)]"
         style={{ top: `${DECK_TOP_VH}vh`, height: `${DECK_VH}vh` }}
       >
         <div className="absolute inset-0 opacity-25 mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
       </div>
 
-      {/* Subtle tire-wear: two wheel paths per lane */}
+      {/* Subtle tire-wear paths */}
       {[0, 1].map((lane) =>
         [0.3, 0.7].map((t) => (
           <div
@@ -173,7 +255,7 @@ export default function RoadBridge({
         ))
       )}
 
-      {/* Solid white edge lines */}
+      {/* Solid white edge shoulder lines */}
       <div
         className="absolute inset-x-0 h-1.5 sm:h-2 -translate-y-1/2 bg-slate-50/95"
         style={{ top: `${LANES_TOP_VH}vh` }}
@@ -260,7 +342,7 @@ export default function RoadBridge({
         </motion.div>
       </div>
 
-      {/* Seal mascot convertible driving its lane */}
+      {/* Seal mascot convertible driving its lane (purely visual transition) */}
       <div className="absolute inset-x-0 z-30" style={{ top: `${laneTopVh}vh`, height: `${LANE_VH}vh` }}>
         <motion.div
           style={{ left: carLeft, x: carX, y: carY, rotate: carRotate }}
@@ -284,7 +366,8 @@ export default function RoadBridge({
               alt=""
               width={578}
               height={358}
-              className="relative h-[clamp(72px,16vh,190px)] w-auto object-contain select-none drop-shadow-[0_10px_18px_rgba(0,0,0,0.6)]"
+              draggable={false}
+              className="relative h-[clamp(72px,16vh,190px)] w-auto object-contain select-none drop-shadow-[0_10px_18px_rgba(0,0,0,0.6)] pointer-events-none"
             />
           </motion.div>
         </motion.div>

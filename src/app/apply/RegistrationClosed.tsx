@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import hackccIcon from "../../../public/images/hackcc-icon.png";
+import { GENERAL_EMAIL } from "@/data/contact";
 
 const SCENIC_BG = "/assets/roadtrip/zone6-cta-footer/San-Diego-Beach.jpg";
 
@@ -39,7 +40,7 @@ export function RegistrationClosed() {
         </h1>
         <p className="text-slate-200 text-base sm:text-lg max-w-lg mx-auto mt-5 leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
           Thanks for your interest in HackCC 2026. Registration is no longer accepting new submissions.
-          Questions? Email <a href="mailto:team@hackcc.net" className="font-bold text-amber-300 underline underline-offset-4">team@hackcc.net</a>.
+          Questions? Email <a href={`mailto:${GENERAL_EMAIL}`} className="font-bold text-amber-300 underline underline-offset-4">{GENERAL_EMAIL}</a>.
         </p>
         <div className="mt-10 flex justify-center">
           <Link

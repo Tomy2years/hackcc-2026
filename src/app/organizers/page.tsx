@@ -45,10 +45,12 @@ const HEADSHOT_CALIBRATION: Record<string, { objectPosition?: string; imageScale
   // Customized ones
   "paul-pham": { objectPosition: "center 20%", imageScale: "scale-100" },
   "kareem-tadros": { objectPosition: "center 18%", imageScale: "scale-100" },
+  "tom-perel": { objectPosition: "center 25%", imageScale: "scale-100" },
   "hillary-nguyen": { objectPosition: "center 22%", imageScale: "scale-115" },
   "jessie-joyce": { objectPosition: "center 48%", imageScale: "scale-135" },
   "yuval-perel": { objectPosition: "center 25%", imageScale: "scale-110" },
-  // Tom, Anjani, Dasha, Jacob use original defaults (centered, standard zoom)
+  "evelyn-cao": { objectPosition: "center 20%", imageScale: "scale-100" },
+  // Anjani, Dasha, Jacob use original defaults (centered, standard zoom)
 };
 
 const ORGANIZERS = (organizersData as OrganizerMember[]).map((org) => ({
@@ -250,6 +252,22 @@ export default function OrganizersPage() {
                       </div>
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-300 transition-all group-hover:translate-x-0.5" />
                     </Link>
+
+                    <Link
+                      href="/sponsors"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center justify-between p-2 rounded-xl transition-all duration-150 group hover:bg-white/10"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="shrink-0 bg-[#15803D] text-white border border-white font-mono font-black text-xs px-2 py-0.5 rounded shadow-sm group-hover:scale-105 transition-transform">
+                          3
+                        </span>
+                        <span className="font-bold text-sm transition-colors font-[var(--font-mont)] text-white group-hover:text-amber-300">
+                          Sponsor Us
+                        </span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-300 transition-all group-hover:translate-x-0.5" />
+                    </Link>
                   </div>
                 </motion.div>
               )}
@@ -322,7 +340,7 @@ export default function OrganizersPage() {
 
         {/* Organizer Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 mb-20">
-          {filteredMembers.map((member) => {
+          {filteredMembers.map((member, index) => {
             const linkedinUrl = member.linkedin || member.socials?.linkedin;
 
             return (
@@ -330,12 +348,42 @@ export default function OrganizersPage() {
                 key={member.id}
                 className="group relative flex flex-col justify-between bg-slate-900/85 backdrop-blur-md border border-white/15 hover:border-amber-400/60 rounded-3xl p-6 sm:p-7 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-black/70"
               >
-                {/* Card Top: Headshot */}
-                <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-5 bg-slate-800 border border-white/10 group-hover:border-amber-400/40 transition-colors">
+                {/* Card Top: Headshot Frame with Unified Studio Backdrop */}
+                <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-5 bg-slate-900 border border-white/10 group-hover:border-amber-400/40 transition-colors">
+                  {/* Atmospheric studio spotlight glow */}
+                  <div
+                    className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(245,158,11,0.18),transparent_70%)] pointer-events-none group-hover:bg-[radial-gradient(circle_at_50%_38%,rgba(245,158,11,0.26),transparent_70%)] transition-all duration-300"
+                    aria-hidden="true"
+                  />
+                  <div
+                    className="absolute inset-0 bg-gradient-to-b from-slate-800/60 via-slate-900/40 to-slate-950/85 pointer-events-none"
+                    aria-hidden="true"
+                  />
+
+                  {/* Diagonal repeating HackCC 2026 step-and-repeat media backdrop */}
+                  <div
+                    className="absolute inset-0 pointer-events-none select-none overflow-hidden opacity-[0.07] group-hover:opacity-[0.13] transition-opacity duration-300"
+                    aria-hidden="true"
+                  >
+                    <div className="w-[200%] h-[200%] -translate-x-[25%] -translate-y-[25%] -rotate-12 flex flex-col justify-around text-[10px] sm:text-[11px] font-mono font-bold tracking-[0.25em] text-white uppercase whitespace-nowrap leading-none">
+                      <div>HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026</div>
+                      <div>HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026</div>
+                      <div>HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026</div>
+                      <div>HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026</div>
+                      <div>HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026</div>
+                      <div>HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026</div>
+                      <div>HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026</div>
+                      <div>HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026</div>
+                      <div>HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026 &nbsp;&bull;&nbsp; HACKCC 2026</div>
+                    </div>
+                  </div>
+
                   <Image
                     src={member.image}
                     alt={member.name}
                     fill
+                    priority={index < 6}
+                    unoptimized={process.env.NODE_ENV === "development"}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     style={{ objectPosition: member.objectPosition || "center center" }}
                     className={`object-cover ${member.imageScale || "scale-100"} group-hover:scale-110 transition-transform duration-500`}

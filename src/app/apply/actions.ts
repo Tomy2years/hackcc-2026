@@ -9,13 +9,15 @@ import { verifyTurnstile } from "./turnstile";
 
 export type SubmitRegistrationResult = { ok: true; error?: undefined } | { ok: false; error: string };
 
+import { GENERAL_EMAIL } from "@/data/contact";
+
 // Repeat submissions from one email are kept (organizers use the newest) up to this many rows.
 const MAX_ROWS_PER_EMAIL = 5;
 
 // Hard ceiling on total rows so a flood can't fill the sheet. Override with REGISTRATION_MAX_ROWS.
 const DEFAULT_MAX_ROWS = 5_000;
 
-const CONTACT = "team@hackcc.net";
+const CONTACT = GENERAL_EMAIL;
 
 // Stops a cell from being read as a formula if the sheet is ever exported to CSV and opened in
 // Excel. Covers leading whitespace/BOM and full-width variants of = + - @.

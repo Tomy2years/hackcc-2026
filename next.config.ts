@@ -47,6 +47,44 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/sponsor",
+        destination: "/sponsors",
+        permanent: true,
+      },
+      {
+        source: "/apply/organizers",
+        destination: "/apply/organizer",
+        permanent: true,
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/zone-about",
+        destination: "/",
+      },
+      {
+        source: "/zone-sponsors",
+        destination: "/",
+      },
+      {
+        source: "/zone-faq",
+        destination: "/",
+      },
+      {
+        source: "/zone-apply",
+        destination: "/",
+      },
+      {
+        source: "/zone-hero",
+        destination: "/",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

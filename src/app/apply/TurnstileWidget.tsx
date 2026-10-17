@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Script from "next/script";
+import { GENERAL_EMAIL } from "@/data/contact";
 
 interface TurnstileApi {
   render: (container: HTMLElement, options: Record<string, unknown>) => string;
@@ -53,7 +54,7 @@ export function TurnstileWidget({ onToken }: TurnstileWidgetProps) {
   if (!SITE_KEY) {
     return (
       <p role="alert" className="text-sm text-rose-300 font-semibold">
-        The security check isn&apos;t available right now. Please try again later or email team@hackcc.net.
+        The security check isn&apos;t available right now. Please try again later or email {GENERAL_EMAIL}.
       </p>
     );
   }

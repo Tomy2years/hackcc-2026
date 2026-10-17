@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
+import { navigateToZone } from "@/components/roadtrip/zoneScroll";
 
 export default function RoadTripNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,25 +38,29 @@ export default function RoadTripNav() {
         <div className="flex-1 flex justify-center">
           <nav className="flex items-center justify-center gap-6 sm:gap-10 text-lg sm:text-xl md:text-2xl font-black tracking-wider text-white font-[var(--font-mont)]">
             <a
-              href="#zone-about"
+              href="/zone-about"
+              onClick={(e) => navigateToZone(e, "zone-about", "/zone-about")}
               className="hover:text-amber-300 hover:scale-105 transition-all duration-200 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
             >
               About
             </a>
             <a
-              href="#zone-sponsors"
+              href="/zone-sponsors"
+              onClick={(e) => navigateToZone(e, "zone-sponsors", "/zone-sponsors")}
               className="hover:text-amber-300 hover:scale-105 transition-all duration-200 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
             >
               Sponsors
             </a>
             <a
-              href="#zone-faq"
+              href="/zone-faq"
+              onClick={(e) => navigateToZone(e, "zone-faq", "/zone-faq")}
               className="hover:text-amber-300 hover:scale-105 transition-all duration-200 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
             >
               FAQ
             </a>
             <a
-              href="#zone-apply"
+              href="/zone-apply"
+              onClick={(e) => navigateToZone(e, "zone-apply", "/zone-apply")}
               className="hover:text-amber-300 hover:scale-105 transition-all duration-200 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
             >
               Get Involved
@@ -154,6 +159,23 @@ export default function RoadTripNav() {
                       </span>
                       <span className="font-bold text-sm transition-colors font-[var(--font-mont)] text-white group-hover:text-amber-300">
                         Archive
+                      </span>
+                    </div>
+                    <ChevronRight className="w-3.5 h-3.5 transition-all text-slate-400 group-hover:translate-x-0.5 group-hover:text-amber-300" />
+                  </Link>
+
+                  <Link
+                    href="/sponsors"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-between p-2 rounded-xl transition-all duration-150 group hover:bg-white/10"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      {/* Green Caltrans Highway Road Sign */}
+                      <span className="shrink-0 bg-[#15803D] text-white border border-white font-mono font-black text-xs px-2 py-0.5 rounded shadow-sm group-hover:scale-105 transition-transform">
+                        3
+                      </span>
+                      <span className="font-bold text-sm transition-colors font-[var(--font-mont)] text-white group-hover:text-amber-300">
+                        Sponsor Us
                       </span>
                     </div>
                     <ChevronRight className="w-3.5 h-3.5 transition-all text-slate-400 group-hover:translate-x-0.5 group-hover:text-amber-300" />

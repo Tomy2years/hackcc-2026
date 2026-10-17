@@ -24,7 +24,7 @@ const STEP_FIELDS: Record<number, (keyof RegistrationFormData)[]> = {
 };
 
 const STEPS = [
-  { id: 1, name: "Basic Info", title: "Driver Details", hook: "First, a little about who's behind the wheel" },
+  { id: 1, name: "Basic Info", title: "Your Info", hook: "First, a little about who's behind the wheel" },
   { id: 2, name: "Experience", title: "Plot Your Route", hook: "Pick the roads you want to explore this trip" },
   { id: 3, name: "Logistics", title: "Pack the Car", hook: "Swag sizes and snacks for the journey" },
   { id: 4, name: "Consent", title: "Buckle Up", hook: "A few ground rules before we hit the highway" },
@@ -746,7 +746,7 @@ export function ApplyForm() {
                                 <FieldError message={errors.dietaryRestrictions?.message} />
                                 <p className="flex items-start gap-2 text-xs text-sky-100/75 mt-2">
                                   <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-amber-400/80" />
-                                  <span>We cater free breakfast, lunch, dinner, boba, and midnight snacks, with allergen-safe options.</span>
+                                  <span>We provide free lunch and dinner, with allergen-safe options.</span>
                                 </p>
                               </div>
                             </motion.div>

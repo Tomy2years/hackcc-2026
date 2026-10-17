@@ -40,29 +40,31 @@ export default function Zone1Hero() {
       {/* Sticky Pinned Viewport Container: stays pinned while sun rises all the way up */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
       {/* Background Image Layer 1: Nighttime Hills (Initial night state at top of page) */}
-      <motion.div className="absolute inset-0 z-0" style={{ opacity: nightOpacity }}>
+      <motion.div className="absolute inset-0 z-0 pointer-events-none select-none" style={{ opacity: nightOpacity }}>
         <Image
           src={NIGHT_BG}
           alt="Nighttime Hollywood Hills Background"
           fill
-          className="object-cover object-center"
+          className="object-cover object-center pointer-events-none select-none"
           priority
+          draggable={false}
         />
         {/* Natural night atmosphere gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/70 pointer-events-none" />
       </motion.div>
 
       {/* Background Image Layer 2: Daytime Hills (Sunlit morning sky) */}
-      <motion.div className="absolute inset-0 z-0" style={{ opacity: dayOpacity }}>
+      <motion.div className="absolute inset-0 z-0 pointer-events-none select-none" style={{ opacity: dayOpacity }}>
         <Image
           src={DAY_BG}
           alt="Daytime Hollywood Hills Background"
           fill
-          className="object-cover object-center"
+          className="object-cover object-center pointer-events-none select-none"
           priority
+          draggable={false}
         />
         {/* Subtle transition preserving bright natural daytime sky */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/30 pointer-events-none" />
       </motion.div>
 
       {/* Golden Hour Sunrise Horizon Atmospheric Glow */}
@@ -107,8 +109,9 @@ export default function Zone1Hero() {
             alt="HackCC Hollywood Sign"
             width={2560}
             height={1440}
-            className="w-full h-auto object-contain mx-auto"
+            className="w-full h-auto object-contain mx-auto pointer-events-none select-none"
             priority
+            draggable={false}
           />
         </div>
 
@@ -119,8 +122,9 @@ export default function Zone1Hero() {
             alt="HackCC Event Dates: November 14-15"
             width={2560}
             height={1440}
-            className="w-full h-auto object-contain mx-auto"
+            className="w-full h-auto object-contain mx-auto pointer-events-none select-none"
             priority
+            draggable={false}
           />
         </div>
       </div>

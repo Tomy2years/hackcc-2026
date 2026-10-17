@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { navigateToZone } from "@/components/roadtrip/zoneScroll";
 
 // The King Seal mascot
 const KING_MASCOT = "/assets/mascots/king-mascot.png";
@@ -28,7 +29,8 @@ export default function RoadTripFooter() {
                 alt="King Sammy Mascot"
                 width={150}
                 height={150}
-                className="w-28 xl:w-36 h-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] group-hover:scale-105 group-hover:-rotate-3 transition-transform duration-300"
+                draggable={false}
+                className="w-28 xl:w-36 h-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] group-hover:scale-105 group-hover:-rotate-3 transition-transform duration-300 pointer-events-none select-none"
               />
               {/* Character shadow on beach ground */}
               <div className="w-20 xl:w-24 h-2.5 bg-black/50 rounded-full blur-[3px] mx-auto -mt-2 group-hover:scale-75 transition-all duration-300" />
@@ -48,7 +50,8 @@ export default function RoadTripFooter() {
                       alt="King Sammy Mascot"
                       width={56}
                       height={56}
-                      className="w-12 h-12 object-contain drop-shadow-md"
+                      draggable={false}
+                      className="w-12 h-12 object-contain drop-shadow-md pointer-events-none select-none"
                     />
                   </div>
                   <div>
@@ -98,7 +101,8 @@ export default function RoadTripFooter() {
                 <ul className="space-y-2.5 text-sm">
                   <li>
                     <a
-                      href="#zone-about"
+                      href="/zone-about"
+                      onClick={(e) => navigateToZone(e, "zone-about", "/zone-about")}
                       className="text-slate-300 hover:text-white transition-colors drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]"
                     >
                       About HackCC
@@ -106,7 +110,8 @@ export default function RoadTripFooter() {
                   </li>
                   <li>
                     <a
-                      href="#zone-sponsors"
+                      href="/zone-sponsors"
+                      onClick={(e) => navigateToZone(e, "zone-sponsors", "/zone-sponsors")}
                       className="text-slate-300 hover:text-white transition-colors drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]"
                     >
                       Sponsors &amp; Partners
@@ -114,7 +119,8 @@ export default function RoadTripFooter() {
                   </li>
                   <li>
                     <a
-                      href="#zone-faq"
+                      href="/zone-faq"
+                      onClick={(e) => navigateToZone(e, "zone-faq", "/zone-faq")}
                       className="text-slate-300 hover:text-white transition-colors drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]"
                     >
                       FAQ &amp; Testimonials
@@ -122,7 +128,8 @@ export default function RoadTripFooter() {
                   </li>
                   <li>
                     <a
-                      href="#zone-apply"
+                      href="/zone-apply"
+                      onClick={(e) => navigateToZone(e, "zone-apply", "/zone-apply")}
                       className="text-slate-300 hover:text-white transition-colors drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]"
                     >
                       Apply &amp; Get Involved
@@ -145,6 +152,17 @@ export default function RoadTripFooter() {
                       <span>Organizing Team</span>
                       <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-amber-300 font-mono">
                         MEET THE CREW
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/sponsors"
+                      className="text-slate-300 hover:text-white transition-colors flex items-center gap-1.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]"
+                    >
+                      <span>Sponsor Us</span>
+                      <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-1.5 py-0.5 rounded font-mono">
+                        PARTNER
                       </span>
                     </Link>
                   </li>
@@ -180,7 +198,8 @@ export default function RoadTripFooter() {
             <span className="text-slate-400 font-mono text-[11px]">CALIFORNIA ROAD TRIP</span>
             <span className="text-white/20">•</span>
             <a
-              href="#zone-hero"
+              href="/zone-hero"
+              onClick={(e) => navigateToZone(e, "zone-hero", "/")}
               className="hover:text-amber-300 transition-colors font-medium flex items-center gap-1"
             >
               <span>Back to top</span>

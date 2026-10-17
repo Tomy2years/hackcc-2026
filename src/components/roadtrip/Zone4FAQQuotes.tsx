@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const DOUBLE_DOME_BG = "/assets/roadtrip/zone5-faq/Double-Dome.jpg";
@@ -9,8 +9,62 @@ const LOLLIPOP_MASCOT = "/assets/mascots/lollipop-mascot.png";
 
 import { FAQS } from "@/data/faq";
 
+// Breathing room of scenery left visible under the postcard when fitted to the screen
+const FIT_BOTTOM_GAP_PX = 48;
+// Extra FAQ scenery kept below the screen edge after a nav jump, so the next zone stays out of view
+const NEXT_SCENE_BUFFER_PX = 40;
+
 export default function Zone4FAQQuotes() {
   const [openId, setOpenId] = useState<string | null>("apply");
+  const fitRef = useRef<HTMLDivElement>(null);
+
+  // On tablet/desktop, shrink the heading + postcard just enough that clicking the FAQ nav link
+  // shows all of it (plus a strip of background) on any screen height. Phones scroll naturally.
+  // It also stretches the section so, after the jump, FAQ scenery fills the whole screen
+  // (no strip of the next zone peeking in at the bottom).
+  // Runs on mount and window resize only, so opening an answer never rescales the card mid-read.
+  useEffect(() => {
+    const el = fitRef.current;
+    const anchor = el?.parentElement;
+    const section = anchor?.closest("section");
+    if (!el || !anchor || !section) return;
+    const desktop = window.matchMedia("(min-width: 768px)");
+
+    const fillScreenBelowAnchor = (navOffset: number) => {
+      section.style.minHeight = "";
+      const anchorTop = anchor.getBoundingClientRect().top - section.getBoundingClientRect().top;
+      const needed = Math.ceil(anchorTop - navOffset + window.innerHeight + NEXT_SCENE_BUFFER_PX);
+      // Always set (not only when short) so collapsing answers later can't shrink the section back
+      section.style.minHeight = `${needed}px`;
+    };
+
+    const fit = () => {
+      el.style.zoom = "";
+      const navOffset = parseFloat(getComputedStyle(anchor).scrollMarginTop) || 0;
+      if (!desktop.matches) {
+        fillScreenBelowAnchor(navOffset);
+        return;
+      }
+      const available = window.innerHeight - navOffset - FIT_BOTTOM_GAP_PX;
+      // Zooming out also widens the layout so text reflows shorter; refine over a few passes,
+      // then make sure the final result never overflows.
+      let scale = 1;
+      for (let pass = 0; pass < 4; pass++) {
+        const height = el.getBoundingClientRect().height;
+        const next = Math.min(1, (scale * available) / height);
+        if (pass === 3 && height <= available) break;
+        scale = next;
+        el.style.zoom = scale < 1 ? String(scale) : "";
+      }
+      fillScreenBelowAnchor(navOffset);
+    };
+
+    fit();
+    // Re-measure once the display font loads (fallback font metrics differ)
+    document.fonts.ready.then(fit);
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
 
   const toggle = (id: string) => {
     setOpenId((prev) => (prev === id ? null : id));
@@ -20,28 +74,35 @@ export default function Zone4FAQQuotes() {
   const col2 = FAQS.slice(3, 6);
 
   return (
-    <section
-      id="zone-faq"
-      className="relative min-h-screen py-20 sm:py-24 lg:py-0 lg:h-screen w-full flex items-center justify-center scroll-mt-16 sm:scroll-mt-20"
-    >
-      {/* Full-Screen Background Image Layer */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <Image
-          src={DOUBLE_DOME_BG}
-          alt="California Coastal Cove Daytime Background"
-          fill
-          className="object-cover object-center"
-          priority
-        />
-        {/* Natural Coastal Scrim Layer */}
-        <div className="absolute inset-0 bg-slate-950/25" />
+    <section className="relative min-h-screen py-20 sm:py-24 lg:py-16 w-full flex items-start justify-center">
+      {/* Full-Screen Background Image Layer.
+          The scenery is pinned to one screen height (sticky) rather than stretched to the section,
+          so opening/closing an FAQ answer never rescales ("zooms") the background.
+          overflow-clip (not hidden) keeps sticky working. */}
+      <div className="absolute inset-0 z-0 overflow-clip">
+        <div className="sticky top-0 h-lvh w-full">
+          <Image
+            src={DOUBLE_DOME_BG}
+            alt="California Coastal Cove Daytime Background"
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+            priority
+          />
+          {/* Natural Coastal Scrim Layer */}
+          <div className="absolute inset-0 bg-slate-950/25" />
+        </div>
       </div>
 
       {/* Main Container */}
-      <div className="relative z-20 mx-auto w-full max-w-5xl lg:max-w-6xl px-4 sm:px-8 pt-12 sm:pt-16 lg:pt-16 pb-12 flex flex-col items-center">
-        {/* Section Header: Monumental, Clean & Unboxed */}
-        <div className="mb-10 sm:mb-14 lg:mb-16 text-center max-w-4xl">
-          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal uppercase tracking-tight text-white font-heading leading-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+      <div className="relative z-20 mx-auto w-full max-w-5xl lg:max-w-6xl px-4 sm:px-8 pt-16 sm:pt-22 lg:pt-23 pb-12 flex flex-col items-center">
+        {/* #zone-faq anchor: nav links land the heading just below the fixed nav */}
+        <div id="zone-faq" className="w-full scroll-mt-22 sm:scroll-mt-16">
+        {/* Fit wrapper: on md+ it scales down so heading + full postcard fit one screen */}
+        <div ref={fitRef} className="w-full flex flex-col items-center">
+        {/* Section Header: Monumental, Clean & Unboxed — sits just above the postcard tape */}
+        <div className="mb-9 sm:mb-11 lg:mb-13 short:mb-10 text-center">
+          <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl short:text-8xl font-normal uppercase tracking-tight text-white font-heading leading-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
             ROAD TRIP FAQ
           </h2>
         </div>
@@ -68,18 +129,18 @@ export default function Zone4FAQQuotes() {
             }}
           >
             {/* Inner Postcard Paper Body */}
-            <div className="relative w-full rounded-xl bg-[#FAF7EE] border border-amber-900/10 p-5 sm:p-9 lg:p-11 text-slate-800">
+            <div className="relative w-full rounded-xl bg-[#FAF7EE] border border-amber-900/10 p-5 sm:p-9 lg:p-11 short:p-6 text-slate-800">
               {/* Delicate Inset Postal Hairline Frame Rule (as on authentic travel postcards) */}
               <div className="absolute inset-2 sm:inset-3 rounded-lg border border-amber-900/15 pointer-events-none" />
 
               {/* Top Header Bar inside the Postcard */}
-              <div className="flex flex-row items-start sm:items-center justify-between gap-3 pb-5 sm:pb-6 mb-5 sm:mb-6 border-b border-amber-900/15">
+              <div className="flex flex-row items-start sm:items-center justify-between gap-3 pb-5 sm:pb-6 mb-5 sm:mb-6 short:pb-4 short:mb-4 border-b border-amber-900/15">
                 {/* Taped Polaroid Snapshot of Sammy the Seal + Route Metadata */}
                 <div className="relative flex items-center gap-2.5 sm:gap-3.5 min-w-0">
                   <div className="relative shrink-0 bg-white p-1.5 sm:p-2 pb-2 sm:pb-2.5 rounded-md shadow-md border border-slate-200/90 -rotate-2 hover:rotate-0 transition-transform select-none">
                     {/* Washi Tape Strip */}
                     <div className="absolute -top-2 sm:-top-2.5 left-1/2 -translate-x-1/2 w-9 sm:w-11 h-2.5 sm:h-3.5 bg-amber-300/85 border-t border-b border-amber-400/70 rotate-1 shadow-xs pointer-events-none" />
-                    <div className="relative w-11 h-11 sm:w-16 sm:h-16 bg-gradient-to-b from-sky-100 to-amber-50 rounded overflow-hidden flex items-center justify-center">
+                    <div className="relative w-11 h-11 sm:w-16 sm:h-16 short:w-12 short:h-12 bg-gradient-to-b from-sky-100 to-amber-50 rounded overflow-hidden flex items-center justify-center">
                       <Image
                         src={LOLLIPOP_MASCOT}
                         alt="HackCC Mascot"
@@ -136,7 +197,7 @@ export default function Zone4FAQQuotes() {
                   </div>
 
                   {/* Authentic Perforated Postage Stamp Card */}
-                  <div className="relative z-10 w-[64px] sm:w-[86px] h-[80px] sm:h-[108px] drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)] rotate-2 hover:rotate-0 transition-transform">
+                  <div className="relative z-10 w-[64px] sm:w-[86px] h-[80px] sm:h-[108px] short:w-[68px] short:h-[85px] drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)] rotate-2 hover:rotate-0 transition-transform">
                     <svg width="100%" height="100%" viewBox="0 0 88 110" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <defs>
                         <mask id="faq-stamp-perfs">
@@ -232,7 +293,7 @@ export default function Zone4FAQQuotes() {
               {col1.map((faq) => {
                 const isOpen = openId === faq.id;
                 return (
-                  <div key={faq.id} className="py-3.5 sm:py-4 first:pt-0">
+                  <div key={faq.id} className="py-3.5 sm:py-4 short:py-2.5 first:pt-0">
                     <button
                       type="button"
                       onClick={() => toggle(faq.id)}
@@ -283,7 +344,7 @@ export default function Zone4FAQQuotes() {
               {col2.map((faq) => {
                 const isOpen = openId === faq.id;
                 return (
-                  <div key={faq.id} className="py-3.5 sm:py-4 first:pt-0">
+                  <div key={faq.id} className="py-3.5 sm:py-4 short:py-2.5 first:pt-0">
                     <button
                       type="button"
                       onClick={() => toggle(faq.id)}
@@ -331,7 +392,7 @@ export default function Zone4FAQQuotes() {
           </div>
 
           {/* Bottom Card Footer */}
-          <div className="mt-8 pt-6 border-t border-amber-900/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-600">
+          <div className="mt-8 pt-6 short:mt-4 short:pt-4 border-t border-amber-900/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-600">
             <div className="flex items-center gap-2">
               <span className="font-serif italic text-amber-900 font-medium">Postmaster&apos;s Note:</span>
               <span>Still have questions about the route?</span>
@@ -349,6 +410,8 @@ export default function Zone4FAQQuotes() {
         </div>
       </div>
     </div>
+        </div>
+        </div>
   </div>
 </section>
 );

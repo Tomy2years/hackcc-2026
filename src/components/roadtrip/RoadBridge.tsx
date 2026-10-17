@@ -14,6 +14,11 @@ interface RoadBridgeProps {
   direction?: "right" | "left";
   signPosition?: "left" | "right";
   hasCone?: boolean;
+  /**
+   * Nudge the road up off the seam (sm+) so it clears a heading at the top of the next zone.
+   * On phones the road is shorter, so it shifts down slightly instead to keep the seam covered.
+   */
+  lifted?: boolean;
 }
 
 export default function RoadBridge({
@@ -23,6 +28,7 @@ export default function RoadBridge({
   direction = "right",
   signPosition = "right",
   hasCone = true,
+  lifted = false,
 }: RoadBridgeProps) {
   const bridgeRef = useRef<HTMLDivElement>(null);
 
@@ -112,7 +118,9 @@ export default function RoadBridge({
   return (
     <div
       ref={bridgeRef}
-      className="relative z-35 w-full h-0 select-none pointer-events-none"
+      className={`relative z-35 w-full h-0 select-none pointer-events-none ${
+        lifted ? "translate-y-4 sm:-translate-y-3 md:-translate-y-5" : ""
+      }`}
       aria-hidden="true"
     >
       {/* Pop-Up Road Container: Hidden when resting on scenes; pops up right on the seam during scroll */}

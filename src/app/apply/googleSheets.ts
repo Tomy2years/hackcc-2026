@@ -29,11 +29,21 @@ export const SHEET_HEADERS = [
 
 const LAST_COLUMN = String.fromCharCode("A".charCodeAt(0) + SHEET_HEADERS.length - 1);
 
+function cleanPrivateKey(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  let key = raw.trim();
+  // Strip outer quotes if pasted into hosting dashboard with quotes (e.g. "..." or '...')
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1).trim();
+  }
+  // Replace escaped literal \n with real newlines, normalize Windows \r\n
+  return key.replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim();
+}
+
 function getConfig() {
-  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  // Hosting dashboards store the key on one line with literal "\n"s.
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-  const sheetId = process.env.GOOGLE_SHEET_ID;
+  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL?.trim();
+  const privateKey = cleanPrivateKey(process.env.GOOGLE_PRIVATE_KEY);
+  const sheetId = process.env.GOOGLE_SHEET_ID?.trim();
   if (!clientEmail || !privateKey || !sheetId) {
     throw new Error("Google Sheets env vars are missing");
   }

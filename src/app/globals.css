@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Desktop-width but short viewport (typical laptops): lets full-screen sections tighten up to fit */
+@custom-variant short (@media (min-width: 64rem) and (max-height: 57.5rem));
+
 @theme {
   --color-royalpurple: #2D18A8;
   --color-lightpurple: #6950D5;

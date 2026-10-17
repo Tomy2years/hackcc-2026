@@ -10,7 +10,7 @@ import RoadTripFooter from "@/components/roadtrip/RoadTripFooter";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950">
+    <main className="min-h-screen overflow-x-clip bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950">
       {/* Navigation Header */}
       <RoadTripNav />
 
@@ -54,6 +54,7 @@ export default function Home() {
         mileage="PCH S"
         direction="right"
         signPosition="right"
+        lifted
       />
 
       {/* Zone 4: FAQ & Past Attendee Quotes (Pacific Coast Highway - Daytime) */}

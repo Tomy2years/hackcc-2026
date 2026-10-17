@@ -32,12 +32,17 @@ const LAST_COLUMN = String.fromCharCode("A".charCodeAt(0) + SHEET_HEADERS.length
 function cleanPrivateKey(raw: string | undefined): string | undefined {
   if (!raw) return undefined;
   let key = raw.trim();
-  // Strip outer quotes if pasted into hosting dashboard with quotes (e.g. "..." or '...')
-  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
-    key = key.slice(1, -1).trim();
-  }
-  // Replace escaped literal \n with real newlines, normalize Windows \r\n
-  return key.replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim();
+  // Strip accidental JSON prefix like `private_key: "..."`
+  key = key.replace(/^(?:["']?private_key["']?\s*:\s*)?/, "");
+  // Strip surrounding quotes, double quotes, and Google Docs smart quotes
+  key = key.replace(/^[\s"'“”‘’]+|[\s"'“”‘’]+$/g, "");
+  // Normalize all newline formats (double-escaped \\n, literal \n, \r\n)
+  key = key.replace(/\\\\n/g, "\n").replace(/\\n/g, "\n").replace(/\r\n/g, "\n");
+  // Normalize Google Docs em-dashes / en-dashes to standard hyphens
+  key = key.replace(/[—–]{2,5}BEGIN/g, "-----BEGIN");
+  key = key.replace(/[—–]{2,5}END/g, "-----END");
+  key = key.replace(/KEY[—–]{2,5}/g, "KEY-----");
+  return key.trim();
 }
 
 function getConfig() {

@@ -1,0 +1,20 @@
+# Vercel Deployment Ignore Rules
+# These files are needed only for local development, agent workflows, or documentation,
+# and do not need to be uploaded or processed by Vercel build containers.
+
+# Python and maintenance scripts
+scripts/
+*.py
+
+# Documentation and agent rules
+docs/
+.agents/
+.agent-audit/
+*.md
+
+# Local backup directories
+.old-site/
+public/assets/headshots-backup/
+
+# Logs and cache
+*.log

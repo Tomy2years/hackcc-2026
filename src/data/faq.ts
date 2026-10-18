@@ -3,22 +3,30 @@ export interface FAQItem {
   question: string;
   badge: string;
   spokenAnswer: string;
+  link?: {
+    text: string;
+    href: string;
+  };
 }
 
 export const FAQS: FAQItem[] = [
   {
     id: "apply",
     question: "When can I apply?",
-    badge: "Applications",
+    badge: "Applications Open",
     spokenAnswer:
-      "Applications open soon! Keep your eyes on our Discord and Instagram for the official drop date. We review applications on a rolling basis, so jumping in early gives you the best shot at securing your seat on the route.",
+      "Applications are officially open! You can [apply now](/apply) directly through our hacker application portal. We review applications on a rolling basis, so jumping in early gives you the best shot at securing your seat on the route.",
+    link: {
+      text: "Apply Now",
+      href: "/apply",
+    },
   },
   {
     id: "what-is-hackathon",
     question: "What is a hackathon anyway?",
     badge: "The Basics",
     spokenAnswer:
-      "Think of it as a 14-hour creative sprint! You team up with friends, brainstorm an idea, build a working tech project from scratch, and demo it at the finish line. No pressure—just great food, supportive mentors, and tons of building.",
+      "Think of it as a weekend-long creative sprint! You team up with friends, brainstorm an idea, build a working tech project from scratch, and demo it at the end. No pressure. Just great food, supportive mentors, and tons of building.",
   },
   {
     id: "teams",

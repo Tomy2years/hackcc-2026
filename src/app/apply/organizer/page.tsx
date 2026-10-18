@@ -23,7 +23,21 @@ import { GENERAL_EMAIL } from "@/data/contact";
 const SCENIC_BG = "/assets/roadtrip/organizers/coastal-overlook.jpeg";
 const OFFICIAL_EMAIL = GENERAL_EMAIL;
 
-const MAILTO_LINK = `mailto:${OFFICIAL_EMAIL}?subject=HackCC%202026%20Organizer%20Application&body=Hi%20HackCC%20Organizing%20Team%2C%0A%0AI'd%20love%20to%20help%20organize%20HackCC%202026!%0A%0A-%20Full%20Name%3A%20%0A-%20College%20%2F%20Major%20%2F%20Expected%20Transfer%20Year%3A%20%0A-%20Team(s)%20of%20Interest%20(Website%2C%20Engineering%20%2F%20Hardware%2C%20Logistics%2C%20Sponsorships%2C%20Marketing)%3A%20%0A-%20Why%20do%20you%20want%20to%20help%20build%20HackCC%3F%20%0A-%20LinkedIn%20%2F%20GitHub%20%2F%20Portfolio%20(optional)%3A%20%0A%0ALooking%20forward%20to%20connecting!`;
+const EMAIL_SUBJECT = "HackCC 2026 Organizer Application";
+const EMAIL_BODY = `Hi HackCC Organizing Team,
+
+I'd love to help organize HackCC 2026!
+
+- Full Name: 
+- College / Major / Expected Transfer Year: 
+- Team(s) of Interest (Website, Engineering / Hardware, Logistics, Sponsorships, Marketing): 
+- Why do you want to help build HackCC? 
+- LinkedIn / GitHub / Portfolio (optional): 
+
+Looking forward to connecting!`;
+
+const MAILTO_LINK = `mailto:${OFFICIAL_EMAIL}?subject=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(EMAIL_BODY)}`;
+const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(OFFICIAL_EMAIL)}&su=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(EMAIL_BODY)}`;
 
 const TEAMS = [
   {
@@ -170,17 +184,29 @@ const FEATURED_CREW = FEATURED_CREW_IDS.map((id) =>
 ).filter((m): m is NonNullable<typeof m> => Boolean(m));
 
 export default function OrganizerApplyPage() {
-  const [copied, setCopied] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedTemplate, setCopiedTemplate] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const handleCopyEmail = async () => {
     try {
       await navigator.clipboard.writeText(OFFICIAL_EMAIL);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2500);
     } catch {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2500);
+    }
+  };
+
+  const handleCopyTemplate = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL_BODY);
+      setCopiedTemplate(true);
+      setTimeout(() => setCopiedTemplate(false), 2500);
+    } catch {
+      setCopiedTemplate(true);
+      setTimeout(() => setCopiedTemplate(false), 2500);
     }
   };
 
@@ -522,30 +548,58 @@ export default function OrganizerApplyPage() {
           </div>
 
           {/* Direct CTA Buttons */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
             <a
-              href={MAILTO_LINK}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-lg px-8 sm:px-10 py-4.5 rounded-full shadow-lg transition-all transform hover:scale-105 active:scale-95 group cursor-pointer"
+              href={GMAIL_COMPOSE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-base sm:text-lg px-8 py-4 rounded-full shadow-lg transition-all transform hover:scale-105 active:scale-95 group cursor-pointer"
             >
               <Mail className="w-5 h-5 text-slate-950" />
-              <span>Email Application</span>
-              <span className="text-2xl transition-transform group-hover:translate-x-1.5">→</span>
+              <span>Compose in Gmail</span>
+              <span className="text-xl transition-transform group-hover:translate-x-1">→</span>
+            </a>
+
+            <a
+              href={MAILTO_LINK}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900/80 hover:bg-slate-800 border border-white/20 text-white font-bold text-sm sm:text-base px-6 py-4 rounded-full transition-all active:scale-95 cursor-pointer"
+            >
+              <Mail className="w-4 h-4 text-slate-300" />
+              <span>Open in Mail App</span>
             </a>
 
             <button
               type="button"
               onClick={handleCopyEmail}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900/80 hover:bg-slate-800 border border-white/20 text-white font-bold text-base px-8 py-4.5 rounded-full transition-all active:scale-95 cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900/80 hover:bg-slate-800 border border-white/20 text-white font-bold text-sm sm:text-base px-6 py-4 rounded-full transition-all active:scale-95 cursor-pointer"
             >
-              {copied ? (
+              {copiedEmail ? (
                 <>
-                  <Check className="w-5 h-5 text-emerald-400" />
-                  <span className="text-emerald-300 font-semibold">Copied {OFFICIAL_EMAIL}!</span>
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span className="text-emerald-300 font-semibold">Email Copied!</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-5 h-5 text-slate-300" />
-                  <span>Copy Email Address</span>
+                  <Copy className="w-4 h-4 text-slate-300" />
+                  <span>Copy Email</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCopyTemplate}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900/80 hover:bg-slate-800 border border-white/20 text-white font-bold text-sm sm:text-base px-6 py-4 rounded-full transition-all active:scale-95 cursor-pointer"
+            >
+              {copiedTemplate ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span className="text-emerald-300 font-semibold">Template Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4 text-slate-300" />
+                  <span>Copy Template</span>
                 </>
               )}
             </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -8,6 +9,44 @@ const DOUBLE_DOME_BG = "/assets/roadtrip/zone5-faq/Double-Dome.jpg";
 const LOLLIPOP_MASCOT = "/assets/mascots/lollipop-mascot.png";
 
 import { FAQS } from "@/data/faq";
+
+function FormattedAnswer({ text }: { text: string }) {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+  return (
+    <>
+      {parts.map((part, index) => {
+        const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+        if (match) {
+          const [, label, href] = match;
+          const isExternal = href.startsWith("http://") || href.startsWith("https://");
+          if (isExternal) {
+            return (
+              <a
+                key={index}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-amber-900 underline decoration-amber-600/60 underline-offset-2 hover:text-amber-950 hover:decoration-amber-900 transition-colors"
+              >
+                {label}
+              </a>
+            );
+          }
+          return (
+            <Link
+              key={index}
+              href={href}
+              className="font-semibold text-amber-900 underline decoration-amber-600/60 underline-offset-2 hover:text-amber-950 hover:decoration-amber-900 transition-colors"
+            >
+              {label}
+            </Link>
+          );
+        }
+        return part;
+      })}
+    </>
+  );
+}
 
 export default function Zone4FAQQuotes() {
   const [openId, setOpenId] = useState<string | null>(null);
@@ -105,7 +144,7 @@ export default function Zone4FAQQuotes() {
                       La Jolla
                     </h3>
                     <p className="text-[11px] sm:text-xs text-slate-600 font-sans mt-0.5 hidden xs:block">
-                      Field notes for your 14-hour sprint
+                      Field notes for your 36-hour hackathon
                     </p>
                   </div>
                 </div>
@@ -269,8 +308,31 @@ export default function Zone4FAQQuotes() {
                           className="overflow-hidden"
                         >
                           <p className="pt-2 text-slate-700 font-sans text-sm sm:text-base leading-relaxed">
-                            {faq.spokenAnswer}
+                            <FormattedAnswer text={faq.spokenAnswer} />
                           </p>
+                          {faq.link && (
+                            <div className="pt-3">
+                              {faq.link.href.startsWith("http") ? (
+                                <a
+                                  href={faq.link.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-full shadow-xs hover:shadow transition-all group"
+                                >
+                                  <span>{faq.link.text}</span>
+                                  <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                                </a>
+                              ) : (
+                                <Link
+                                  href={faq.link.href}
+                                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-full shadow-xs hover:shadow transition-all group"
+                                >
+                                  <span>{faq.link.text}</span>
+                                  <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                                </Link>
+                              )}
+                            </div>
+                          )}
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -320,8 +382,31 @@ export default function Zone4FAQQuotes() {
                           className="overflow-hidden"
                         >
                           <p className="pt-2 text-slate-700 font-sans text-sm sm:text-base leading-relaxed">
-                            {faq.spokenAnswer}
+                            <FormattedAnswer text={faq.spokenAnswer} />
                           </p>
+                          {faq.link && (
+                            <div className="pt-3">
+                              {faq.link.href.startsWith("http") ? (
+                                <a
+                                  href={faq.link.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-full shadow-xs hover:shadow transition-all group"
+                                >
+                                  <span>{faq.link.text}</span>
+                                  <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                                </a>
+                              ) : (
+                                <Link
+                                  href={faq.link.href}
+                                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-full shadow-xs hover:shadow transition-all group"
+                                >
+                                  <span>{faq.link.text}</span>
+                                  <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                                </Link>
+                              )}
+                            </div>
+                          )}
                         </motion.div>
                       )}
                     </AnimatePresence>

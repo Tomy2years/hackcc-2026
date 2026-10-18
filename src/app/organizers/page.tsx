@@ -42,22 +42,27 @@ export interface OrganizerMember {
 
 // Custom focal-point calibration per headshot
 const HEADSHOT_CALIBRATION: Record<string, { objectPosition?: string; imageScale?: string }> = {
-  // Customized ones
   "paul-pham": { objectPosition: "center 20%", imageScale: "scale-100" },
   "kareem-tadros": { objectPosition: "center 18%", imageScale: "scale-100" },
   "tom-perel": { objectPosition: "center 25%", imageScale: "scale-100" },
-  "hillary-nguyen": { objectPosition: "center 22%", imageScale: "scale-115" },
-  "jessie-joyce": { objectPosition: "center 48%", imageScale: "scale-135" },
-  "yuval-perel": { objectPosition: "center 25%", imageScale: "scale-110" },
+  "ethan-wu": { objectPosition: "center 18%", imageScale: "scale-100" },
+  "anjani-shaw": { objectPosition: "center 18%", imageScale: "scale-100" },
+  "hillary-nguyen": { objectPosition: "center 8%", imageScale: "scale-100" },
+  "kaden-lo": { objectPosition: "center 15%", imageScale: "scale-100" },
+  "yuval-perel": { objectPosition: "center 10%", imageScale: "scale-100" },
+  "jessie-joyce": { objectPosition: "center 18%", imageScale: "scale-100" },
+  "vien-le": { objectPosition: "center 18%", imageScale: "scale-100" },
   "evelyn-cao": { objectPosition: "center 20%", imageScale: "scale-100" },
-  // Anjani, Dasha, Jacob use original defaults (centered, standard zoom)
 };
 
-const ORGANIZERS = (organizersData as OrganizerMember[]).map((org) => ({
-  ...org,
-  objectPosition: org.objectPosition || HEADSHOT_CALIBRATION[org.id]?.objectPosition || "center center",
-  imageScale: org.imageScale || HEADSHOT_CALIBRATION[org.id]?.imageScale || "scale-100",
-}));
+const ORGANIZERS = (organizersData as OrganizerMember[]).map((org) => {
+  const calibration = HEADSHOT_CALIBRATION[org.id];
+  return {
+    ...org,
+    objectPosition: calibration?.objectPosition || org.objectPosition || "center center",
+    imageScale: calibration?.imageScale || org.imageScale || "scale-100",
+  };
+});
 
 const uniqueCampusesCount = new Set(
   ORGANIZERS.map((m) => m.college?.trim()).filter(Boolean)

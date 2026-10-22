@@ -21,7 +21,7 @@ export function Socials({
     return (
         <div className='z-50 relative flex sm:[&>*]:mx-4 [&>*]:mx-3 text-white text-2xl sm:[&>*]:text-3xl [&>*]:align-center'>
             {showDiscord && (
-                <a className={`${baseColor} ${hoverColor}`} target='_blank' href="https://discord.gg/yRShGV7Py4"><FontAwesomeIcon icon={faDiscord} /></a>
+                <a className={`${baseColor} ${hoverColor}`} target='_blank' href="https://discord.gg/X7ktb9224J"><FontAwesomeIcon icon={faDiscord} /></a>
             )}
             {showInstagram && (
                 <a className={`${baseColor} ${hoverColor}`} target='_blank' href="https://www.instagram.com/realhackcc/"><FontAwesomeIcon icon={faInstagram} /></a>

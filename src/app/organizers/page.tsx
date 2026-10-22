@@ -53,6 +53,12 @@ const HEADSHOT_CALIBRATION: Record<string, { objectPosition?: string; imageScale
   "jessie-joyce": { objectPosition: "center 18%", imageScale: "scale-100" },
   "vien-le": { objectPosition: "center 18%", imageScale: "scale-100" },
   "evelyn-cao": { objectPosition: "center 20%", imageScale: "scale-100" },
+  "lucas-hoang": { objectPosition: "center 18%", imageScale: "scale-100" },
+  "adrian-luna": { objectPosition: "center 15%", imageScale: "scale-100" }, // calibrated bust portrait
+  "michael-chadwick": { objectPosition: "center 18%", imageScale: "scale-100" },
+  "vincent-perez-de-tudela": { objectPosition: "center 18%", imageScale: "scale-100" },
+  "viktor-atanaskovic": { objectPosition: "center 18%", imageScale: "scale-100" },
+  "ido-biran": { objectPosition: "center 18%", imageScale: "scale-100" },
 };
 
 const ORGANIZERS = (organizersData as OrganizerMember[]).map((org) => {
@@ -124,7 +130,7 @@ export default function OrganizersPage() {
     return 4;
   };
 
-  const filteredMembers = (
+  const sortedMembers = (
     activeCategory === "all"
       ? [...ORGANIZERS]
       : ORGANIZERS.filter((m) => {
@@ -143,6 +149,23 @@ export default function OrganizersPage() {
     }
     return a.name.localeCompare(b.name);
   });
+
+  // Switch the second to last and last row in the 3-column grid
+  const filteredMembers = (() => {
+    if (activeCategory === "all" && sortedMembers.length >= 6) {
+      const n = sortedMembers.length;
+      const lastRowCount = n % 3 === 0 ? 3 : n % 3;
+      const secondLastRowCount = 3;
+      const splitPoint = n - lastRowCount - secondLastRowCount;
+      if (splitPoint >= 0) {
+        const top = sortedMembers.slice(0, splitPoint);
+        const secondToLast = sortedMembers.slice(splitPoint, splitPoint + secondLastRowCount);
+        const last = sortedMembers.slice(splitPoint + secondLastRowCount);
+        return [...top, ...last, ...secondToLast];
+      }
+    }
+    return sortedMembers;
+  })();
 
   return (
     <main className="relative min-h-screen text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950 overflow-x-hidden">
@@ -274,6 +297,18 @@ export default function OrganizersPage() {
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-300 transition-all group-hover:translate-x-0.5" />
                     </Link>
                   </div>
+
+                  {/* Apply Button Inside Dropdown */}
+                  <div className="pt-1.5 border-t border-white/15">
+                    <Link
+                      href="/apply"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm transition-all shadow-md active:scale-95 group font-[var(--font-mont)]"
+                    >
+                      <span className="tracking-wide">Apply Now</span>
+                      <ChevronRight className="w-4 h-4 stroke-[2.5] transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -398,7 +433,7 @@ export default function OrganizersPage() {
                 {/* Card Bottom: Name, Role, College on left, LinkedIn on bottom-right */}
                 <div className="flex items-end justify-between gap-4 pt-2">
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-heading text-2xl sm:text-3xl text-white tracking-wide truncate group-hover:text-amber-300 transition-colors">
+                    <h3 className="font-heading text-xl sm:text-2xl text-white tracking-wide leading-snug group-hover:text-amber-300 transition-colors">
                       {member.name}
                     </h3>
                     <div className="text-sm sm:text-base font-bold uppercase tracking-wider text-amber-400 mt-1.5 truncate">

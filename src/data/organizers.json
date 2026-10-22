@@ -47,7 +47,7 @@
     "categories": [
       "website"
     ],
-    "college": "Santiago Canyon College",
+    "college": "University of California, San Diego",
     "image": "/assets/headshots/jacob-aquino-headshot-cutout.png",
     "linkedin": "https://www.linkedin.com/in/jacobaquino/",
     "objectPosition": "center 18%",
@@ -273,6 +273,84 @@
     "college": "Irvine Valley College",
     "image": "/assets/headshots/elai-aviv-headshot-cutout.png",
     "linkedin": "https://www.linkedin.com/in/elai-aviv-167bb93b4/",
+    "objectPosition": "center 18%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "lucas-hoang",
+    "name": "Lucas Hoang",
+    "role": "Logistics Team",
+    "categories": [
+      "logistics"
+    ],
+    "college": "Orange Coast College",
+    "image": "/assets/headshots/lucas-hoang-headshot-cutout.png",
+    "linkedin": "https://www.linkedin.com/in/lucamanh",
+    "objectPosition": "center 18%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "adrian-luna",
+    "name": "Adrian Luna",
+    "role": "Sponsorships Team",
+    "categories": [
+      "sponsorships"
+    ],
+    "college": "El Camino College",
+    "image": "/assets/headshots/adrian-luna-headshot-cutout-v2.png",
+    "linkedin": "https://www.linkedin.com/in/adrian-luna-5467a1366/",
+    "objectPosition": "center 18%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "michael-chadwick",
+    "name": "Michael Chadwick",
+    "role": "Logistics Team",
+    "categories": [
+      "logistics"
+    ],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/michael-chadwick-headshot-cutout.png",
+    "linkedin": "https://www.linkedin.com/in/michael-chadwick01",
+    "objectPosition": "center 18%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "vincent-perez-de-tudela",
+    "name": "Vincent Perez de Tudela",
+    "role": "Sponsorships Team",
+    "categories": [
+      "sponsorships"
+    ],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/vincent-perez-de-tudela-headshot-cutout.png",
+    "linkedin": "https://www.linkedin.com/in/vincent-perez-de-tudela/",
+    "objectPosition": "center 18%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "viktor-atanaskovic",
+    "name": "Viktor Atanaskovic",
+    "role": "Sponsorships Team",
+    "categories": [
+      "sponsorships"
+    ],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/viktor-atanaskovic-headshot-cutout.png",
+    "linkedin": "https://www.linkedin.com/in/viktor-atanaskovic-5164ba403",
+    "objectPosition": "center 18%",
+    "imageScale": "scale-100"
+  },
+  {
+    "id": "ido-biran",
+    "name": "Ido Biran",
+    "role": "Engineering Team",
+    "categories": [
+      "engineering"
+    ],
+    "college": "Irvine Valley College",
+    "image": "/assets/headshots/ido-biran-headshot-cutout.png",
+    "linkedin": "",
     "objectPosition": "center 18%",
     "imageScale": "scale-100"
   }

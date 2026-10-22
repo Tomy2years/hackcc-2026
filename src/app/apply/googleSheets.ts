@@ -18,7 +18,7 @@ export const SHEET_HEADERS = [
   "Name",
   "Phone",
   "College",
-  "18+ Confirmed",
+  "Date of Birth",
   "Interests",
   "First Hackathon",
   "T-Shirt",

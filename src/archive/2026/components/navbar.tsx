@@ -37,7 +37,7 @@ export const Navbar = () => {
           <a onClick={() => smoothScroll("aboutTab")}>About</a>
           <a onClick={() => smoothScroll("workshopTab")}>FAQ</a>
           <a onClick={() => smoothScroll("scheduleTab")}>Schedule</a>
-          <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/yRShGV7Py4">
+          <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/X7ktb9224J">
             <FontAwesomeIcon className="mr-2" icon={faDiscord} /> Discord Server
           </a>
         </div>
@@ -90,7 +90,7 @@ export const Navbar = () => {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://discord.gg/yRShGV7Py4"
+          href="https://discord.gg/X7ktb9224J"
         >
           <FontAwesomeIcon className="mr-2" icon={faDiscord} /> Discord Server
         </a>

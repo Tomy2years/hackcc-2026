@@ -163,6 +163,72 @@ def main():
     save_and_copy(canvas, "liam-najjar")
     print("Processed Liam Najjar")
 
+    # 18. Lucas Hoang
+    im = Image.open(f"{CUTOUT_DIR}/lucas-hoang-headshot-cutout.png").convert("RGBA")
+    bbox = im.getbbox()
+    c = im.crop(bbox)
+    scaled_w = int(c.width * (730 / c.height))
+    scaled = c.resize((scaled_w, 730), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (640, 800), (0, 0, 0, 0))
+    canvas.paste(scaled, ((640 - scaled_w) // 2, 60), scaled)
+    save_and_copy(canvas, "lucas-hoang")
+    print("Processed Lucas Hoang")
+
+    # 19. Adrian Luna
+    im = Image.open(f"{CUTOUT_DIR}/adrian-luna-headshot-cutout.png").convert("RGBA")
+    bbox = im.getbbox()
+    c = im.crop(bbox)
+    scaled_w = int(c.width * (730 / c.height))
+    scaled = c.resize((scaled_w, 730), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (640, 800), (0, 0, 0, 0))
+    canvas.paste(scaled, ((640 - scaled_w) // 2, 60), scaled)
+    save_and_copy(canvas, "adrian-luna")
+    print("Processed Adrian Luna")
+
+    # 20. Michael Chadwick
+    im = Image.open(f"{CUTOUT_DIR}/michael-chadwick-headshot-cutout.png").convert("RGBA")
+    bbox = im.getbbox()
+    c = im.crop(bbox)
+    scaled_w = int(c.width * (730 / c.height))
+    scaled = c.resize((scaled_w, 730), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (640, 800), (0, 0, 0, 0))
+    canvas.paste(scaled, ((640 - scaled_w) // 2, 60), scaled)
+    save_and_copy(canvas, "michael-chadwick")
+    print("Processed Michael Chadwick")
+
+    # 21. Vincent Perez de Tudela
+    im = Image.open(f"{CUTOUT_DIR}/vincent-perez-de-tudela-headshot-cutout.png").convert("RGBA")
+    bbox = im.getbbox()
+    c = im.crop(bbox)
+    scaled_w = int(c.width * (723 / c.height))
+    scaled = c.resize((scaled_w, 723), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (640, 800), (0, 0, 0, 0))
+    canvas.paste(scaled, ((640 - scaled_w) // 2, 60), scaled)
+    save_and_copy(canvas, "vincent-perez-de-tudela")
+    print("Processed Vincent Perez de Tudela")
+
+    # 22. Viktor Atanaskovic
+    im = Image.open(f"{CUTOUT_DIR}/viktor-atanaskovic-headshot-cutout.png").convert("RGBA")
+    bbox = im.getbbox()
+    c = im.crop(bbox)
+    scaled_w = int(c.width * (730 / c.height))
+    scaled = c.resize((scaled_w, 730), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (640, 800), (0, 0, 0, 0))
+    canvas.paste(scaled, ((640 - scaled_w) // 2, 60), scaled)
+    save_and_copy(canvas, "viktor-atanaskovic")
+    print("Processed Viktor Atanaskovic")
+
+    # 23. Ido Biran
+    im = Image.open(f"{CUTOUT_DIR}/ido-biran-headshot-cutout.png").convert("RGBA")
+    bbox = im.getbbox()
+    c = im.crop(bbox)
+    scaled_w = int(c.width * (675 / c.height))
+    scaled = c.resize((scaled_w, 675), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (640, 800), (0, 0, 0, 0))
+    canvas.paste(scaled, ((640 - scaled_w) // 2, 60), scaled)
+    save_and_copy(canvas, "ido-biran")
+    print("Processed Ido Biran")
+
     print("All organizer headshots calibrated and standardized successfully!")
 
 if __name__ == "__main__":

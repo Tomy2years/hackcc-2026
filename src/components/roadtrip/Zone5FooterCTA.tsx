@@ -17,7 +17,7 @@ export default function Zone5FooterCTA() {
 
           {/* Monumental Headline - Big, proud & high-contrast */}
           <h2 className="mt-2 sm:mt-4 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal uppercase tracking-tight text-white font-heading leading-[1.04] drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] drop-shadow-[0_12px_32px_rgba(0,0,0,0.9)]">
-            JOIN THE NEXT STOP ON THE ROUTE
+            GET INVOLVED
           </h2>
 
           {/* Cohesive California Road Trip CTA Buttons: Larger buttons, Hacker Applications centered & largest, Sponsor Us green, Organizer Applications styled as is */}

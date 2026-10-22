@@ -274,6 +274,18 @@ export default function RoadTripNav() {
                     <ChevronRight className="w-3.5 h-3.5 transition-all text-slate-400 group-hover:translate-x-0.5 group-hover:text-amber-300" />
                   </Link>
                 </div>
+
+                {/* Apply Button Inside Dropdown */}
+                <div className="pt-1.5 border-t border-white/15">
+                  <Link
+                    href="/apply"
+                    onClick={() => setIsOpen(false)}
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm transition-all shadow-md active:scale-95 group font-[var(--font-mont)]"
+                  >
+                    <span className="tracking-wide">Apply Now</span>
+                    <ChevronRight className="w-4 h-4 stroke-[2.5] transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

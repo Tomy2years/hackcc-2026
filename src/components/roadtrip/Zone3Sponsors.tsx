@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 const SANTA_MONICA_PIER_DAY_BG = "/assets/roadtrip/zone3-about/santa-monica-pier-bg-daytime.jpeg";
+const SANTA_MONICA_PIER_DAY_BG_MOBILE = "/assets/roadtrip/zone3-about/santa-monica-pier-bg-daytime-mobile.jpeg";
 const AWS_WHITE_LOGO = "/aws-white.svg";
 const GOOGLE_LOGO = "/google.svg";
 const BOOTDEV_LOGO = "/bootdev.png";
+const ELEVENLABS_LOGO = "/elevenlabs-logo-white.png";
 
 const sponsors = [
   {
@@ -14,41 +16,58 @@ const sponsors = [
     src: AWS_WHITE_LOGO,
     width: 220,
     height: 120,
-    className: "max-h-14 sm:max-h-18 w-auto",
+    className: "max-h-12 sm:max-h-16 w-auto",
   },
   {
     name: "Google",
     src: GOOGLE_LOGO,
     width: 220,
     height: 120,
-    className: "max-h-12 sm:max-h-16 w-auto",
+    className: "max-h-10 sm:max-h-14 w-auto",
   },
   {
     name: "Boot.dev",
     src: BOOTDEV_LOGO,
     width: 200,
     height: 120,
-    className: "max-h-14 sm:max-h-18 w-auto",
+    className: "max-h-12 sm:max-h-16 w-auto",
+  },
+  {
+    name: "ElevenLabs",
+    src: ELEVENLABS_LOGO,
+    width: 240,
+    height: 60,
+    className: "max-h-9 sm:max-h-12 w-auto",
   },
 ];
 
 export default function Zone3Sponsors() {
   return (
     <section
-      className="relative min-h-screen py-20 sm:py-24 lg:py-0 w-full overflow-hidden flex items-center justify-center select-none"
+      className="relative min-h-screen py-16 sm:py-24 lg:py-24 w-full overflow-hidden flex items-center justify-center select-none"
     >
       {/* Full-Screen Background Image Layer */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
+        {/* Desktop 16:9 Widescreen */}
         <Image
           src={SANTA_MONICA_PIER_DAY_BG}
           alt="Santa Monica Pier Daytime Background"
           fill
-          className="object-cover object-center pointer-events-none select-none"
+          className="hidden sm:block object-cover object-center pointer-events-none select-none"
+          priority
+          draggable={false}
+        />
+        {/* Mobile 9:16 Portrait */}
+        <Image
+          src={SANTA_MONICA_PIER_DAY_BG_MOBILE}
+          alt="Santa Monica Pier Daytime Background Mobile"
+          fill
+          className="block sm:hidden object-cover object-top pointer-events-none select-none"
           priority
           draggable={false}
         />
         {/* Daytime Contrast Scrim Layer */}
-        <div className="absolute inset-0 bg-slate-950/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-slate-950/25 pointer-events-none" />
       </div>
 
       <div className="relative z-20 mx-auto flex w-full max-w-5xl flex-col items-center justify-center px-6 sm:px-10 text-center select-none">
@@ -63,12 +82,12 @@ export default function Zone3Sponsors() {
         </div>
 
         {/* Cal Hacks / HackMIT Style: Single Unified Frosted-Glass Sponsor Pavilion */}
-        <div className="w-full max-w-4xl rounded-3xl border border-white/15 bg-slate-950/65 p-8 sm:p-12 lg:p-14 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-md select-none">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12 items-center justify-items-center">
+        <div className="w-full max-w-5xl rounded-3xl border border-white/15 bg-slate-950/65 p-6 sm:p-10 lg:p-12 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-md select-none">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 items-center justify-items-center">
             {sponsors.map((sponsor) => (
               <div
                 key={sponsor.name}
-                className="flex h-24 sm:h-28 w-full items-center justify-center p-3 select-none"
+                className="flex h-20 sm:h-24 w-full items-center justify-center p-2 sm:p-3 select-none"
               >
                 <Image
                   src={sponsor.src}

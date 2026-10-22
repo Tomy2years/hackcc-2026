@@ -73,7 +73,7 @@ export default function RoadTripFooter() {
                 {/* Social Icons */}
                 <div className="flex items-center gap-4 pt-1">
                   <a
-                    href="https://discord.gg/yRShGV7Py4"
+                    href="https://discord.gg/X7ktb9224J"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="HackCC Discord"

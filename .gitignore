@@ -56,3 +56,9 @@ next-env.d.ts
 *service_account*.json
 *-credentials*.json
 hackcc-registration-*.json
+
+# Data exports and archives (prevent leaking organizer/applicant CSVs or zips)
+*.csv
+*.csv.zip
+*.zip
+

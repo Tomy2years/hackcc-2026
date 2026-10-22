@@ -62,7 +62,7 @@ const TEAMS = [
     title: "Logistics Team",
     lead: "Hillary Nguyen (Orange Coast College)",
     description:
-      "Design the physical road trip experience from the ground up. Coordinate venue layouts, hardware labs, catering logistics, midnight Boba runs, and 48 hours of seamless hacker hospitality.",
+      "Design the physical road trip experience from the ground up. Coordinate venue layouts, hardware labs, catering logistics, Boba runs, and two action-packed days of seamless hacker hospitality.",
   },
   {
     num: "04",
@@ -86,7 +86,7 @@ const WHY_JOIN_PERKS = [
   {
     num: "01",
     tag: "REAL IMPACT",
-    title: "Production Scale at 250+ Hackers",
+    title: "Production Scale at 300+ Hackers",
     description:
       "Skip textbook exercises and toy side projects. Manage thousands of dollars in real budgets, deploy code tested by hundreds of users, and steer a major statewide convention.",
   },
@@ -282,6 +282,13 @@ export default function OrganizerApplyPage() {
             JOIN THE ORGANIZING TEAM
           </h1>
 
+          {/* Event Landmark Coordinates Strip */}
+          <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/80 border border-white/20 text-xs sm:text-sm font-mono text-amber-300 shadow-sm backdrop-blur-sm">
+            <span className="font-bold text-white">Orange Coast College · Costa Mesa, CA</span>
+            <span className="text-white/40 hidden xs:inline">•</span>
+            <span>Nov 14–15, 2026</span>
+          </div>
+
           {/* Unboxed Narrative */}
           <p className="mt-6 text-slate-200 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-sans">
             HackCC is built by students, for students. We are expanding our statewide organizing crew of community college engineers, designers, logisticians, and community builders to craft the biggest hackathon California community colleges have ever seen.
@@ -344,10 +351,10 @@ export default function OrganizerApplyPage() {
 
             <div className="space-y-1 md:border-l md:border-white/15">
               <span className="font-heading text-5xl sm:text-6xl md:text-7xl font-normal text-white">
-                250+
+                300+
               </span>
               <p className="text-xs sm:text-sm font-mono uppercase tracking-wider text-slate-300 font-bold">
-                Hackers Empowered
+                Participants
               </p>
             </div>
           </div>
@@ -439,7 +446,7 @@ export default function OrganizerApplyPage() {
               MEET YOUR FELLOW ROADTRIPPERS
             </h2>
             <p className="mt-4 text-slate-300 text-sm sm:text-base">
-              You will be collaborating with students from Irvine Valley, Orange Coast, Diablo Valley, De Anza, Foothill, Santiago Canyon, and El Camino.
+              You will be collaborating with students from Irvine Valley, Orange Coast, Diablo Valley, De Anza, Foothill, El Camino, and transfer alumni at UC San Diego.
             </p>
           </div>
 
@@ -673,7 +680,7 @@ export default function OrganizerApplyPage() {
 
           <div className="flex flex-wrap items-center justify-center gap-5">
             <a
-              href="https://discord.gg/yRShGV7Py4"
+              href="https://discord.gg/X7ktb9224J"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="HackCC Discord"
@@ -706,6 +713,9 @@ export default function OrganizerApplyPage() {
             </Link>
             <Link href="/sponsors" className="hover:text-white transition-colors">
               Sponsors
+            </Link>
+            <Link href="/apply" className="hover:text-amber-300 font-semibold transition-colors">
+              Apply
             </Link>
           </div>
         </div>

@@ -18,7 +18,7 @@ const SCENIC_BG = "/assets/roadtrip/zone6-cta-footer/San-Diego-Beach.jpg";
 
 // Fields checked before moving past each step
 const STEP_FIELDS: Record<number, (keyof RegistrationFormData)[]> = {
-  1: ["name", "email", "phone", "college", "otherCollege", "ageCheck"],
+  1: ["name", "email", "phone", "college", "otherCollege", "dateOfBirth"],
   2: ["interests"],
   3: ["tshirtSize"],
 };
@@ -105,9 +105,9 @@ export function ApplyForm() {
   } = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
+      dateOfBirth: "",
       interests: [],
       isFirstTimer: false,
-      ageCheck: false,
       codeOfConduct: false,
       dietaryRestrictions: ""
     },
@@ -609,25 +609,24 @@ export function ApplyForm() {
                                 )}
                               </AnimatePresence>
 
-                              {/* Age Confirmation */}
-                              <div className="pt-1">
-                                <label className="relative flex items-start gap-3 cursor-pointer group">
-                                  <input
-                                    {...register("ageCheck")}
-                                    type="checkbox"
-                                    className="peer sr-only"
-                                  />
-                                  <CheckMark />
-                                  <span>
-                                    <span className="block text-sm sm:text-base font-semibold text-slate-100 group-hover:text-white transition-colors">
-                                      I&apos;ll be 18 or older by Fall 2026.
-                                    </span>
-                                    <span className="block text-xs text-sky-100/75 mt-0.5">
-                                      HackCC is an 18+ event for insurance reasons.
-                                    </span>
-                                  </span>
+                              {/* Date of Birth */}
+                              <div>
+                                <label htmlFor="apply-dob" className={labelClass}>
+                                  Date of Birth
                                 </label>
-                                <FieldError message={errors.ageCheck?.message} />
+                                <input
+                                  id="apply-dob"
+                                  {...register("dateOfBirth")}
+                                  type="date"
+                                  min="1920-01-01"
+                                  max={new Date().toISOString().split("T")[0]}
+                                  aria-invalid={!!errors.dateOfBirth}
+                                  className={`${inputClass} [color-scheme:dark]`}
+                                />
+                                <p className="text-xs text-sky-100/75 mt-1.5">
+                                  Please bring 1 form of valid ID (student ID, driver&apos;s license, or passport) for check-in at the venue.
+                                </p>
+                                <FieldError message={errors.dateOfBirth?.message} />
                               </div>
                             </motion.div>
                           )}
@@ -768,6 +767,7 @@ export function ApplyForm() {
                                   {[
                                     "Be respectful, welcoming, and collaborative. Harassment, discrimination, or abusive behavior means immediate removal.",
                                     "Write your project during the hackathon. Bringing in existing project code isn't allowed.",
+                                    "Bring 1 form of valid ID (student ID, driver's license, or passport) for check-in at Orange Coast College.",
                                     "Look out for each other and keep the road trip safe, inclusive, and fun.",
                                   ].map((rule) => (
                                     <li key={rule} className="flex items-start gap-3">

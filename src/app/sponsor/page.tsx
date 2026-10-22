@@ -18,10 +18,44 @@ import { SPONSORSHIP_EMAIL } from "@/data/contact";
 // Top-level static references & images
 import hackccIcon from "../../../public/images/hackcc-icon.png";
 
-const SCENIC_BG = "/assets/roadtrip/zone3-about/santa-monica-pier-bg-nighttime.jpeg";
+const SANTA_MONICA_PIER_DAY_BG = "/assets/roadtrip/zone3-about/santa-monica-pier-bg-daytime.jpeg";
+const SANTA_MONICA_PIER_DAY_BG_MOBILE = "/assets/roadtrip/zone3-about/santa-monica-pier-bg-daytime-mobile.jpeg";
+
 const AWS_LOGO = "/aws-white.svg";
 const GOOGLE_LOGO = "/google.svg";
 const BOOTDEV_LOGO = "/bootdev.png";
+const ELEVENLABS_LOGO = "/elevenlabs-logo-white.png";
+
+const ROADTRIP_SPONSORS = [
+  {
+    name: "AWS",
+    src: AWS_LOGO,
+    width: 220,
+    height: 120,
+    className: "max-h-12 sm:max-h-16 w-auto",
+  },
+  {
+    name: "Google",
+    src: GOOGLE_LOGO,
+    width: 220,
+    height: 120,
+    className: "max-h-10 sm:max-h-14 w-auto",
+  },
+  {
+    name: "Boot.dev",
+    src: BOOTDEV_LOGO,
+    width: 200,
+    height: 120,
+    className: "max-h-12 sm:max-h-16 w-auto",
+  },
+  {
+    name: "ElevenLabs",
+    src: ELEVENLABS_LOGO,
+    width: 240,
+    height: 60,
+    className: "max-h-9 sm:max-h-12 w-auto",
+  },
+];
 
 const OFFICIAL_EMAIL = SPONSORSHIP_EMAIL;
 
@@ -59,7 +93,7 @@ const SPONSOR_BENEFITS = [
     tag: "DEV REL & API ADOPTION",
     title: "Dedicated API & Platform Bounties",
     description:
-      "Get 250+ passionate hackers actively building, integrating, and testing your developer tools, APIs, AI models, and cloud infrastructure over 48 intensive hours.",
+      "Get 300+ passionate hackers actively building, integrating, and testing your developer tools, APIs, AI models, and cloud infrastructure over two intensive build days.",
   },
   {
     num: "03",
@@ -79,6 +113,10 @@ const SPONSOR_BENEFITS = [
 
 const FAQS = [
   {
+    q: "Where and when is HackCC 2026 taking place?",
+    a: "HackCC 2026 takes place on November 14–15, 2026 at Orange Coast College (OCC) in Costa Mesa, California! It is a two-day, non-overnight hackathon running during the daytime on Saturday and Sunday, allowing sponsors, mentors, and hackers to return refreshed for day two judging and final ceremonies.",
+  },
+  {
     q: "Why sponsor HackCC instead of a four-year university hackathon?",
     a: "California community colleges represent 1.8+ million students—the largest and most diverse higher education system in the nation. HackCC is the first and only premier hackathon dedicated exclusively to CC talent. Our attendees are intensely motivated, transfer-bound, and possess gritty real-world problem-solving abilities that tech companies rarely reach through standard university recruiting.",
   },
@@ -88,7 +126,7 @@ const FAQS = [
   },
   {
     q: "Can our engineers mentor hackers or host technical workshops?",
-    a: "Yes! Hands-on engagement is at the heart of HackCC. Partners can host dedicated workshop slots to demo developer tools, APIs, and frameworks. Engineers and mentors from all partner companies are warmly welcomed on the floor throughout the entire 48-hour build.",
+    a: "Yes! Hands-on engagement is at the heart of HackCC. Partners can host dedicated workshop slots to demo developer tools, APIs, and frameworks. Engineers and mentors from all partner companies are warmly welcomed on the floor throughout the entire weekend build.",
   },
   {
     q: "Are custom or in-kind sponsorships accepted?",
@@ -124,17 +162,28 @@ export default function SponsorPage() {
 
   return (
     <main className="relative min-h-screen text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950 overflow-x-hidden">
-      {/* Scenic Background Layer - natural California night photography */}
-      <div className="fixed inset-0 -z-10 w-full h-full overflow-hidden">
+      {/* Scenic Background Layer - Santa Monica Pier daytime with mobile portrait support */}
+      <div className="fixed inset-0 -z-10 w-full h-full overflow-hidden pointer-events-none select-none">
+        {/* Desktop 16:9 Widescreen */}
         <Image
-          src={SCENIC_BG}
-          alt="California Scenic Coastline at Twilight"
+          src={SANTA_MONICA_PIER_DAY_BG}
+          alt="California Santa Monica Pier Coastline"
           fill
           priority
-          className="object-cover object-center scale-105"
+          draggable={false}
+          className="hidden sm:block object-cover object-center scale-105 pointer-events-none select-none"
+        />
+        {/* Mobile 9:16 Portrait */}
+        <Image
+          src={SANTA_MONICA_PIER_DAY_BG_MOBILE}
+          alt="California Santa Monica Pier Coastline Mobile"
+          fill
+          priority
+          draggable={false}
+          className="block sm:hidden object-cover object-top scale-105 pointer-events-none select-none"
         />
         {/* Natural contrast scrim layer: keeps scenery luminous while guaranteeing effortless legibility */}
-        <div className="absolute inset-0 bg-slate-950/65 pointer-events-none" />
+        <div className="absolute inset-0 bg-slate-950/70 pointer-events-none" />
       </div>
 
       {/* Top Navigation Bar: Minimalist & Unboxed */}
@@ -193,10 +242,17 @@ export default function SponsorPage() {
             SPONSOR HACKCC 2026
           </h1>
 
+          {/* Event Landmark Coordinates Strip */}
+          <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/80 border border-white/20 text-xs sm:text-sm font-mono text-amber-300 shadow-sm backdrop-blur-sm">
+            <span className="font-bold text-white">Orange Coast College · Costa Mesa, CA</span>
+            <span className="text-white/40 hidden xs:inline">•</span>
+            <span>Nov 14–15, 2026</span>
+          </div>
+
           {/* Unboxed Narrative */}
           <p className="mt-6 text-slate-200 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-sans">
             HackCC is California&apos;s premier hackathon exclusively dedicated to empowering community college students.
-            Partner with us to mentor, recruit, and inspire 250+ passionate student developers, designers, and creators from 23 campuses across the state.
+            Taking place November 14–15, 2026 at Orange Coast College in Costa Mesa, partner with us to mentor, recruit, and inspire 300+ passionate student developers, designers, and creators from 23 colleges across California.
           </p>
 
           {/* Clean, Unboxed Direct Action Controls - No floating glass box */}
@@ -269,37 +325,49 @@ export default function SponsorPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6 text-center">
             <div className="space-y-1">
               <span className="font-heading text-5xl sm:text-6xl md:text-7xl font-normal text-amber-400">
-                250+
+                300+
               </span>
               <p className="text-xs sm:text-sm font-mono uppercase tracking-wider text-slate-300 font-bold">
-                CC Builders &amp; Hackers
+                Participants
+              </p>
+              <p className="text-xs font-semibold text-slate-400">
+                Across California
               </p>
             </div>
 
-            <div className="space-y-1 md:border-l md:border-white/15">
+            <div className="space-y-1 border-l border-white/15 pl-4 sm:pl-0">
               <span className="font-heading text-5xl sm:text-6xl md:text-7xl font-normal text-white">
                 23
               </span>
               <p className="text-xs sm:text-sm font-mono uppercase tracking-wider text-slate-300 font-bold">
-                California CC Campuses
+                Colleges
+              </p>
+              <p className="text-xs font-semibold text-slate-400">
+                From NorCal to SoCal
               </p>
             </div>
 
             <div className="space-y-1 md:border-l md:border-white/15">
               <span className="font-heading text-5xl sm:text-6xl md:text-7xl font-normal text-amber-400">
-                48 HRS
+                2 DAYS
               </span>
               <p className="text-xs sm:text-sm font-mono uppercase tracking-wider text-slate-300 font-bold">
-                High-Intensity Sprint
+                Weekend Sprint
+              </p>
+              <p className="text-xs font-semibold text-slate-400">
+                Nov 14–15, 2026
               </p>
             </div>
 
-            <div className="space-y-1 md:border-l md:border-white/15">
+            <div className="space-y-1 border-l border-white/15 pl-4 sm:pl-0 md:border-l md:border-white/15">
               <span className="font-heading text-5xl sm:text-6xl md:text-7xl font-normal text-white">
-                $10K+
+                $20K+
               </span>
               <p className="text-xs sm:text-sm font-mono uppercase tracking-wider text-slate-300 font-bold">
-                In Prizes &amp; Tracks
+                In Prizes
+              </p>
+              <p className="text-xs font-semibold text-slate-400">
+                &amp; Sponsor Bounties
               </p>
             </div>
           </div>
@@ -352,35 +420,23 @@ export default function SponsorPage() {
             OUR ROAD TRIP PARTNERS
           </h2>
 
-          <div className="rounded-3xl border border-white/15 bg-slate-950/60 p-8 sm:p-12 shadow-xl backdrop-blur-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 items-center justify-items-center">
-              <div className="flex h-20 sm:h-24 w-full items-center justify-center p-3 select-none">
-                <Image
-                  src={AWS_LOGO}
-                  alt="AWS"
-                  width={200}
-                  height={100}
-                  className="max-h-14 sm:max-h-16 w-auto object-contain transition-transform hover:scale-105"
-                />
-              </div>
-              <div className="flex h-20 sm:h-24 w-full items-center justify-center p-3 select-none">
-                <Image
-                  src={GOOGLE_LOGO}
-                  alt="Google"
-                  width={200}
-                  height={100}
-                  className="max-h-12 sm:max-h-14 w-auto object-contain transition-transform hover:scale-105"
-                />
-              </div>
-              <div className="flex h-20 sm:h-24 w-full items-center justify-center p-3 select-none">
-                <Image
-                  src={BOOTDEV_LOGO}
-                  alt="Boot.dev"
-                  width={200}
-                  height={100}
-                  className="max-h-14 sm:max-h-16 w-auto object-contain transition-transform hover:scale-105"
-                />
-              </div>
+          <div className="w-full max-w-5xl rounded-3xl border border-white/15 bg-slate-950/65 p-6 sm:p-10 lg:p-12 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-md">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 items-center justify-items-center">
+              {ROADTRIP_SPONSORS.map((sponsor) => (
+                <div
+                  key={sponsor.name}
+                  className="flex h-20 sm:h-24 w-full items-center justify-center p-2 sm:p-3 select-none"
+                >
+                  <Image
+                    src={sponsor.src}
+                    alt={sponsor.name}
+                    width={sponsor.width}
+                    height={sponsor.height}
+                    draggable={false}
+                    className={`${sponsor.className} object-contain transition-all duration-300 hover:scale-105 drop-shadow-[0_4px_14px_rgba(0,0,0,0.4)] pointer-events-none select-none`}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -506,7 +562,7 @@ export default function SponsorPage() {
 
           <div className="flex items-center gap-5">
             <a
-              href="https://discord.gg/yRShGV7Py4"
+              href="https://discord.gg/X7ktb9224J"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="HackCC Discord"
@@ -536,6 +592,9 @@ export default function SponsorPage() {
             </Link>
             <Link href="/organizers" className="hover:text-white transition-colors">
               Organizers
+            </Link>
+            <Link href="/apply" className="hover:text-amber-300 font-semibold transition-colors">
+              Apply
             </Link>
           </div>
         </div>

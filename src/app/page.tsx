@@ -10,6 +10,9 @@ import RoadTripStop from "@/components/roadtrip/RoadTripStop";
 import RoadTripFooter from "@/components/roadtrip/RoadTripFooter";
 import ZoneRouteListener from "@/components/roadtrip/ZoneRouteListener";
 
+const SAN_DIEGO_BG = "/assets/roadtrip/zone6-cta-footer/San-Diego-Beach.jpg";
+const SAN_DIEGO_BG_MOBILE = "/assets/roadtrip/zone6-cta-footer/San-Diego-Beach-mobile.jpg";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950">
@@ -55,13 +58,13 @@ export default function Home() {
         <Zone2About />
       </RoadTripStop>
 
-      {/* Zone 3: Sponsors (Santa Monica Pier - Daytime) -> road to Coastal Cove */}
+      {/* Zone 3: Sponsors (Santa Monica Pier - Daytime) -> road to La Jolla */}
       <RoadTripStop
         id="zone-sponsors"
         road={
           <RoadBridge
             routeNumber="1"
-            nextStop="COASTAL COVE"
+            nextStop="LA JOLLA"
             mileage="PCH S"
             direction="right"
             signPosition="right"
@@ -92,11 +95,21 @@ export default function Home() {
         <div className="relative w-full overflow-hidden bg-slate-950">
           {/* Full Continuous Artwork Layer */}
           <div className="absolute inset-0 z-0 pointer-events-none select-none">
+            {/* Desktop 16:9 Widescreen */}
             <Image
-              src="/assets/roadtrip/zone6-cta-footer/San-Diego-Beach.jpg"
+              src={SAN_DIEGO_BG}
               alt="San Diego Beach & Coastal Dunes Panorama"
               fill
-              className="object-cover object-top pointer-events-none select-none"
+              className="hidden sm:block object-cover object-top pointer-events-none select-none"
+              priority
+              draggable={false}
+            />
+            {/* Mobile 9:16 Portrait */}
+            <Image
+              src={SAN_DIEGO_BG_MOBILE}
+              alt="San Diego Beach & Coastal Dunes Panorama Mobile"
+              fill
+              className="block sm:hidden object-cover object-top pointer-events-none select-none"
               priority
               draggable={false}
             />

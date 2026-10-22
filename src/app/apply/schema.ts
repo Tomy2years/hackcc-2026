@@ -31,7 +31,23 @@ export const registrationSchema = z.object({
   phone: z.string().trim().max(30, "Phone number is too long").regex(phoneRegex, "Invalid phone number format (e.g. 555-555-5555)"),
   college: z.enum(COLLEGE_OPTIONS, { message: "Please select a community college" }),
   otherCollege: z.string().trim().max(150, "School name must be under 150 characters").optional(),
-  ageCheck: z.boolean().refine(val => val === true, "You must confirm you will be 18+ years old"),
+  dateOfBirth: z
+    .string()
+    .trim()
+    .min(1, "Please enter your date of birth")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Please enter a valid date of birth (YYYY-MM-DD)")
+    .refine((val) => {
+      const [yearStr, monthStr, dayStr] = val.split("-");
+      const y = Number(yearStr);
+      const m = Number(monthStr);
+      const d = Number(dayStr);
+      const date = new Date(Date.UTC(y, m - 1, d));
+      if (date.getUTCFullYear() !== y || date.getUTCMonth() !== m - 1 || date.getUTCDate() !== d) {
+        return false;
+      }
+      const now = new Date();
+      return y >= 1920 && date <= now;
+    }, "Please enter a valid date of birth in the past"),
 
   // Experience
   interests: z

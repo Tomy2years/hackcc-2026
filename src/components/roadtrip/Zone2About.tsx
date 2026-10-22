@@ -3,12 +3,13 @@
 import Image from "next/image";
 
 const INGLEWOOD_DAY_BG = "/assets/roadtrip/zone2-details/inglewood-daytime.jpg";
+const INGLEWOOD_DAY_BG_MOBILE = "/assets/roadtrip/zone2-details/inglewood-daytime-mobile.jpg";
 
 const stats = [
   { value: "300+", unit: "", label: "Participants", sublabel: "Across California" },
-  { value: "$5K+", unit: "", label: "In Prizes", sublabel: "" },
+  { value: "$20K+", unit: "", label: "In Prizes", sublabel: "" },
   { value: "23", unit: "", label: "Colleges", sublabel: "From NorCal to SoCal" },
-  { value: "48", unit: "HRS", label: "Sprint", sublabel: "" },
+  { value: "2", unit: "DAYS", label: "Weekend Sprint", sublabel: "Nov 14–15, 2026" },
 ];
 
 const pillars = [
@@ -28,14 +29,24 @@ const pillars = [
 
 export default function Zone2About() {
   return (
-    <section className="relative min-h-screen py-16 sm:py-20 lg:py-0 w-full overflow-hidden flex items-center justify-center">
+    <section className="relative min-h-screen pt-24 pb-16 sm:py-24 lg:py-24 w-full overflow-hidden flex items-center justify-center">
       {/* Full-Screen Background Image Layer */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
+        {/* Desktop 16:9 Widescreen */}
         <Image
           src={INGLEWOOD_DAY_BG}
           alt="Inglewood Daytime Skyline Background"
           fill
-          className="object-cover object-center pointer-events-none select-none"
+          className="hidden sm:block object-cover object-center pointer-events-none select-none"
+          priority
+          draggable={false}
+        />
+        {/* Mobile 9:16 Portrait */}
+        <Image
+          src={INGLEWOOD_DAY_BG_MOBILE}
+          alt="Inglewood Daytime Skyline Background Mobile"
+          fill
+          className="block sm:hidden object-cover object-top pointer-events-none select-none"
           priority
           draggable={false}
         />
@@ -54,7 +65,7 @@ export default function Zone2About() {
             ABOUT HACKCC
           </h2>
           <p className="mt-3 text-white text-base sm:text-lg lg:text-xl font-sans font-medium max-w-2xl leading-relaxed [text-shadow:_0_2px_8px_rgba(0,0,0,1),_0_4px_16px_rgba(0,0,0,0.85)]">
-            California&apos;s largest community college hackathon. 48 hours to build, learn, and launch alongside mentors, alumni, and top tech partners.
+            California&apos;s largest community college hackathon. Two days to build, learn, and launch alongside mentors, alumni, and top tech partners at Orange Coast College on November 14–15, 2026.
           </p>
         </div>
 

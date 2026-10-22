@@ -100,7 +100,7 @@ export async function submitRegistration(
       plainText(data.name),
       plainText(data.phone),
       plainText(college),
-      yesNo(data.ageCheck),
+      plainText(data.dateOfBirth),
       plainText(data.interests.join(", ")),
       yesNo(data.isFirstTimer),
       data.tshirtSize,

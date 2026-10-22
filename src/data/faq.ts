@@ -22,6 +22,20 @@ export const FAQS: FAQItem[] = [
     },
   },
   {
+    id: "venue-date",
+    question: "Where and when is HackCC 2026?",
+    badge: "Venue & Dates",
+    spokenAnswer:
+      "HackCC 2026 takes place on November 14–15, 2026 at Orange Coast College (OCC) in Costa Mesa, California! The campus is located in Orange County with convenient freeway access and nearby public transit.",
+  },
+  {
+    id: "overnight",
+    question: "Is HackCC an overnight hackathon?",
+    badge: "Schedule & Format",
+    spokenAnswer:
+      "HackCC is a two-day, non-overnight hackathon. Hacking runs during the day on both Saturday, November 14 and Sunday, November 15. The venue closes Saturday night so hackers can rest, recharge, and return refreshed Sunday morning for final builds and project demos.",
+  },
+  {
     id: "what-is-hackathon",
     question: "What is a hackathon anyway?",
     badge: "The Basics",
@@ -54,6 +68,6 @@ export const FAQS: FAQItem[] = [
     question: "Who is eligible to participate?",
     badge: "Eligibility",
     spokenAnswer:
-      "Any student currently enrolled in a California community college! High school seniors planning to attend CC and recent CC transfer students are also warmly welcomed to apply and join the route.",
+      "Any student currently enrolled in a California community college! High school seniors planning to attend CC and recent CC transfer students are also warmly welcomed to apply. All attendees must bring 1 form of valid ID (such as a student ID, driver's license, or passport) for check-in at the venue.",
   },
 ];

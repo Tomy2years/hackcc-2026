@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Calendar, Check, Mail, MapPin } from "lucide-react";
+import { Calendar, Check, IdCard, Mail, MapPin } from "lucide-react";
 
 interface RegistrationReceivedCardProps {
   email: string;
@@ -33,11 +33,15 @@ export function RegistrationReceivedCard({ email }: RegistrationReceivedCardProp
         </li>
         <li className="flex items-center gap-3">
           <Calendar className="w-4 h-4 text-amber-400 shrink-0" />
-          <span>Fall 2026 • Orange Coast College</span>
+          <span>Nov 14–15, 2026 • Orange Coast College</span>
         </li>
         <li className="flex items-center gap-3">
           <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
           <span>2701 Fairview Rd, Costa Mesa, CA 92626</span>
+        </li>
+        <li className="flex items-center gap-3">
+          <IdCard className="w-4 h-4 text-amber-400 shrink-0" />
+          <span>Bring <span className="font-bold text-white">1 form of valid ID</span> for venue check-in</span>
         </li>
       </ul>
 

@@ -6,9 +6,25 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const DOUBLE_DOME_BG = "/assets/roadtrip/zone5-faq/Double-Dome.jpg";
+const DOUBLE_DOME_BG_MOBILE = "/assets/roadtrip/zone5-faq/Double-Dome-mobile.jpg";
 const LOLLIPOP_MASCOT = "/assets/mascots/lollipop-mascot.png";
 
 import { FAQS } from "@/data/faq";
+
+function renderFormattedSegment(content: string, keyPrefix: string) {
+  const boldParts = content.split(/(\*\*[^*]+\*\*)/g);
+  return boldParts.map((bPart, bIdx) => {
+    const boldMatch = bPart.match(/^\*\*([^*]+)\*\*$/);
+    if (boldMatch) {
+      return (
+        <strong key={`${keyPrefix}-b-${bIdx}`} className="font-bold text-slate-900">
+          {boldMatch[1]}
+        </strong>
+      );
+    }
+    return bPart;
+  });
+}
 
 function FormattedAnswer({ text }: { text: string }) {
   const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
@@ -42,7 +58,7 @@ function FormattedAnswer({ text }: { text: string }) {
             </Link>
           );
         }
-        return part;
+        return renderFormattedSegment(part, `p-${index}`);
       })}
     </>
   );
@@ -55,32 +71,43 @@ export default function Zone4FAQQuotes() {
     setOpenId((prev) => (prev === id ? null : id));
   };
 
-  const col1 = FAQS.slice(0, 3);
-  const col2 = FAQS.slice(3, 6);
+  const mid = Math.ceil(FAQS.length / 2);
+  const col1 = FAQS.slice(0, mid);
+  const col2 = FAQS.slice(mid);
 
   return (
     <section
-      className="relative min-h-screen py-20 sm:py-24 lg:py-0 w-full flex items-center justify-center"
+      className="relative min-h-screen py-20 sm:py-24 lg:py-20 w-full flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* Full-Screen Background Image Layer */}
+      {/* Full-Screen Background Image Layer: Anchored with inset-0 so it seamlessly covers the section on all viewports */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+        {/* Desktop 16:9 Widescreen */}
         <Image
           src={DOUBLE_DOME_BG}
           alt="California Coastal Cove Daytime Background"
           fill
-          className="object-cover object-center pointer-events-none select-none"
+          className="hidden sm:block object-cover object-center pointer-events-none select-none"
+          priority
+          draggable={false}
+        />
+        {/* Mobile 9:16 Portrait */}
+        <Image
+          src={DOUBLE_DOME_BG_MOBILE}
+          alt="California Coastal Cove Daytime Background Mobile"
+          fill
+          className="block sm:hidden object-cover object-top pointer-events-none select-none"
           priority
           draggable={false}
         />
         {/* Natural Coastal Scrim Layer */}
-        <div className="absolute inset-0 bg-slate-950/25 pointer-events-none" />
+        <div className="absolute inset-0 bg-slate-950/20 pointer-events-none" />
       </div>
 
-      {/* Main Container */}
-      <div className="relative z-20 mx-auto w-full max-w-5xl lg:max-w-6xl px-4 sm:px-8 pt-12 sm:pt-16 lg:pt-16 pb-12 flex flex-col items-center">
+      {/* Main Container: Perfectly Centered */}
+      <div className="relative z-20 mx-auto w-full max-w-5xl lg:max-w-6xl px-4 sm:px-8 py-4 sm:py-6 lg:py-0 flex flex-col items-center justify-center">
         {/* Section Header: Monumental, Clean & Unboxed */}
-        <div className="mb-10 sm:mb-14 lg:mb-16 text-center max-w-4xl">
-          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal uppercase tracking-tight text-white font-heading leading-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+        <div className="mb-4 sm:mb-5 lg:mb-6 text-center max-w-4xl">
+          <h2 className="text-4xl sm:text-5xl lg:text-7xl font-normal uppercase tracking-tight text-white font-heading leading-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
             ROAD TRIP FAQ
           </h2>
         </div>
@@ -88,8 +115,8 @@ export default function Zone4FAQQuotes() {
         {/* California Road Trip Travel Postcard Outer Container */}
         <div className="relative w-full -rotate-[0.6deg] hover:rotate-0 transition-transform duration-300">
           {/* Realistic Amber Cellophane / Scotch Tape Strip */}
-          <div className="absolute -top-4 sm:-top-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none">
-            <div className="relative w-40 sm:w-56 h-8 sm:h-11 bg-amber-200/70 backdrop-blur-[2px] border-t-2 border-white/95 border-b border-amber-900/35 shadow-[0_6px_16px_rgba(0,0,0,0.28),_0_2px_4px_rgba(0,0,0,0.18)] rotate-[1.2deg] flex items-center justify-center [clip-path:polygon(0%_0%,_98.5%_0%,_100%_12.5%,_98.5%_25%,_100%_37.5%,_98.5%_50%,_100%_62.5%,_98.5%_75%,_100%_87.5%,_98.5%_100%,_0%_100%,_1.5%_87.5%,_0%_75%,_1.5%_62.5%,_0%_50%,_1.5%_37.5%,_0%_25%,_1.5%_12.5%)]">
+          <div className="absolute -top-3.5 sm:-top-5 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none">
+            <div className="relative w-36 sm:w-48 h-7 sm:h-9 bg-amber-200/70 backdrop-blur-[2px] border-t-2 border-white/95 border-b border-amber-900/35 shadow-[0_6px_16px_rgba(0,0,0,0.28),_0_2px_4px_rgba(0,0,0,0.18)] rotate-[1.2deg] flex items-center justify-center [clip-path:polygon(0%_0%,_98.5%_0%,_100%_12.5%,_98.5%_25%,_100%_37.5%,_98.5%_50%,_100%_62.5%,_98.5%_75%,_100%_87.5%,_98.5%_100%,_0%_100%,_1.5%_87.5%,_0%_75%,_1.5%_62.5%,_0%_50%,_1.5%_37.5%,_0%_25%,_1.5%_12.5%)]">
               {/* Tape specular reflection line down the center */}
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-white/80 shadow-[0_0_2px_rgba(255,255,255,0.8)]" />
               {/* Warm golden-hour cellophane gradient sheen */}
@@ -101,50 +128,47 @@ export default function Zone4FAQQuotes() {
 
           {/* Postcard Shell with Warm Rose-Tan Border (Subtle Blend of Vintage Cardstock & Soft Terracotta) */}
           <div
-            className="relative w-full rounded-2xl p-2 sm:p-2.5 shadow-[0_25px_60px_-12px_rgba(0,0,0,0.4),_0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden"
+            className="relative w-full rounded-2xl p-1.5 sm:p-2 shadow-[0_25px_60px_-12px_rgba(0,0,0,0.4),_0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden"
             style={{
               background: "linear-gradient(135deg, #E8D3C4 0%, #DDBFB0 100%)",
             }}
           >
             {/* Inner Postcard Paper Body */}
-            <div className="relative w-full rounded-xl bg-[#FAF7EE] border border-amber-900/10 p-5 sm:p-9 lg:p-11 text-slate-800">
+            <div className="relative w-full rounded-xl bg-[#FAF7EE] border border-amber-900/10 p-4 sm:p-6 lg:p-6 text-slate-800">
               {/* Delicate Inset Postal Hairline Frame Rule (as on authentic travel postcards) */}
               <div className="absolute inset-2 sm:inset-3 rounded-lg border border-amber-900/15 pointer-events-none" />
 
               {/* Top Header Bar inside the Postcard */}
-              <div className="flex flex-row items-start sm:items-center justify-between gap-3 pb-5 sm:pb-6 mb-5 sm:mb-6 border-b border-amber-900/15">
+              <div className="flex flex-row items-center justify-between gap-3 pb-3 sm:pb-3.5 mb-3 sm:mb-3.5 border-b border-amber-900/15">
                 {/* Taped Polaroid Snapshot of Sammy the Seal + Route Metadata */}
                 <div className="relative flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-                  <div className="relative shrink-0 bg-white p-1.5 sm:p-2 pb-2 sm:pb-2.5 rounded-md shadow-md border border-slate-200/90 -rotate-2 hover:rotate-0 transition-transform select-none">
+                  <div className="relative shrink-0 bg-white p-1 sm:p-1.5 pb-1.5 sm:pb-2 rounded-md shadow-md border border-slate-200/90 -rotate-2 hover:rotate-0 transition-transform select-none">
                     {/* Washi Tape Strip */}
-                    <div className="absolute -top-2 sm:-top-2.5 left-1/2 -translate-x-1/2 w-9 sm:w-11 h-2.5 sm:h-3.5 bg-amber-300/85 border-t border-b border-amber-400/70 rotate-1 shadow-xs pointer-events-none" />
-                    <div className="relative w-11 h-11 sm:w-16 sm:h-16 bg-gradient-to-b from-sky-100 to-amber-50 rounded overflow-hidden flex items-center justify-center">
+                    <div className="absolute -top-1.5 sm:-top-2 left-1/2 -translate-x-1/2 w-8 sm:w-10 h-2 sm:h-3 bg-amber-300/85 border-t border-b border-amber-400/70 rotate-1 shadow-xs pointer-events-none" />
+                    <div className="relative w-10 h-10 sm:w-13 sm:h-13 bg-gradient-to-b from-sky-100 to-amber-50 rounded overflow-hidden flex items-center justify-center">
                       <Image
                         src={LOLLIPOP_MASCOT}
                         alt="HackCC Mascot"
                         fill
-                        className="object-contain p-0.5 sm:p-1 pointer-events-none select-none"
+                        className="object-contain p-0.5 pointer-events-none select-none"
                         priority
                         draggable={false}
                       />
                     </div>
-                    <div className="mt-0.5 sm:mt-1 text-center font-serif italic text-[9px] sm:text-[11px] font-semibold text-slate-700 leading-tight">
+                    <div className="mt-0.5 text-center font-serif italic text-[8px] sm:text-[10px] font-semibold text-slate-700 leading-tight">
                       Route Guide
                     </div>
                   </div>
 
                   <div className="min-w-0">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className="inline-block w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
-                      <span className="font-mono text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-amber-900/90 font-bold truncate block">
-                        POST CARD · ROUTE 1
-                      </span>
-                    </div>
-                    <h3 className="text-sm sm:text-lg font-bold font-sans text-slate-900 leading-tight sm:leading-snug truncate">
-                      La Jolla
+                    <span className="font-mono text-[9px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-amber-900/90 font-bold truncate block mb-0.5">
+                      POST CARD · ROUTE 1
+                    </span>
+                    <h3 className="text-sm sm:text-base font-bold font-sans text-slate-900 leading-tight sm:leading-snug truncate">
+                      Orange Coast College · Costa Mesa
                     </h3>
-                    <p className="text-[11px] sm:text-xs text-slate-600 font-sans mt-0.5 hidden xs:block">
-                      Field notes for your 36-hour hackathon
+                    <p className="text-[10px] sm:text-xs text-slate-600 font-sans mt-0.5 hidden xs:block">
+                      Field notes for your Nov 14–15 weekend hackathon
                     </p>
                   </div>
                 </div>
@@ -176,7 +200,7 @@ export default function Zone4FAQQuotes() {
                   </div>
 
                   {/* Authentic Perforated Postage Stamp Card */}
-                  <div className="relative z-10 w-[64px] sm:w-[86px] h-[80px] sm:h-[108px] drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)] rotate-2 hover:rotate-0 transition-transform">
+                  <div className="relative z-10 w-[54px] sm:w-[72px] h-[68px] sm:h-[90px] drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)] rotate-2 hover:rotate-0 transition-transform">
                     <svg width="100%" height="100%" viewBox="0 0 88 110" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <defs>
                         <mask id="faq-stamp-perfs">
@@ -266,29 +290,29 @@ export default function Zone4FAQQuotes() {
               </div>
 
           {/* Accordion Grid inside Postcard with Classic Center Divider */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-y-0 md:gap-x-10 lg:gap-x-14 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 md:gap-y-0 md:gap-x-8 lg:gap-x-12 items-start">
             {/* Column 1 with Subtle Postcard Divider on Desktop */}
-            <div className="divide-y divide-amber-900/10 md:pr-8 lg:pr-10 md:border-r md:border-dashed md:border-amber-900/20">
+            <div className="divide-y divide-amber-900/10 md:pr-6 lg:pr-8 md:border-r md:border-dashed md:border-amber-900/20">
               {col1.map((faq) => {
                 const isOpen = openId === faq.id;
                 return (
-                  <div key={faq.id} className="py-3.5 sm:py-4 first:pt-0">
+                  <div key={faq.id} className="py-1.5 sm:py-2.5 first:pt-0">
                     <button
                       type="button"
                       onClick={() => toggle(faq.id)}
-                      className="w-full flex items-start justify-between text-left group cursor-pointer focus:outline-none select-none gap-3"
+                      className="w-full flex items-start justify-between text-left group cursor-pointer focus:outline-none select-none gap-2.5"
                       aria-expanded={isOpen}
                     >
-                      <div className="space-y-0.5 pr-2">
-                        <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-amber-800/80 block">
+                      <div className="space-y-0.5 pr-1.5">
+                        <span className="font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-amber-800/80 block">
                           {faq.badge}
                         </span>
-                        <h3 className={`font-sans font-bold text-base sm:text-lg block transition-colors leading-snug ${isOpen ? "text-amber-800" : "text-slate-900 group-hover:text-amber-800"}`}>
+                        <h3 className={`font-sans font-bold text-xs sm:text-sm lg:text-[15px] block transition-colors leading-snug ${isOpen ? "text-amber-800" : "text-slate-900 group-hover:text-amber-800"}`}>
                           {faq.question}
                         </h3>
                       </div>
                       <span
-                        className={`flex-shrink-0 mt-1 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-200 ${isOpen
+                        className={`flex-shrink-0 mt-0.5 w-6 h-6 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold transition-all duration-200 ${isOpen
                             ? "bg-amber-400 text-slate-950 rotate-45 shadow-sm"
                             : "bg-amber-100 text-amber-800 border border-amber-300 group-hover:bg-amber-200"
                           }`}
@@ -307,17 +331,17 @@ export default function Zone4FAQQuotes() {
                           transition={{ duration: 0.2, ease: "easeOut" }}
                           className="overflow-hidden"
                         >
-                          <p className="pt-2 text-slate-700 font-sans text-sm sm:text-base leading-relaxed">
+                          <p className="pt-1 text-slate-700 font-sans text-xs sm:text-[13px] leading-relaxed">
                             <FormattedAnswer text={faq.spokenAnswer} />
                           </p>
                           {faq.link && (
-                            <div className="pt-3">
+                            <div className="pt-2">
                               {faq.link.href.startsWith("http") ? (
                                 <a
                                   href={faq.link.href}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-full shadow-xs hover:shadow transition-all group"
+                                  className="inline-flex items-center gap-1.5 text-xs font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3 py-1 rounded-full shadow-xs hover:shadow transition-all group"
                                 >
                                   <span>{faq.link.text}</span>
                                   <span className="transition-transform group-hover:translate-x-0.5">→</span>
@@ -325,7 +349,7 @@ export default function Zone4FAQQuotes() {
                               ) : (
                                 <Link
                                   href={faq.link.href}
-                                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-full shadow-xs hover:shadow transition-all group"
+                                  className="inline-flex items-center gap-1.5 text-xs font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3 py-1 rounded-full shadow-xs hover:shadow transition-all group"
                                 >
                                   <span>{faq.link.text}</span>
                                   <span className="transition-transform group-hover:translate-x-0.5">→</span>
@@ -346,23 +370,23 @@ export default function Zone4FAQQuotes() {
               {col2.map((faq) => {
                 const isOpen = openId === faq.id;
                 return (
-                  <div key={faq.id} className="py-3.5 sm:py-4 first:pt-0">
+                  <div key={faq.id} className="py-1.5 sm:py-2.5 first:pt-0">
                     <button
                       type="button"
                       onClick={() => toggle(faq.id)}
-                      className="w-full flex items-start justify-between text-left group cursor-pointer focus:outline-none select-none gap-3"
+                      className="w-full flex items-start justify-between text-left group cursor-pointer focus:outline-none select-none gap-2.5"
                       aria-expanded={isOpen}
                     >
-                      <div className="space-y-0.5 pr-2">
-                        <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-amber-800/80 block">
+                      <div className="space-y-0.5 pr-1.5">
+                        <span className="font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-amber-800/80 block">
                           {faq.badge}
                         </span>
-                        <h3 className={`font-sans font-bold text-base sm:text-lg block transition-colors leading-snug ${isOpen ? "text-amber-800" : "text-slate-900 group-hover:text-amber-800"}`}>
+                        <h3 className={`font-sans font-bold text-xs sm:text-sm lg:text-[15px] block transition-colors leading-snug ${isOpen ? "text-amber-800" : "text-slate-900 group-hover:text-amber-800"}`}>
                           {faq.question}
                         </h3>
                       </div>
                       <span
-                        className={`flex-shrink-0 mt-1 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-200 ${isOpen
+                        className={`flex-shrink-0 mt-0.5 w-6 h-6 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold transition-all duration-200 ${isOpen
                             ? "bg-amber-400 text-slate-950 rotate-45 shadow-sm"
                             : "bg-amber-100 text-amber-800 border border-amber-300 group-hover:bg-amber-200"
                           }`}
@@ -381,17 +405,17 @@ export default function Zone4FAQQuotes() {
                           transition={{ duration: 0.2, ease: "easeOut" }}
                           className="overflow-hidden"
                         >
-                          <p className="pt-2 text-slate-700 font-sans text-sm sm:text-base leading-relaxed">
+                          <p className="pt-1 text-slate-700 font-sans text-xs sm:text-[13px] leading-relaxed">
                             <FormattedAnswer text={faq.spokenAnswer} />
                           </p>
                           {faq.link && (
-                            <div className="pt-3">
+                            <div className="pt-2">
                               {faq.link.href.startsWith("http") ? (
                                 <a
                                   href={faq.link.href}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-full shadow-xs hover:shadow transition-all group"
+                                  className="inline-flex items-center gap-1.5 text-xs font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3 py-1 rounded-full shadow-xs hover:shadow transition-all group"
                                 >
                                   <span>{faq.link.text}</span>
                                   <span className="transition-transform group-hover:translate-x-0.5">→</span>
@@ -399,7 +423,7 @@ export default function Zone4FAQQuotes() {
                               ) : (
                                 <Link
                                   href={faq.link.href}
-                                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-full shadow-xs hover:shadow transition-all group"
+                                  className="inline-flex items-center gap-1.5 text-xs font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3 py-1 rounded-full shadow-xs hover:shadow transition-all group"
                                 >
                                   <span>{faq.link.text}</span>
                                   <span className="transition-transform group-hover:translate-x-0.5">→</span>
@@ -417,16 +441,16 @@ export default function Zone4FAQQuotes() {
           </div>
 
           {/* Bottom Card Footer */}
-          <div className="mt-8 pt-6 border-t border-amber-900/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-600">
+          <div className="mt-4 pt-3 border-t border-amber-900/15 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
             <div className="flex items-center gap-2">
               <span className="font-serif italic text-amber-900 font-medium">Postmaster&apos;s Note:</span>
               <span>Still have questions about the route?</span>
             </div>
             <a
-              href="https://discord.gg/yRShGV7Py4"
+              href="https://discord.gg/X7ktb9224J"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 py-2 rounded-full shadow-sm hover:shadow transition-all inline-flex items-center gap-1.5 group text-xs sm:text-sm"
+              className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-3.5 py-1.5 rounded-full shadow-sm hover:shadow transition-all inline-flex items-center gap-1.5 group text-xs"
             >
               <span>Ask our organizers on Discord</span>
               <span className="transition-transform group-hover:translate-x-1">→</span>

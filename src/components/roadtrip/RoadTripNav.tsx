@@ -241,7 +241,7 @@ export default function RoadTripNav() {
                   </Link>
 
                   <Link
-                    href="/2026"
+                    href="/archive"
                     onClick={() => setIsOpen(false)}
                     className="flex items-center justify-between p-2 rounded-xl transition-all duration-150 group hover:bg-white/10"
                   >

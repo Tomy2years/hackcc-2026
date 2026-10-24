@@ -12,7 +12,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https://www.elcamino.edu https://www.smc.edu",
   "font-src 'self' data:",
   "connect-src 'self' https://challenges.cloudflare.com",
-  "frame-src https://challenges.cloudflare.com https://maps.google.com",
+  "frame-src https://challenges.cloudflare.com https://maps.google.com https://www.google.com https://*.openstreetmap.org https://www.openstreetmap.org",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -58,6 +58,21 @@ const nextConfig: NextConfig = {
         source: "/apply/organizers",
         destination: "/apply/organizer",
         permanent: true,
+      },
+      {
+        source: "/2026",
+        destination: "/archive/2026",
+        permanent: false,
+      },
+      {
+        source: "/2025",
+        destination: "/archive/2025",
+        permanent: false,
+      },
+      {
+        source: "/2024",
+        destination: "/archive/2024",
+        permanent: false,
       },
     ];
   },

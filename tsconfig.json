@@ -22,7 +22,11 @@
     "paths": {
       "@/*": ["./src/*"],
       "@2026/*": ["./src/archive/2026/*"],
-      "@2026-public/*": ["./public/archive/2026/*"]
+      "@2026-public/*": ["./public/archive/2026/*"],
+      "@2025/*": ["./src/archive/2025/*"],
+      "@2025-public/*": ["./public/archive/2025/*"],
+      "@2024/*": ["./src/archive/2024/*"],
+      "@2024-public/*": ["./public/archive/2024/*"]
     }
   },
   "include": [

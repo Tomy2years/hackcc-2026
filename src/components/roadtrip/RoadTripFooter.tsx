@@ -168,10 +168,10 @@ export default function RoadTripFooter() {
                   </li>
                   <li>
                     <Link
-                      href="/2026"
+                      href="/archive"
                       className="text-slate-300 hover:text-white transition-colors drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]"
                     >
-                      Archive (HackCC 2026)
+                      HackCC Archive (All Years)
                     </Link>
                   </li>
                   <li>

@@ -153,11 +153,11 @@ export default function Zone1Hero() {
             />
           </div>
 
-          {/* Date Sign (November 14-15) directly underneath */}
+          {/* Date Sign (November 21-22) directly underneath */}
           <div className="w-3/4 sm:w-[70%] -mt-[31%] sm:-mt-[31%]">
             <Image
               src={DATE_SIGN}
-              alt="HackCC Event Dates: November 14-15"
+              alt="HackCC Event Dates: November 21-22"
               width={2560}
               height={1440}
               className="w-full h-auto object-contain mx-auto pointer-events-none select-none"

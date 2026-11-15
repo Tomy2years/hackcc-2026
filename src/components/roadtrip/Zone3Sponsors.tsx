@@ -9,6 +9,9 @@ const AWS_WHITE_LOGO = "/aws-white.svg";
 const GOOGLE_LOGO = "/google.svg";
 const BOOTDEV_LOGO = "/bootdev.png";
 const ELEVENLABS_LOGO = "/elevenlabs-logo-white.png";
+const CELSIUS_LOGO = "/celsius.svg";
+const LOVABLE_LOGO = "/lovable.svg";
+const PCBWAY_LOGO = "/pcbway.svg";
 
 const sponsors = [
   {
@@ -36,6 +39,27 @@ const sponsors = [
     name: "ElevenLabs",
     src: ELEVENLABS_LOGO,
     width: 240,
+    height: 60,
+    className: "max-h-9 sm:max-h-12 w-auto",
+  },
+  {
+    name: "Celsius",
+    src: CELSIUS_LOGO,
+    width: 220,
+    height: 75,
+    className: "max-h-10 sm:max-h-14 w-auto",
+  },
+  {
+    name: "Lovable",
+    src: LOVABLE_LOGO,
+    width: 220,
+    height: 40,
+    className: "max-h-8 sm:max-h-11 w-auto",
+  },
+  {
+    name: "PCBWay",
+    src: PCBWAY_LOGO,
+    width: 220,
     height: 60,
     className: "max-h-9 sm:max-h-12 w-auto",
   },
@@ -83,11 +107,11 @@ export default function Zone3Sponsors() {
 
         {/* Cal Hacks / HackMIT Style: Single Unified Frosted-Glass Sponsor Pavilion */}
         <div className="w-full max-w-5xl rounded-3xl border border-white/15 bg-slate-950/65 p-6 sm:p-10 lg:p-12 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-md select-none">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 items-center justify-items-center">
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 lg:gap-10">
             {sponsors.map((sponsor) => (
               <div
                 key={sponsor.name}
-                className="flex h-20 sm:h-24 w-full items-center justify-center p-2 sm:p-3 select-none"
+                className="flex h-20 sm:h-24 w-[42%] sm:w-[28%] lg:w-[21%] min-w-[130px] items-center justify-center p-2 sm:p-3 select-none"
               >
                 <Image
                   src={sponsor.src}

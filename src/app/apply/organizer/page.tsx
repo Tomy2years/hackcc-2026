@@ -286,7 +286,7 @@ export default function OrganizerApplyPage() {
           <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/80 border border-white/20 text-xs sm:text-sm font-mono text-amber-300 shadow-sm backdrop-blur-sm">
             <span className="font-bold text-white">Orange Coast College · Costa Mesa, CA</span>
             <span className="text-white/40 hidden xs:inline">•</span>
-            <span>Nov 14–15, 2026</span>
+            <span>Nov 21–22, 2026</span>
           </div>
 
           {/* Unboxed Narrative */}

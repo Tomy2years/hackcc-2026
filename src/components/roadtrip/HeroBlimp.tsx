@@ -176,7 +176,7 @@ export default function HeroBlimp({ className = "" }: HeroBlimpProps) {
           ORANGE COAST COLLEGE
         </text>
 
-        {/* Subtitle: Costa Mesa · Nov 14–15 */}
+        {/* Subtitle: Costa Mesa · Nov 21–22 */}
         <text
           x="276"
           y="81.5"
@@ -187,7 +187,7 @@ export default function HeroBlimp({ className = "" }: HeroBlimpProps) {
           fontFamily="system-ui, -apple-system, sans-serif"
           letterSpacing="1.2"
         >
-          COSTA MESA · NOV 14–15
+          COSTA MESA · NOV 21–22
         </text>
 
         {/* Corner Rivets */}

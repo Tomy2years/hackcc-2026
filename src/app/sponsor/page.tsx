@@ -25,6 +25,9 @@ const AWS_LOGO = "/aws-white.svg";
 const GOOGLE_LOGO = "/google.svg";
 const BOOTDEV_LOGO = "/bootdev.png";
 const ELEVENLABS_LOGO = "/elevenlabs-logo-white.png";
+const CELSIUS_LOGO = "/celsius.svg";
+const LOVABLE_LOGO = "/lovable.svg";
+const PCBWAY_LOGO = "/pcbway.svg";
 
 const ROADTRIP_SPONSORS = [
   {
@@ -52,6 +55,27 @@ const ROADTRIP_SPONSORS = [
     name: "ElevenLabs",
     src: ELEVENLABS_LOGO,
     width: 240,
+    height: 60,
+    className: "max-h-9 sm:max-h-12 w-auto",
+  },
+  {
+    name: "Celsius",
+    src: CELSIUS_LOGO,
+    width: 220,
+    height: 75,
+    className: "max-h-10 sm:max-h-14 w-auto",
+  },
+  {
+    name: "Lovable",
+    src: LOVABLE_LOGO,
+    width: 220,
+    height: 40,
+    className: "max-h-8 sm:max-h-11 w-auto",
+  },
+  {
+    name: "PCBWay",
+    src: PCBWAY_LOGO,
+    width: 220,
     height: 60,
     className: "max-h-9 sm:max-h-12 w-auto",
   },
@@ -114,7 +138,7 @@ const SPONSOR_BENEFITS = [
 const FAQS = [
   {
     q: "Where and when is HackCC 2026 taking place?",
-    a: "HackCC 2026 takes place on November 14–15, 2026 at Orange Coast College (OCC) in Costa Mesa, California! It is a two-day, non-overnight hackathon running during the daytime on Saturday and Sunday, allowing sponsors, mentors, and hackers to return refreshed for day two judging and final ceremonies.",
+    a: "HackCC 2026 takes place on November 21–22, 2026 at Orange Coast College (OCC) in Costa Mesa, California! It is a two-day, non-overnight hackathon running during the daytime on Saturday and Sunday, allowing sponsors, mentors, and hackers to return refreshed for day two judging and final ceremonies.",
   },
   {
     q: "Why sponsor HackCC instead of a four-year university hackathon?",
@@ -246,13 +270,13 @@ export default function SponsorPage() {
           <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/80 border border-white/20 text-xs sm:text-sm font-mono text-amber-300 shadow-sm backdrop-blur-sm">
             <span className="font-bold text-white">Orange Coast College · Costa Mesa, CA</span>
             <span className="text-white/40 hidden xs:inline">•</span>
-            <span>Nov 14–15, 2026</span>
+            <span>Nov 21–22, 2026</span>
           </div>
 
           {/* Unboxed Narrative */}
           <p className="mt-6 text-slate-200 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-sans">
             HackCC is California&apos;s premier hackathon exclusively dedicated to empowering community college students.
-            Taking place November 14–15, 2026 at Orange Coast College in Costa Mesa, partner with us to mentor, recruit, and inspire 300+ passionate student developers, designers, and creators from 23 colleges across California.
+            Taking place November 21–22, 2026 at Orange Coast College in Costa Mesa, partner with us to mentor, recruit, and inspire 300+ passionate student developers, designers, and creators from 23 colleges across California.
           </p>
 
           {/* Clean, Unboxed Direct Action Controls - No floating glass box */}
@@ -355,7 +379,7 @@ export default function SponsorPage() {
                 Weekend Sprint
               </p>
               <p className="text-xs font-semibold text-slate-400">
-                Nov 14–15, 2026
+                Nov 21–22, 2026
               </p>
             </div>
 
@@ -421,11 +445,11 @@ export default function SponsorPage() {
           </h2>
 
           <div className="w-full max-w-5xl rounded-3xl border border-white/15 bg-slate-950/65 p-6 sm:p-10 lg:p-12 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-md">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 items-center justify-items-center">
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 lg:gap-10">
               {ROADTRIP_SPONSORS.map((sponsor) => (
                 <div
                   key={sponsor.name}
-                  className="flex h-20 sm:h-24 w-full items-center justify-center p-2 sm:p-3 select-none"
+                  className="flex h-20 sm:h-24 w-[42%] sm:w-[28%] lg:w-[21%] min-w-[130px] items-center justify-center p-2 sm:p-3 select-none"
                 >
                   <Image
                     src={sponsor.src}

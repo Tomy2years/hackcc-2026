@@ -15,7 +15,7 @@ export const FAQS: FAQItem[] = [
     question: "When can I apply?",
     badge: "Applications Open",
     spokenAnswer:
-      "Applications are officially open! You can [apply now](/apply) directly through our hacker application portal. We review applications on a rolling basis, so jumping in early gives you the best shot at securing your seat on the route.",
+      "Applications are officially open! You can [apply now](/apply) directly through our hacker application portal. Registration will remain open until the hackathon is officially underway on Saturday, November 21. We review applications on a rolling basis, so jumping in early gives you the best shot at securing your seat on the route.",
     link: {
       text: "Apply Now",
       href: "/apply",
@@ -26,14 +26,14 @@ export const FAQS: FAQItem[] = [
     question: "Where and when is HackCC 2026?",
     badge: "Venue & Dates",
     spokenAnswer:
-      "HackCC 2026 takes place on November 14–15, 2026 at Orange Coast College (OCC) in Costa Mesa, California! The campus is located in Orange County with convenient freeway access and nearby public transit.",
+      "HackCC 2026 takes place on November 21–22, 2026 at Orange Coast College (OCC) in Costa Mesa, California! The campus is located in Orange County with convenient freeway access and nearby public transit.",
   },
   {
     id: "overnight",
     question: "Is HackCC an overnight hackathon?",
     badge: "Schedule & Format",
     spokenAnswer:
-      "HackCC is a two-day, non-overnight hackathon. Hacking runs during the day on both Saturday, November 14 and Sunday, November 15. The venue closes Saturday night so hackers can rest, recharge, and return refreshed Sunday morning for final builds and project demos.",
+      "HackCC is a two-day, non-overnight hackathon. Hacking runs during the day on both Saturday, November 21 and Sunday, November 22. The venue closes Saturday night so hackers can rest, recharge, and return refreshed Sunday morning for final builds and project demos.",
   },
   {
     id: "what-is-hackathon",

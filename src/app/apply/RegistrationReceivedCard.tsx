@@ -33,7 +33,7 @@ export function RegistrationReceivedCard({ email }: RegistrationReceivedCardProp
         </li>
         <li className="flex items-center gap-3">
           <Calendar className="w-4 h-4 text-amber-400 shrink-0" />
-          <span>Nov 14–15, 2026 • Orange Coast College</span>
+          <span>Nov 21–22, 2026 • Orange Coast College</span>
         </li>
         <li className="flex items-center gap-3">
           <MapPin className="w-4 h-4 text-amber-400 shrink-0" />

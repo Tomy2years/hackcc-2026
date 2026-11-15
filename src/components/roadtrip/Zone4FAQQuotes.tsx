@@ -168,7 +168,7 @@ export default function Zone4FAQQuotes() {
                       Orange Coast College · Costa Mesa
                     </h3>
                     <p className="text-[10px] sm:text-xs text-slate-600 font-sans mt-0.5 hidden xs:block">
-                      Field notes for your Nov 14–15 weekend hackathon
+                      Field notes for your Nov 21–22 weekend hackathon
                     </p>
                   </div>
                 </div>
@@ -191,7 +191,7 @@ export default function Zone4FAQQuotes() {
                         PCH · CA
                       </span>
                       <span className="font-mono font-bold text-[7px] sm:text-[8px] uppercase tracking-wider text-red-700 my-0.5">
-                        NOV 14 2026
+                        NOV 21 2026
                       </span>
                       <span className="font-mono text-[7px] tracking-tight uppercase text-red-600/80">
                         ORANGE COAST

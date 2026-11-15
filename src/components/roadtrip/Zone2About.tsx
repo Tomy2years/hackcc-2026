@@ -9,7 +9,7 @@ const stats = [
   { value: "300+", unit: "", label: "Participants", sublabel: "Across California" },
   { value: "$20K+", unit: "", label: "In Prizes", sublabel: "" },
   { value: "23", unit: "", label: "Colleges", sublabel: "From NorCal to SoCal" },
-  { value: "2", unit: "DAYS", label: "Weekend Sprint", sublabel: "Nov 14–15, 2026" },
+  { value: "2", unit: "DAYS", label: "Weekend Sprint", sublabel: "Nov 21–22, 2026" },
 ];
 
 const pillars = [
@@ -65,7 +65,7 @@ export default function Zone2About() {
             ABOUT HACKCC
           </h2>
           <p className="mt-3 text-white text-base sm:text-lg lg:text-xl font-sans font-medium max-w-2xl leading-relaxed [text-shadow:_0_2px_8px_rgba(0,0,0,1),_0_4px_16px_rgba(0,0,0,0.85)]">
-            California&apos;s largest community college hackathon. Two days to build, learn, and launch alongside mentors, alumni, and top tech partners at Orange Coast College on November 14–15, 2026.
+            California&apos;s largest community college hackathon. Two days to build, learn, and launch alongside mentors, alumni, and top tech partners at Orange Coast College on November 21–22, 2026.
           </p>
         </div>
 

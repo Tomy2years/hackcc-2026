@@ -54,7 +54,7 @@ export default function SchedulePage() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-heading text-white">Event Schedule</h1>
           <p className="text-xs sm:text-sm text-white/60">
-            Orange Coast College • November 14–15, 2026
+            Orange Coast College • November 21–22, 2026
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export default function SchedulePage() {
                 : 'text-white/70 hover:text-white'
             }`}
           >
-            Saturday, Nov 14
+            Saturday, Nov 21
           </button>
           <button
             onClick={() => setSelectedDay('Sunday')}
@@ -78,7 +78,7 @@ export default function SchedulePage() {
                 : 'text-white/70 hover:text-white'
             }`}
           >
-            Sunday, Nov 15
+            Sunday, Nov 22
           </button>
         </div>
       </div>

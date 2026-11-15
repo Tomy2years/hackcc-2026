@@ -1,6 +1,6 @@
 # HackCC 2026 Day-of Attendee Dashboard: Blueprint, Threat Model & End-to-End Journeys
 
-> **Target Release:** HackCC 2026 (November 14–15, 2026 at Orange Coast College)  
+> **Target Release:** HackCC 2026 (November 21–22, 2026 at Orange Coast College)  
 > **Audience:** Admitted Hackers, Mentors, Volunteers, and Organizers  
 > **Core Engagement Feature:** The HackCC Pokédex ("Hack-Dex") & Live Competitive Leaderboard  
 > **Security Baseline:** Zero-trust client, PostgreSQL Row-Level Security, Private Secret Vault, Atomic RPC procedures, Verified Email Binding, Physical Wristband Binding, Upstash rate limits  

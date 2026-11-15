@@ -5,7 +5,7 @@ description: Complete architecture, feature requirements, data schemas, UI/UX gu
 
 # HackCC 2026 Attendee Dashboard ("Hacker Mission Control") Specification
 
-The **Attendee Dashboard** is the central digital hub used by hackers, mentors, volunteers, and organizers during the day of HackCC 2026 (November 14–15, 2026 at Orange Coast College). It acts as each hacker's personal cockpit throughout the 14-hour weekend journey.
+The **Attendee Dashboard** is the central digital hub used by hackers, mentors, volunteers, and organizers during the day of HackCC 2026 (November 21–22, 2026 at Orange Coast College). It acts as each hacker's personal cockpit throughout the 14-hour weekend journey.
 
 ---
 

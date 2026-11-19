@@ -25,7 +25,7 @@ const AWS_LOGO = "/aws-white.svg";
 const GOOGLE_LOGO = "/google.svg";
 const BOOTDEV_LOGO = "/bootdev.png";
 const ELEVENLABS_LOGO = "/elevenlabs-logo-white.png";
-const CELSIUS_LOGO = "/celsius.svg";
+const RENDER_LOGO = "/render.svg";
 const LOVABLE_LOGO = "/lovable.svg";
 const PCBWAY_LOGO = "/pcbway.svg";
 
@@ -59,11 +59,11 @@ const ROADTRIP_SPONSORS = [
     className: "max-h-9 sm:max-h-12 w-auto",
   },
   {
-    name: "Celsius",
-    src: CELSIUS_LOGO,
+    name: "Render",
+    src: RENDER_LOGO,
     width: 220,
-    height: 75,
-    className: "max-h-10 sm:max-h-14 w-auto",
+    height: 42,
+    className: "max-h-8 sm:max-h-11 w-auto",
   },
   {
     name: "Lovable",

@@ -53,7 +53,6 @@ const HEADSHOT_CALIBRATION: Record<string, { objectPosition?: string; imageScale
   "jessie-joyce": { objectPosition: "center 18%", imageScale: "scale-100" },
   "vien-le": { objectPosition: "center 18%", imageScale: "scale-100" },
   "evelyn-cao": { objectPosition: "center 20%", imageScale: "scale-100" },
-  "lucas-hoang": { objectPosition: "center 18%", imageScale: "scale-100" },
   "adrian-luna": { objectPosition: "center 15%", imageScale: "scale-100" }, // calibrated bust portrait
   "michael-chadwick": { objectPosition: "center 18%", imageScale: "scale-100" },
   "vincent-perez-de-tudela": { objectPosition: "center 18%", imageScale: "scale-100" },

@@ -277,19 +277,6 @@
     "imageScale": "scale-100"
   },
   {
-    "id": "lucas-hoang",
-    "name": "Lucas Hoang",
-    "role": "Logistics Team",
-    "categories": [
-      "logistics"
-    ],
-    "college": "Orange Coast College",
-    "image": "/assets/headshots/lucas-hoang-headshot-cutout.png",
-    "linkedin": "https://www.linkedin.com/in/lucamanh",
-    "objectPosition": "center 18%",
-    "imageScale": "scale-100"
-  },
-  {
     "id": "adrian-luna",
     "name": "Adrian Luna",
     "role": "Sponsorships Team",
